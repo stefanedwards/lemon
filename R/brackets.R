@@ -1,6 +1,9 @@
 # Originally from https://raw.githubusercontent.com/stefanedwards/ggplot2/master/R/brackets.r
 # Pushed to ggplot2 with https://github.com/tidyverse/ggplot2/pull/2099
 
+#' @include ggplot2.r
+NULL
+
 #' Axis brackets instead of axis ticks and lines
 #'
 #' To be used with \code{\link{coord_flex_cart}},
@@ -29,6 +32,8 @@
 #'
 #' # A further adjustment,
 #' p + theme(panel.grid.major.x = element_blank())
+#' @import grid
+#' @importFrom  gtable gtable_col gtable_row gtable_width gtable_height
 brackets_horisontal <- function(direction = c('up','down'),
                                 length = unit(0.05, 'native'),
                                 tick.length = waiver()) {

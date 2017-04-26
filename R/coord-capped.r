@@ -1,6 +1,9 @@
 # Originally from https://raw.githubusercontent.com/stefanedwards/ggplot2/master/R/brackets.r
 # Pushed to ggplot2 with https://github.com/tidyverse/ggplot2/pull/2099
 
+#' @include ggplot2.r
+NULL
+
 #' Cartesian coordinates with capped axis lines.
 #'
 #' Caps the axis lines to the outer ticks to e.g. indicate range of values.
@@ -93,7 +96,7 @@ coord_capped_flip <- function(xlim = NULL,
   if (is.character(bottom)) bottom <- capped_horisontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
-  ggplot2::ggproto(NULL, CoordFlexFlipped,
+  ggproto(NULL, CoordFlexFlipped,
           limits = list(x = xlim, y = ylim),
           expand = expand,
           top = top,
@@ -120,7 +123,7 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
   # position: top or bottom / left or right
   # theme:
   function(scale_details, axis, scale, position, theme) {
-    agrob <- ggplot2:::render_axis(scale_details, axis, "x", position, theme)
+    agrob <- render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(as.numeric( switch(axis,

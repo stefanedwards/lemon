@@ -4,6 +4,9 @@
 # Flexible Cartesian coordinates ----------------------------------------------
 # ggproto objects for these are defined in a later chunk.
 
+#' @include ggplot2.r
+NULL
+
 #' Cartesian coordinates with flexible options for drawing axes
 #'
 #' Allows user to inject a function for drawing axes, such as
@@ -109,14 +112,6 @@ coord_flex_fixed <- function(ratio = 1,
 
 # Helper functions ------------------------------------------------------------
 
-# From ggplot2/R/utilities.r
-"%||%" <- function(a, b) {
-  if (!is.null(a)) a else b
-}
-
-"%|W|%" <- function(a, b) {
-  if (!is.waive(a)) a else b
-}
 
 # flex_render_axis_h and _v were lifted from the render_axis_h and _v of
 # ancestral class "Coord" in coord-.r
@@ -124,8 +119,8 @@ coord_flex_fixed <- function(ratio = 1,
 # function the coord_flex classes were given.
 flex_render_axis_h <- function(self, scale_details, theme) {
   arrange <- scale_details$x.arrange %||% c("primary", "secondary")
-  top <- self$top %|W|% ggplot2:::render_axis
-  bottom <- self$bottom %|W|% ggplot2:::render_axis
+  top <- self$top %|W|% render_axis
+  bottom <- self$bottom %|W|% render_axis
   list(
     top = top(scale_details, arrange[1], "x", "top", theme),
     bottom = bottom(scale_details, arrange[2], "x", "bottom", theme)
@@ -133,8 +128,8 @@ flex_render_axis_h <- function(self, scale_details, theme) {
 }
 flex_render_axis_v <- function(self, scale_details, theme) {
   arrange <- scale_details$y.arrange %||% c("primary","secondary")
-  left <- self$left %|W|% ggplot2:::render_axis
-  right <- self$right %|W|% ggplot2:::render_axis
+  left <- self$left %|W|% render_axis
+  right <- self$right %|W|% render_axis
   list(
     left = left(scale_details, arrange[1], 'y', 'left', theme),
     right = right(scale_details, arrange[2], 'y', 'right', theme)
