@@ -88,7 +88,7 @@ geom_point(aes(colour = clarity)) +
 theme(legend.position = c(0.1, 0.7))
 )
 
-d2 <- d + splot::facet_rep_wrap(~cut, ncol=2, .debug=TRUE) +my.theme
+(d2 <- d + splot::facet_rep_wrap(~cut, ncol=2) +my.theme)
 d2 + scale_y_continuous(sec.axis = dup_axis())
 
 # Facet grid -----------------
