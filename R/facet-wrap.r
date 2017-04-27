@@ -1,36 +1,18 @@
 #' @include ggplot2.r
 NULL
 
-#' Wrap a 1d ribbon of panels into 2d
-#'
-#' \code{facet_wrap} wraps a 1d sequence of panels into 2d. This is generally
-#' a better use of screen space than \code{\link{facet_grid}} because most
-#' displays are roughly rectangular.
-#'
-#' @param facets Either a formula or character vector. Use either a
-#'   one sided formula, \code{~a + b}, or a character vector, \code{c("a", "b")}.
-#' @param nrow,ncol Number of rows and columns.
-#' @param scales should Scales be fixed (\code{"fixed"}, the default),
-#'   free (\code{"free"}), or free in one dimension (\code{"free_x"},
-#'   \code{"free_y"}).
-#' @param strip.position By default, the labels are displayed on the top of
-#'   the plot. Using \code{strip.position} it is possible to place the labels on
-#'   either of the four sides by setting \code{strip.position = c("top",
-#'   "bottom", "left", "right")}
-#' @param dir Direction: either "h" for horizontal, the default, or "v", for
-#'   vertical.
-#' @inheritParams facet_rep_grid
-#' @importFrom ggplot2 facet_wrap
+#' @rdname facet_rep
+#' @import ggplot2
 #' @export
 #' @examples
 #' ggplot(mpg, aes(displ, hwy)) +
 #'   geom_point() +
 #'   facet_wrap(~class)
-facet_rep_wrap <- function(facets, shrink=TRUE, repeat.tick.labels=FALSE, .debug=FALSE, ...) {
-  f <- facet_wrap(facets, shrink=shrink, ...)
-  params <- append(f$params, list(repeat.tick.labels=repeat.tick.labels, .debug=.debug))
-  ggproto(NULL, FacetWrapRepeatLabels,
-          shrink=shrink,
+facet_rep_wrap <- function(..., repeat.tick.labels=FALSE) {
+  f <- facet_wrap(...)
+  params <- append(f$params, list(repeat.tick.labels=repeat.tick.labels))
+  ggplot2::ggproto(NULL, FacetWrapRepeatLabels,
+          shrink=f$shrink,
           params=params)
 }
 
@@ -39,8 +21,8 @@ facet_rep_wrap <- function(facets, shrink=TRUE, repeat.tick.labels=FALSE, .debug
 #' @format NULL
 #' @usage NULL
 #' @export
-#' @importFrom ggplot2 FacetWrap ggproto
-#' @importFrom gtable gtable_add_cols gtable_add_grob gtable_add_rows
+#' @import ggplot2
+#' @import gtable
 FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
                                           `_inherit`=ggplot2::FacetWrap,
   draw_panels = function(panels, layout, x_scales, y_scales, ranges, coord, data, theme, params) {
@@ -74,7 +56,7 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
 
     labels_df <- layout[names(params$facets)]
     attr(labels_df, "facet") <- "wrap"
-    strips <- render_strips(
+    strips <- ggplot2::render_strips(
       structure(labels_df, type = "rows"),
       structure(labels_df, type = "cols"),
       params$labeller, theme)
@@ -93,7 +75,7 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
       respect <- TRUE
     }
 
-    empty_table <- matrix(list(zeroGrob()), nrow = nrow, ncol = ncol)
+    empty_table <- matrix(list(ggplot2::zeroGrob()), nrow = nrow, ncol = ncol)
     panel_table <- empty_table
     panel_table[panel_pos] <- panels
     empties <- apply(panel_table, c(1,2), function(x) ggplot2:::is.zero(x[[1]]))
@@ -102,9 +84,9 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
      heights = unit(rep(aspect_ratio, nrow), "null"), respect = respect, clip = "on", z = matrix(1, ncol = ncol, nrow = nrow))
     panel_table$layout$name <- paste0('panel-', rep(seq_len(ncol), nrow), '-', rep(seq_len(nrow), each = ncol))
 
-    panel_table <- gtable_add_col_space(panel_table,
+    panel_table <- gtable::gtable_add_col_space(panel_table,
       theme$panel.spacing.x %||% theme$panel.spacing)
-    panel_table <- gtable_add_row_space(panel_table,
+    panel_table <- gtable::gtable_add_row_space(panel_table,
       theme$panel.spacing.y %||% theme$panel.spacing)
 
     # Add axes
