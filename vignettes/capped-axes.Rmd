@@ -60,7 +60,7 @@ p + coord_capped_cart(bottom='right')
 
 To keep the axis lines consistent, we also specify the `left` argument, which still caps the left
 axis line by the amount specified with the `gap` argument.
-```{r}
+```{r fig.cap='As before, but left axis is now also capped to give a consistent look.'}
 p + coord_capped_cart(bottom='right', left='none')
 ```
 
@@ -68,7 +68,7 @@ p + coord_capped_cart(bottom='right', left='none')
 To avoid overplotting, we can apply a jitter. 
 To emphasise that the x-axis is categorical, we can place brackets.
 We finally polish the plot by removing the redundant vertical grid lines.
-```{r}
+```{r fig.cap='Placing brackets brackets instead of ticks emphasises that the x-scale is categorical and not nominal.'}
 ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height=0)) +
   coord_capped_cart(left='none', bottom=brackets_horisontal()) +
   my.theme + theme(panel.grid.major.x = element_blank())

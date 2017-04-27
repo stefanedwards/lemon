@@ -1,5 +1,10 @@
+# RStudio
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+*.Rproj
+
 inst/doc
+
+/lib/
