@@ -8,7 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "README/"
 )
 ```
 
@@ -51,6 +51,40 @@ ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) +
   geom_point(position=position_jitter(width=0.1)) + 
   coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('none')) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
+```
+
+
+## Legends
+
+Scavenging the Internet, we have found some functions that help work with 
+legends.
+
+Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring 
+you `g_legend`:
+```{r g_legend}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+(d <- ggplot(dsamp, aes(carat, price)) +
+geom_point(aes(colour = clarity)))
+
+legend <- g_legend(d)
+grid.newpage()
+grid.draw(legend)
+```
+
+[Shaun Jackman)](http://rpubs.com/sjackman) 
+[originally]([http://rpubs.com/sjackman/grid_arrange_shared_legend)
+brought us the
+`grid_arrange_shared_legend`, which was furhter refined by `baptiste` 
+[original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
+We put it in a package.
+
+```{r grid_arrange_shared_legend}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+p1 <- qplot(carat, price, data = dsamp, colour = clarity)
+p2 <- qplot(cut, price, data = dsamp, colour = clarity)
+p3 <- qplot(color, price, data = dsamp, colour = clarity)
+p4 <- qplot(depth, price, data = dsamp, colour = clarity)
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 ```
 
 

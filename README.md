@@ -35,7 +35,7 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
 ```
 
-![](README-usage1-1.png)
+![](README/usage1-1.png)
 
 **NB**: Disable `panel.border` and enable `axis.line` in `theme`, otherwise you will not see an effect!
 
@@ -48,7 +48,44 @@ ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
 ```
 
-![](README-brackets_demo-1.png)
+![](README/brackets_demo-1.png)
+
+Legends
+-------
+
+Scavenging the Internet, we have found some functions that help work with legends.
+
+Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring you `g_legend`:
+
+``` r
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+(d <- ggplot(dsamp, aes(carat, price)) +
+geom_point(aes(colour = clarity)))
+```
+
+![](README/g_legend-1.png)
+
+``` r
+
+legend <- g_legend(d)
+grid.newpage()
+grid.draw(legend)
+```
+
+![](README/g_legend-2.png)
+
+[Shaun Jackman)](http://rpubs.com/sjackman) [originally](%5Bhttp://rpubs.com/sjackman/grid_arrange_shared_legend) brought us the `grid_arrange_shared_legend`, which was furhter refined by `baptiste` [original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs). We put it in a package.
+
+``` r
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+p1 <- qplot(carat, price, data = dsamp, colour = clarity)
+p2 <- qplot(cut, price, data = dsamp, colour = clarity)
+p3 <- qplot(color, price, data = dsamp, colour = clarity)
+p4 <- qplot(depth, price, data = dsamp, colour = clarity)
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
+```
+
+![](README/grid_arrange_shared_legend-1.png)
 
 Extensions to knitr
 -------------------

@@ -29,6 +29,7 @@ Collate:
     'coord-flex.r'
     'facet-rep-lab.r'
     'knit_print.r'
+    'legends.r'
     'splot.r'
 Suggests:
     knitr,

@@ -4,4 +4,4 @@
 ^/lib/$
 .Rprofile
 ^README\.Rmd$
-^README-.*\.png$
+^README\*.png$
