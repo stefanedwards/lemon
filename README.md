@@ -3,14 +3,18 @@
 splot - Stefan's plotting package
 =================================
 
-Just another [ggplot2](http://ggplot2.tidyverse.org) extension.
+Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
 Installation
 ------------
 
 ``` r
-# Or the the development version from GitHub:
 # install.packages("devtools")
+
+# Install release from GitHub:
+devtools::install_github("stefanedwards/splot", ref='v0.1')
+
+# Or get the lastest development version from GitHub:
 devtools::install_github("stefanedwards/splot")
 ```
 
@@ -49,7 +53,7 @@ ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) +
 Extensions to knitr
 -------------------
 
-We automatically load knitr's k`nit_print` for data frames and dplyr tables to provide automatic pretty printing of these using `kable`:
+We automatically load knitr's `knit_print` for data frames and dplyr tables to provide automatic pretty printing of these using `kable`:
 
 Before loading `splot` package:
 
