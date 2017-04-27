@@ -81,29 +81,44 @@ ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height
 
 ## Facets
 
-```{r eval=FALSE}
+Having produced such wonderous axes, it is a pity they are not plotted around 
+all panels when using faceting. 
+
+```{r}
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
-geom_point(aes(colour = clarity)) +
-theme(legend.position = c(0.1, 0.7))
+  geom_point(aes(colour = clarity)) + 
+  coord_capped_cart(bottom='none', left='bottom') +
+  facet_grid(.~cut) + my.theme
 )
+```
 
-(d2 <- d + splot::facet_rep_wrap(~cut, ncol=2) +my.theme)
-d2 + scale_y_continuous(sec.axis = dup_axis())
+`facet_grid` and `facet_wrap` have been implemented in versions that display
+the axis lines (and labels) on all panels. They work exactly like ggplot2's 
+functions, and are named with `_rep_`:
+```{r}
+d + facet_rep_grid(.~cut)
+```
 
-# Facet grid -----------------
-ggplot(dat1, aes(gp, y)) + geom_point() + 
-  coord_capped_flip(bottom = 'left', left='none') + 
-  theme(axis.title=element_blank(), plot.title=element_text(size=rel(1))) +
-  facet_rep_grid(~cl)
+If we want the labels shown as well, use the argument:
+```{r}
+d + facet_rep_grid(.~cut, repeat.tick.labels = TRUE)
+```
 
-dat2 <- rbind(dat1, data.frame(gp=letters[1:3], y=rnorm(3, 2), cl=3, cl2='b'))
-ggplot(dat2, aes(gp, y)) + geom_point() + 
-  coord_capped_flip(bottom = 'left', left='none') + 
-  theme(axis.title=element_blank(), plot.title=element_text(size=rel(1))) +
-  facet_rep_grid(.~cl, scales='free_y')
+It also works for `facet_wrap`:
+```{r}
+(d2 <- d + facet_rep_wrap(~cut, ncol=2))
+```
 
-
+Finally, the legend can be repositioned to fit in a panel by using 
+`reposition_legend`.
+See the vignette `legend`. 
+The addition of `theme(legend.background)` is merely to provide a border around
+the legend.
+```{r}
+d2 <- d2 + guides(colour=guide_legend(ncol=2)) + 
+  theme(legend.background = element_rect(colour='grey'))
+reposition_legend(d2, position='center', panel='panel-2-3')
 ```
 
 Also a quote using `>`:

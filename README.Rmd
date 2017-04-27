@@ -8,15 +8,48 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README/"
+  fig.path = "README/",
+  cache.path = "README/cache/",
+  cache = TRUE,
+  autodep=TRUE
 )
 ```
 
-# splot - Stefan's plotting package
+# splot! - Stefan's plot library of tricks
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and 
 [knitr](https://yihui.name/knitr/) extension package.
 
+This package contains functions primarily in these domains of ggplot2:
+
+```{r domain_axis_lines,include=FALSE,fig.height=0.5,fig.width=0.5}
+library(ggplot2)
+library(splot)
+ggplot(mtcars, aes(x=cyl, y=mpg)) + 
+  geom_point(size=0.1) + 
+  coord_capped_cart(bottom=brackets_horisontal(), left='both') +
+  theme_light() + 
+  theme(panel.border=element_blank(), axis.line = element_line(),
+        axis.title=element_blank(), axis.text=element_blank(),
+        panel.grid=element_blank(), axis.ticks.x = element_line(colour='black'))
+```
+```{r domain_facets,include=FALSE,fig.height=0.5, fig.width=0.5}
+ggplot(mtcars, aes(x=cyl, y=mpg)) + 
+  geom_point(size=0.1) + 
+  coord_capped_cart(bottom='both', left='both') +
+  facet_rep_wrap(~carb) +
+  theme_light() + 
+  theme(panel.border=element_blank(), axis.line = element_line(),
+        axis.title=element_blank(), axis.text=element_blank(),
+        panel.grid=element_blank(), axis.ticks = element_blank(), 
+        axis.ticks.length = unit(0, 'npc'), panel.spacing=unit(1, 'mm'),
+        strip.background=element_blank(), strip.text=element_blank())
+```
+
+* ![Axis lines miniature](README/domain_axis_lines-1.png) Axis lines
+* ![Facets miniature](README/domain_facets-1.png) Repeated axis lines on facets.
+* Legends
+* knitr
 
 ## Installation
 
@@ -56,16 +89,20 @@ ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) +
 
 ## Legends
 
+Reposition the legend onto the plot. Exactly where you want it:
+```{r reposition_legend,fig.cap='The legend repositioned onto the top left corner of the panel.'}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+d <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity))
+reposition_legend(d, 'top left')
+```
+
 Scavenging the Internet, we have found some functions that help work with 
 legends.
 
 Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring 
 you `g_legend`:
-```{r g_legend}
-dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
-(d <- ggplot(dsamp, aes(carat, price)) +
-geom_point(aes(colour = clarity)))
-
+```{r g_legend,fig.height=3,fig.width=2,fig.cap='The legend grob, by itself.'}
 legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
@@ -78,7 +115,7 @@ brought us the
 ([original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)).
 We put it in a package.
 
-```{r grid_arrange_shared_legend}
+```{r grid_arrange_shared_legend,fig.cap='Four plots that share the same legend.'}
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)
@@ -116,5 +153,4 @@ See `knit_print.data.frame`.
 
 ## To do:
 
-* Implement `facet` objects that repeat axes
 * Describe coord objects in capped-axes vignette.

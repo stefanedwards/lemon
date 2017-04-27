@@ -1,6 +1,6 @@
 Package: splot
 Type: Package
-Title: splot - Stefan's plotting package
+Title: splot! - Stefan's plot library of tricks
 Version: 0.2.0
 Author: Stefan McKinnon Edwards <sme@iysik.com>
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
@@ -28,6 +28,7 @@ Collate:
     'coord-capped.r'
     'coord-flex.r'
     'facet-rep-lab.r'
+    'facet-wrap.r'
     'knit_print.r'
     'legends.r'
     'splot.r'
