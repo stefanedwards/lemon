@@ -118,3 +118,7 @@ See `knit_print.data.frame`.
 
 * Implement `facet` objects that repeat axes
 * Describe coord objects in capped-axes vignette.
+* Add `.dot` functions to knitr.
+* Describe facets in this file.
+* Describe brackets orientation in legend vignette.
+
