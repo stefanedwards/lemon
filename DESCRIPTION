@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Stefan McKinnon Edwards <sme@iysik.com>
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
 Description: Yet another ggplot2 extension package.
-Imports: 
+Imports:
   ggplot2,
   grid,
   gridExtra,
@@ -28,3 +28,6 @@ Collate:
     'coord-flex.r'
     'facet-rep-lab.r'
     'splot.r'
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
