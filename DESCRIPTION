@@ -1,7 +1,7 @@
 Package: splot
 Type: Package
 Title: splot - Stefan's plotting package
-Version: 0.1.0
+Version: 0.2.0
 Author: Stefan McKinnon Edwards <sme@iysik.com>
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
 Description: Yet another ggplot2 and knitr extension package.

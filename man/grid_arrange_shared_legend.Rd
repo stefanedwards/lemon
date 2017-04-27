@@ -43,6 +43,6 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 }
 \seealso{
-\code{\link{g_legend}}
+\code{\link{g_legend}}, \code{\link{reposition_legend}}
 }
 

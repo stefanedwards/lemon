@@ -17,17 +17,42 @@ library(knitr)
 knitr::opts_chunk$set(fig.height=4, fig.width=6)
 ```
 
+## Legend functions
+
+* Extract legend: `g_legend`
+* Combine multiple plots, but use only _one_ legend: `grid_arrange_shared_legend`
+* Reposition legend onto the actual plot: `reposition_legend`
+
 ## Reposition legend onto plotting panel
 
+`ggplot2` by default places the legend in the margin of the entire plot.
+This is in many instances a nice solution.
+If this is not desired, `theme(legend.position)` can be used to place the legend
+in relative measures on the entire plot:
 
 ```{r}
 library(ggplot2)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
-  geom_point(aes(colour = clarity)))
+  geom_point(aes(colour = clarity)) +
+  theme(legend.position = c(0.1, 0.7))
+)
 ```
 
+This is however prone to badly positioning, if e.g. the plot is resized:
+
+```{r echo=FALSE,fig.height=3, fig.width=3}
+d
+```
+
+With our function, we can specify exactly how we want it in the plotting area:
 ```{r reposition_legend}
+library(splot)
+reposition_legend(d, 'top left')
+```
+
+And it stays there.
+```{r reposition_legend_small,eval=FALSE,fig.height=2, fig.width=2}
 reposition_legend(d, 'top left')
 ```
 
@@ -60,4 +85,14 @@ d3 <- d + facet_wrap(~cut, ncol=3) + scale_color_discrete(guide=guide_legend(nco
 reposition_legend(d3, 'center', panel='panel-3-2')
 ```
 
+## Acknowledgements
 
+`g_legend` can be found in few variations across a multitude of
+[Stack Overflow](http://www.stackoverflow.com) answers.
+
+`grid_arrange_shared_legend` was originally proposed by 
+[Shaun Jackman](http://rpubs.com/sjackman) [original code](http://rpubs.com/sjackman/grid_arrange_shared_legend)
+which was furhter refined by `baptiste` at 
+[ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
+
+`reposition_legend` was coded by [Stefan McKinnon Edwards](http://www.iysik.com/)/

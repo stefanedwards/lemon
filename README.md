@@ -74,7 +74,7 @@ grid.draw(legend)
 
 ![](README/g_legend-2.png)
 
-[Shaun Jackman)](http://rpubs.com/sjackman) [originally](%5Bhttp://rpubs.com/sjackman/grid_arrange_shared_legend) brought us the `grid_arrange_shared_legend`, which was furhter refined by `baptiste` [original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs). We put it in a package.
+[Shaun Jackman](http://rpubs.com/sjackman) [originally](%5Bhttp://rpubs.com/sjackman/grid_arrange_shared_legend) brought us the `grid_arrange_shared_legend`, which was furhter refined by `baptiste` ([original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)). We put it in a package.
 
 ``` r
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
@@ -122,3 +122,9 @@ head(USArrests)
 | Colorado   |     7.9|      204|        78|  38.7|
 
 See `knit_print.data.frame`.
+
+To do:
+------
+
+-   Implement `facet` objects that repeat axes
+-   Describe coord objects in capped-axes vignette.

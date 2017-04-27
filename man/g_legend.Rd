@@ -33,6 +33,6 @@ grid.draw(legend)
 Stack Overflow
 }
 \seealso{
-\code{\link{grid_arrange_shared_legend}}
+\code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}}
 }
 

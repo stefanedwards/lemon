@@ -71,11 +71,11 @@ grid.newpage()
 grid.draw(legend)
 ```
 
-[Shaun Jackman)](http://rpubs.com/sjackman) 
+[Shaun Jackman](http://rpubs.com/sjackman) 
 [originally]([http://rpubs.com/sjackman/grid_arrange_shared_legend)
 brought us the
 `grid_arrange_shared_legend`, which was furhter refined by `baptiste` 
-[original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
+([original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)).
 We put it in a package.
 
 ```{r grid_arrange_shared_legend}
@@ -114,3 +114,7 @@ head(USArrests)
 See `knit_print.data.frame`.
 
 
+## To do:
+
+* Implement `facet` objects that repeat axes
+* Describe coord objects in capped-axes vignette.

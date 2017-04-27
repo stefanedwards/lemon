@@ -13,7 +13,9 @@ reposition_legend(aplot, position = NULL, legend = NULL, panel = "panel",
 \item{position}{Where to place the legend in the panel. 
 Overrules \code{x}, \code{y}, and \code{just} arguments.}
 
-\item{legend}{The legend to place.}
+\item{legend}{The legend to place, if \code{NULL} (default), 
+it is extracted from \code{aplot} if 
+this is a ggplot2 object.}
 
 \item{panel}{Name of panel in gtable.}
 
@@ -32,10 +34,21 @@ gtable object, invisibly, with legend repositioned.
   Can be drawn with \code{\link[grid]{grid.draw}}.
 }
 \description{
-Some descriptives under title.
+Repositions a legend onto a panel, by either taking it from the same ggplot,
+or by using another. Works on both ggplot2 and gtable objects, and can accept
+any grob as legend.
 }
 \details{
-To modify the look of the legend, use themes
+To modify the look of the legend, use themes and the natural ggplot functions
+found in \code{\link[ggplot2]{guide_legend}}.
+
+Panel name is \code{panel}, but when using facets, it typically takes the 
+form \code{panel-{col}-{row}}. Use
+\preformatted{
+ggplot_gtable(ggplot_build(aplot))
+}
+to build a \code{\link[ggplot2]{gtable}} object, and print it to look at the
+names.
 }
 \examples{
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
@@ -49,5 +62,14 @@ reposition_legend(d + theme(legend.position='bottom'), 'top left')
 
 # Use odd specifications, here offset the legend with half its height from the bottom.
 reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.5))
+
+# For using with facets:
+reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-3-1')
+}
+\author{
+Stefan McKinnon Edwards <sme@iysik.com>
+}
+\seealso{
+\code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
 }
 
