@@ -1,0 +1,63 @@
+---
+title: "Working with legends"
+author: "Stefan McKinnon Edwards <sme@iysik.com>"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Capping axis lines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup,include=FALSE}
+library(knitr)
+
+knitr::opts_chunk$set(fig.height=4, fig.width=6)
+```
+
+## Reposition legend onto plotting panel
+
+
+```{r}
+library(ggplot2)
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+(d <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity)))
+```
+
+```{r reposition_legend}
+reposition_legend(d, 'top left')
+```
+
+### Facets
+
+The above demonstration finds the panel named `panel`. This is default.
+If using facetting, the panels are typically named `panel-{column}-{row}`.
+Look at the column `name` in the following output.
+
+```{r}
+d2 <- d + facet_grid(.~cut)
+ggplot_gtable(ggplot_build(d2))
+```
+
+So to place the legend in a specific panel, give its name:
+
+```{r reposition_legend_facet1}
+reposition_legend(d2, 'top left', panel = 'panel-3-1')
+```
+
+Likewise for `facet_wrap`. Incidentally, empty panels are also named here:
+
+```{r reposition_legend_facet2}
+reposition_legend(d + facet_wrap(~cut, ncol=3), 'top left', panel='panel-3-2')
+```
+
+Modifying the legend is done via usual routines of ggplot2:
+```{r reposition_legend_facet3}
+d3 <- d + facet_wrap(~cut, ncol=3) + scale_color_discrete(guide=guide_legend(ncol=3))
+reposition_legend(d3, 'center', panel='panel-3-2')
+```
+
+

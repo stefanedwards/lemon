@@ -32,4 +32,7 @@ grid.draw(legend)
 \author{
 Stack Overflow
 }
+\seealso{
+\code{\link{grid_arrange_shared_legend}}
+}
 
