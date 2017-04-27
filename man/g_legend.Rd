@@ -29,10 +29,9 @@ legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
 }
-\author{
-Stack Overflow
-}
 \seealso{
 \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}}
 }
-
+\author{
+Stack Overflow
+}

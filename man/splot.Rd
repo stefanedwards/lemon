@@ -4,6 +4,7 @@
 \name{splot}
 \alias{splot}
 \alias{splot-package}
+\alias{splot-package}
 \title{Stefan's plot package}
 \source{
 \url{https://github.com/stefanedwards/splot}
@@ -30,7 +31,7 @@ data frame using \code{\link[knitr]{kable}}.
 
 See \code{\link{knit_print.data.frame}}.
 }
+
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
 }
-

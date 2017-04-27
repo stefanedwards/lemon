@@ -13,4 +13,3 @@ remove_labels_from_axis(axisgrob)
 Called from FacetGridRepeatLabels.
 }
 \keyword{interal}
-

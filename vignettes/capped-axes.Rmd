@@ -24,7 +24,7 @@ A quick demonstration of capping the lines.
 First, load the package, generate a dataset and display it.
 
 ```{r load_pkg_and_data,fig.cap='Default ggplot2 plotting.'}
-#library(ggplot2)
+library(ggplot2)
 library(splot)
 
 dat1 <- data.frame(
@@ -82,6 +82,14 @@ ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height
 ## Facets
 
 ```{r eval=FALSE}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+(d <- ggplot(dsamp, aes(carat, price)) +
+geom_point(aes(colour = clarity)) +
+theme(legend.position = c(0.1, 0.7))
+)
+
+d2 <- d + splot::facet_rep_wrap(~cut, ncol=2, .debug=TRUE) +my.theme
+d2 + scale_y_continuous(sec.axis = dup_axis())
 
 # Facet grid -----------------
 ggplot(dat1, aes(gp, y)) + geom_point() + 
