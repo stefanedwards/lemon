@@ -5,6 +5,9 @@
 \alias{splot}
 \alias{splot-package}
 \title{Stefan's plot package}
+\source{
+\url{https://github.com/stefanedwards/splot}
+}
 \description{
 Just another ggplot2 extension.
 }

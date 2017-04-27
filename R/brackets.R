@@ -81,7 +81,7 @@ brackets_horisontal <- function(direction = c('up','down'),
       bottom = viewport(y = 1, just = 'top', height = gtable_height(gt))
     )
 
-    absoluteGrob(
+    ggplot2:::absoluteGrob(
       gList(gt),
       width = gtable_width(gt),
       height = gtable_height(gt),
@@ -142,7 +142,7 @@ brackets_vertical <- function(direction = c('left','right'),
       right = viewport(x = 0, just = 'left', width = gtable_width(gt))
     )
 
-    absoluteGrob(
+    ggplot2:::absoluteGrob(
       gList(gt),
       width = gtable_width(gt),
       height = gtable_height(gt),
