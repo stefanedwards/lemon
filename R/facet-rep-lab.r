@@ -214,28 +214,47 @@ facet_rep_wrap <- function(facets, shrink=TRUE, repeat.tick.labels=FALSE, .debug
 FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels', `_inherit`=ggplot2::FacetWrap,
   draw_panels = function(panels, layout, x_scales, y_scales, ranges, coord, data, theme, params) {
     table <- FacetWrap$draw_panels(panels, layout, x_scales, y_scales, ranges, coord, data, theme, params)
-    if (params$.debug) { saveRDS(table, file='table.rds')}
+    if (params$.debug) { saveRDS(list(table=table, panels=panels, params=params), file='table.rds')}
     
     # Add axes across all panels
     panels <- table$layout[grepl("^panel", table$layout$name), , drop = FALSE]
-    #cord <- do.call(rbind, strsplit(panels$name, split='-', fixed = TRUE))
     panels$col <- as.integer(as.factor(panels$l))# as.integer(cord[,3])
     panels$row <- as.integer(as.factor(panels$t))#as.integer(cord[,2])
     
     # axes are placed on all four sides of **all** panels, but are in most cases zeroGrobs.
-    # 
     
     axis_b <- table$grobs[grepl('axis-b-[[:digit:]]+', table$layout$name)]
-    axis_l <- table$grobs[grepl('axis-l-[[:digit:]]+', table$layout$name)]
-    axis_t <- table$grobs[grepl('axis-t-[[:digit:]]+', table$layout$name)]
-    axis_r <- table$grobs[grepl('axis-r-[[:digit:]]+', table$layout$name)]
+    #axis_l <- table$grobs[grepl('axis-l-[[:digit:]]+', table$layout$name)]
+    #axis_t <- table$grobs[grepl('axis-t-[[:digit:]]+', table$layout$name)]
+    #axis_r <- table$grobs[grepl('axis-r-[[:digit:]]+', table$layout$name)]
+    #
+    #if (params$repeat.tick.labels == FALSE) {
+    #  axis_b <- lapply(axis_b, remove_labels_from_axis)
+    #  axis_l <- lapply(axis_l, remove_labels_from_axis)
+    #  axis_t <- lapply(axis_t, remove_labels_from_axis)
+    #  axis_r <- lapply(axis_r, remove_labels_from_axis)
+    #}
     
-    if (params$repeat.tick.labels == FALSE) {
-      axis_b <- lapply(axis_b, remove_labels_from_axis)
-      axis_l <- lapply(axis_l, remove_labels_from_axis)
-      axis_t <- lapply(axis_t, remove_labels_from_axis)
-      axis_r <- lapply(axis_r, remove_labels_from_axis)
+    prev.is.copy <- FALSE
+    update.widths <- integer(max(panels$col))
+    for (i in 2:max(panels$col)) {
+      for (j in 1:max(panels$row)) {
+        #pk <- which(panels$col == i - 1 & panels$row == j)
+        pl <- which(panels$col == i & panels$row == j)
+        if (length(pl) == 0) next
+        if (inherits(table$grobs[[which(table$layout$name == panels$name[pl])]], 'zeroGrob')) next
+        #if (length(pk) == 0 | length(pl) == 0) next
+        
+        prev.grob <- table$grobs[[which(table$layout$name == sprintf('axis-l-%i-%i', j, i-1))]]
+        if (!prev.is.copy & params$repeat.tick.labels) {
+          prev.grob <- remove_labels_from_axis(prev.grob)
+          prev.is.copy <- TRUE
+        }
+        table$grobs[[which(table$layout$name == sprintf('axis-l-%i-%i', j, i))]] <- prev.grob
+      }
     }
+    # update widths
+    
     
     # panel_range <- ggplot2:::find_panel(table)
     # panel_range[,c('col','row')] <- c(max(panels$col), max(panels$row))
@@ -247,51 +266,51 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels', `_inherit`=gg
     
     
     
-    for (i in nrow(panels):1) {
-      p <- panels[i,]
-      # Bottom
-      if (p$row != panel_range$row & !inherits(axis_b[[p$col]], 'zeroGrob')) { # panel not in bottom row, (add row), add axis
-        coord <- table$layout[table$layout$name == p$name, ]
-        if (b_axis_row_added[p$row] == FALSE) {
-          b_axis_row_added[p$row] <- TRUE
-          table <- gtable_add_rows(table, max_height(axis_b), coord$b)
-        }
-        table <- gtable_add_grob(table, axis_b[[p$col]], t=coord$b+1, l=coord$l, r=coord$r, clip='off', name=sprintf('axis-b-%d-%d', p$col, p$row))
-      }
-      # Left
-      if (p$col > 1 & !inherits(axis_l[[p$row]], 'zeroGrob')) { # panel is not left-most column, (add column), add axis
-        coord <- table$layout[table$layout$name == p$name, ]
-        if (l_axis_column_added[p$col] == FALSE) {
-          l_axis_column_added[p$col] <- TRUE
-          table <- gtable_add_cols(table, max_width(axis_l), coord$l-1)
-          table <- gtable_add_grob(table, axis_l[[p$row]], t=coord$t, b=coord$b, l=coord$l, clip='off', name=sprintf('axis-l-%d-%d', p$row, p$col))
-        } else {
-          table <- gtable_add_grob(table, axis_l[[p$row]], t=coord$t, b=coord$b, l=coord$l-1, clip='off', name=sprintf('axis-l-%d-%d', p$row, p$col))
-        }
-      }
-      # Top
-      if (p$row > 1 & !inherits(axis_t[[p$col]], 'zeroGrob')) { # panel not in top row, (add row), add axis
-        coord <- table$layout[table$layout$name == p$name, ]
-        if (t_axis_row_added[p$row] == FALSE) {
-          t_axis_row_added[p$row] <- TRUE
-          table <- gtable_add_rows(table, max_height(axis_t), coord$t-1)
-          table <- gtable_add_grob(table, axis_t[[p$col]], t=coord$t, l=coord$l, r=coord$r, clip='off', name=sprintf('axis-t-%d-%d', p$col, p$row))
-        } else {
-          table <- gtable_add_grob(table, axis_t[[p$col]], t=coord$t-1, l=coord$l, r=coord$r, clip='off', name=sprintf('axis-t-%d-%d', p$col, p$row))        
-        }
-        
-      }
-      # Right
-      if (p$col != panel_range$col & !inherits(axis_l[[p$row]], 'zeroGrob')) { # panel is not right-most, (add colun), add axis
-        coord <- table$layout[table$layout$name == p$name, ]
-        if (r_axis_column_added[p$col] == FALSE) {
-          r_axis_column_added[p$col] <- TRUE
-          table <- gtable_add_cols(table, max_width(axis_r), coord$r)
-        }
-        table <- gtable_add_grob(table, axis_r[[p$row]], t=coord$t, b=coord$b, l=coord$r+1, clip='off', name=sprintf('axis-r-%d-%d', p$row, p$col))
-      }
-      
-    }
+    # for (i in nrow(panels):1) {
+    #   p <- panels[i,]
+    #   # Bottom
+    #   if (p$row != panel_range$row & !inherits(axis_b[[p$col]], 'zeroGrob')) { # panel not in bottom row, (add row), add axis
+    #     coord <- table$layout[table$layout$name == p$name, ]
+    #     if (b_axis_row_added[p$row] == FALSE) {
+    #       b_axis_row_added[p$row] <- TRUE
+    #       table <- gtable_add_rows(table, max_height(axis_b), coord$b)
+    #     }
+    #     table <- gtable_add_grob(table, axis_b[[p$col]], t=coord$b+1, l=coord$l, r=coord$r, clip='off', name=sprintf('axis-b-%d-%d', p$col, p$row))
+    #   }
+    #   # Left
+    #   if (p$col > 1 & !inherits(axis_l[[p$row]], 'zeroGrob')) { # panel is not left-most column, (add column), add axis
+    #     coord <- table$layout[table$layout$name == p$name, ]
+    #     if (l_axis_column_added[p$col] == FALSE) {
+    #       l_axis_column_added[p$col] <- TRUE
+    #       table <- gtable_add_cols(table, max_width(axis_l), coord$l-1)
+    #       table <- gtable_add_grob(table, axis_l[[p$row]], t=coord$t, b=coord$b, l=coord$l, clip='off', name=sprintf('axis-l-%d-%d', p$row, p$col))
+    #     } else {
+    #       table <- gtable_add_grob(table, axis_l[[p$row]], t=coord$t, b=coord$b, l=coord$l-1, clip='off', name=sprintf('axis-l-%d-%d', p$row, p$col))
+    #     }
+    #   }
+    #   # Top
+    #   if (p$row > 1 & !inherits(axis_t[[p$col]], 'zeroGrob')) { # panel not in top row, (add row), add axis
+    #     coord <- table$layout[table$layout$name == p$name, ]
+    #     if (t_axis_row_added[p$row] == FALSE) {
+    #       t_axis_row_added[p$row] <- TRUE
+    #       table <- gtable_add_rows(table, max_height(axis_t), coord$t-1)
+    #       table <- gtable_add_grob(table, axis_t[[p$col]], t=coord$t, l=coord$l, r=coord$r, clip='off', name=sprintf('axis-t-%d-%d', p$col, p$row))
+    #     } else {
+    #       table <- gtable_add_grob(table, axis_t[[p$col]], t=coord$t-1, l=coord$l, r=coord$r, clip='off', name=sprintf('axis-t-%d-%d', p$col, p$row))        
+    #     }
+    #     
+    #   }
+    #   # Right
+    #   if (p$col != panel_range$col & !inherits(axis_l[[p$row]], 'zeroGrob')) { # panel is not right-most, (add colun), add axis
+    #     coord <- table$layout[table$layout$name == p$name, ]
+    #     if (r_axis_column_added[p$col] == FALSE) {
+    #       r_axis_column_added[p$col] <- TRUE
+    #       table <- gtable_add_cols(table, max_width(axis_r), coord$r)
+    #     }
+    #     table <- gtable_add_grob(table, axis_r[[p$row]], t=coord$t, b=coord$b, l=coord$r+1, clip='off', name=sprintf('axis-r-%d-%d', p$row, p$col))
+    #   }
+    #   
+    # }
     
     table
   }
