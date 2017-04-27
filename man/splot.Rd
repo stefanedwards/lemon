@@ -20,6 +20,16 @@ It automatically uses \code{\link{capped_horisontal}} and
 \code{\link{capped_vertical}}, but both accepts these as well as 
 \code{\link{brackets_horisontal}} and \code{\link{brackets_vertical}}.
 }
+
+\section{Extending knitr}{
+
+
+We automatically load knitr's \code{\link[knitr]{knit_print}} for 
+data frames and dplyr tables to provide automatic pretty printing of
+data frame using \code{\link[knitr]{kable}}.
+
+See \code{\link{knit_print.data.frame}}.
+}
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
 }

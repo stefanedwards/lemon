@@ -4,19 +4,20 @@ Title: splot - Stefan's plotting package
 Version: 0.1.0
 Author: Stefan McKinnon Edwards <sme@iysik.com>
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
-Description: Yet another ggplot2 extension package.
+Description: Yet another ggplot2 and knitr extension package.
 Imports:
-  ggplot2,
-  grid,
-  gridExtra,
-  gtable,
+    ggplot2,
+    grid,
+    gridExtra,
+    gtable,
+    RCurl
 Depends:
-  ggplot2,
-  grid,
-  gridExtra,
-  gtable,
-Enhances:
-  ggplot2
+    ggplot2,
+    grid,
+    gridExtra,
+    gtable,
+Enhances: ggplot2,
+    knitr
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -27,7 +28,9 @@ Collate:
     'coord-capped.r'
     'coord-flex.r'
     'facet-rep-lab.r'
+    'knit_print.r'
     'splot.r'
-Suggests: knitr,
+Suggests:
+    knitr,
     rmarkdown
 VignetteBuilder: knitr

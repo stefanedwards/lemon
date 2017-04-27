@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Stefan McKinnon Edwards sme@iysik.com" />
+
+<meta name="date" content="2017-04-27" />
+
+<title>Capping axis lines</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Capping axis lines</h1>
+<h4 class="author"><em>Stefan McKinnon Edwards <a href="mailto:sme@iysik.com">sme@iysik.com</a></em></h4>
+<h4 class="date"><em>2017-04-27</em></h4>
+
+
+
+<div id="demonstration" class="section level2">
+<h2>Demonstration</h2>
+<p>A quick demonstration of capping the lines.</p>
+<p>First, load the package, generate a dataset and display it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#library(ggplot2)</span>
+<span class="kw">library</span>(splot)
+
+dat1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">gp =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">each =</span> <span class="dv">10</span>)),
+  <span class="dt">y =</span> <span class="kw">rnorm</span>(<span class="dv">30</span>),
+  <span class="dt">cl =</span> <span class="kw">sample.int</span>(<span class="dv">3</span>, <span class="dv">30</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>),
+  <span class="dt">cl2 =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>), <span class="dv">30</span>, <span class="dt">replace=</span><span class="ot">TRUE</span>)
+)
+
+my.theme &lt;-<span class="st"> </span><span class="kw">theme_light</span>()
+
+(
+  p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dat1, <span class="kw">aes</span>(gp, y)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span>my.theme
+)</code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Default ggplot2 plotting." />
+<p class="caption">Default ggplot2 plotting.</p>
+</div>
+<p><strong>NB:</strong> In order to manipulate the axis lines, they must be drawn. Modify the theme so the <code>panel.border</code> is not drawn (it will be on top of the axis lines), and have the axis lines drawn:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.theme &lt;-<span class="st"> </span>my.theme +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">panel.border=</span><span class="kw">element_blank</span>(), <span class="dt">axis.line =</span> <span class="kw">element_line</span>())
+p &lt;-<span class="st"> </span>p +<span class="st"> </span>my.theme</code></pre></div>
+<p>Now, let’s have some fun.</p>
+<p>We cap the bottom axis line to the right-most tick. The left end is also capped by the amount specified with the <code>gap</code> argument (at time of writing, defaulted at <code>0.01</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">coord_capped_cart</span>(<span class="dt">bottom=</span><span class="st">'right'</span>)</code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="Using coord_capped_cart to cap the bottom axis from the right. The left axis is unaffected." />
+<p class="caption">Using <code>coord_capped_cart</code> to cap the bottom axis from the right. The left axis is unaffected.</p>
+</div>
+<p>To keep the axis lines consistent, we also specify the <code>left</code> argument, which still caps the left axis line by the amount specified with the <code>gap</code> argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">coord_capped_cart</span>(<span class="dt">bottom=</span><span class="st">'right'</span>, <span class="dt">left=</span><span class="st">'none'</span>)</code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,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" alt="As before, but left axis is now also capped to give a consistent look." />
+<p class="caption">As before, but left axis is now also capped to give a consistent look.</p>
+</div>
+<p>To avoid overplotting, we can apply a jitter. To emphasise that the x-axis is categorical, we can place brackets. We finally polish the plot by removing the redundant vertical grid lines.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(dat1, <span class="kw">aes</span>(gp, y)) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="dt">position=</span><span class="kw">position_jitter</span>(<span class="dt">width=</span><span class="fl">0.2</span>, <span class="dt">height=</span><span class="dv">0</span>)) +
+<span class="st">  </span><span class="kw">coord_capped_cart</span>(<span class="dt">left=</span><span class="st">'none'</span>, <span class="dt">bottom=</span><span class="kw">brackets_horisontal</span>()) +
+<span class="st">  </span>my.theme +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">panel.grid.major.x =</span> <span class="kw">element_blank</span>())</code></pre></div>
+<div class="figure">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAAApVBMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6kNtNTU1NTW5NTY5Nbo5NbqtNjshmAABmtv9uTU1uTW5uTY5ubqtuq+SOTU2OTW6OTY6Obk2Ojo6OyP+QOgCQkGaQtpCQ2/+rbk2ryKur5P+zs7O2ZgC2///Ijk3Ijm7I///bkDrb///e3t7kq27k////tmb/yI7/25D/5Kv//7b//8j//9v//+T///8+F62pAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAHlklEQVR4nO3d/XPTRgLHYRF6bU2Plx49+pL2aKHJAVcCIa3//z/tYnfohJAUSV/J2tU+zwwz/LA4G+cT7UrIdreFQLf0BKibgIgIiIiAiAiIiICICIiIgIgIiMjQgATHBwREREBEBEREQEQERERARAREREBEBERkiYC6ToarsUBAXaeg9RAQEQERsQci4iyMiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIyOCA/geXRgc0cHzfh3WHR6XKCMg9ZtUSEBEBESkjIHugahUSELUSEBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBtWDGu2UE1IA579cTUAMERERAZOyBKJWAiAiIiICICIiIgFZjmRdnCmgtFnp5uIDWQkBeHx9pPiDv0BFqfQ8koCoJiEg5AdkDVamggKiRgIgIiIiAiNQSkB12oSoJyDl+qQS0Sod7tgS0Rgd8uioJyB5oEAERERCZwvZA549fDBpPO/oE8WbzlYC4WY8gTu/94gjELYYsYc8v+cxU9sYE1Hs87RDQ+s16Siag1Zv3opCAVk9ARAoIKBjP8pbfAwXjWTkBEREQEQERERARAREREBEBEREQEQEREdBoXmm0I6CxvNZxT0BjCWhPQGMJaE9Ao+lnR0BTaLglAU2g5dVMQBMQ0HzjmyCg+ca3od1+BERGQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARJYOqOFbsdZh4YBavhl0HQREREBE7IGILB0QlRNQWyY/4guoKdPvOQXUFAERKSCgeT/K9fLbm/cLtG6yJ3h0QAPHD3x0l4VqIyAiAiJSVkC1X5iufPpjFBZQ3Vo8gBYbUI0/CgFNP36sKn8WVU46JKAp1TjnkICIlBpQi7/MVSo2IOogICICIiIgIgIiIiAiAiIiICICIiKgVOOXzAUUav0/7QQUEtC841dPQPOOX7+2+xEQmatBvHt45+mQ8XAtiF+77u6rAeMb1/jqtXf9GXj3sOu+HDC+Za3vn/c+fgJ2CR2d9B/fLgFtPw7iZdd9drmU3bqQNf+EXSGg7bUgfv+x6x7t/nJ26yGo+SfsKv1cPwu7fem6aTy4DkRGQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARHoEcfFkc//1gPG05NNB/PHz8fa3B/3HU5pZ77z99ENffPdie/74Re/xFGbee/8//cjn37zeXnz77PJvzy/5SNPq7AOa/FH7B/Tm/vuA+o1vQF2vxijnCNRv/PrV9nowe6DCXAuorpqm1ucs7N/Owj7wYUC1HY8m5jrQCNcPQAKab/z6CWjW8Q1ouh8BkSk3oLZ/satRbECNby2qISAiAiJSbED2QHUoNyCqICAiAiIiICICIiIgIgJau5kvhwho1bpu7guyAlqzTkAkBERk/n4EtG7z/4eigIgIiIiAiAiIiICICKgtk5+WCagp018WElBTBLScVdzkL6DFrORlRvZAS1lJQJMTUE8fvavUgnMpiYD68q5kNxLQGAL6i4DGENBfBDSKft4TEBEBEREQEQERERARAREREBEBEREQEQERERCRwQFN/umtVGl0QAPHs3ICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiKgKpXzBlcCqlFBb7EnoBoJiIiAyBTTj4DICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiPQK4vzxi0HjaUefIN5svhIQN+sRxOm9XxyBuMWQJez5JZ+Zyt6YgHqPpx1/H8TpZvNgKyBu5whEREBEBETElWgiAiJSSkDlvGcbgxQSUEHvGskgAppK9d/AOAKaSP3fwTiFBFT/76+A5hnfDAHNM74dbfYjIDICIiIgIgIiIiAiJQTU6PnLOhQQUKtXUNZBQEQERKSAgOyBalZCQFRMQEQERERARAREREBEBEREQEQEREQQRAREREBEFgro+cH+0WgrneLUMxTQpF+t/CkK6FBWOkUBHcpKp7iWgEYxxQmmOPEcnIURERARAREREBEBDXR6vPQMyiKggQT0obICOv96syn8B3T6Q/FT3F482dx7dqCvVVRAF98+u/q5HEU6vf+69Cn+8fPx9s3914f5YkUFtHPxXdk/nd0SVvgydtDACwvodHPlA36L9N9n5Qf0zYGOPjtFBXTx5Lj8Jex4v0SUrN0j0O47P//XobZ/45w+KL7xXeAHm2NRAW1/22z++X3Zv96XZ2EHO8MZq9mzMOojICICIiIgIgIiIiAiAiIiICICIiIgIgIiIqAB3j3s7vzni5O3n//UdXdfLT2bMgiov3cPv7z8c3Ty9h9HJ7//+NnS0ymDgPo7OzrZbl/uAnq03b79/OnS8ymCgPp7uVu23u6WsKe7w9GjpedTBAH1J6AbCKi//RJ29n4J++Jk6fkUQUD92UTfQEAD7E7jfzr68zReP38S0EBnd185AbtCQP2d3Xm63S1dArpCQAO87PZLl4CuEBARAREREBEBEREQEQERERCR/wMQE8fSfF/XNQAAAABJRU5ErkJggg==" alt="Placing brackets brackets instead of ticks emphasises that the x-scale is categorical and not nominal." />
+<p class="caption">Placing brackets brackets instead of ticks emphasises that the x-scale is categorical and not nominal.</p>
+</div>
+</div>
+<div id="the-coord-objects" class="section level2">
+<h2>The <code>coord</code> objects</h2>
+</div>
+<div id="facets" class="section level2">
+<h2>Facets</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Facet grid -----------------</span>
+<span class="kw">ggplot</span>(dat1, <span class="kw">aes</span>(gp, y)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">coord_capped_flip</span>(<span class="dt">bottom =</span> <span class="st">'left'</span>, <span class="dt">left=</span><span class="st">'none'</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title=</span><span class="kw">element_blank</span>(), <span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">size=</span><span class="kw">rel</span>(<span class="dv">1</span>))) +
+<span class="st">  </span><span class="kw">facet_rep_grid</span>(~cl)
+
+dat2 &lt;-<span class="st"> </span><span class="kw">rbind</span>(dat1, <span class="kw">data.frame</span>(<span class="dt">gp=</span>letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">y=</span><span class="kw">rnorm</span>(<span class="dv">3</span>, <span class="dv">2</span>), <span class="dt">cl=</span><span class="dv">3</span>, <span class="dt">cl2=</span><span class="st">'b'</span>))
+<span class="kw">ggplot</span>(dat2, <span class="kw">aes</span>(gp, y)) +<span class="st"> </span><span class="kw">geom_point</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">coord_capped_flip</span>(<span class="dt">bottom =</span> <span class="st">'left'</span>, <span class="dt">left=</span><span class="st">'none'</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.title=</span><span class="kw">element_blank</span>(), <span class="dt">plot.title=</span><span class="kw">element_text</span>(<span class="dt">size=</span><span class="kw">rel</span>(<span class="dv">1</span>))) +
+<span class="st">  </span><span class="kw">facet_rep_grid</span>(.~cl, <span class="dt">scales=</span><span class="st">'free_y'</span>)</code></pre></div>
+<p>Also a quote using <code>&gt;</code>:</p>
+<blockquote>
+<p>“He who gives up [code] safety for [code] speed deserves neither.” (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
+</blockquote>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

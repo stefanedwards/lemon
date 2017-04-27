@@ -22,12 +22,19 @@ up, down, left, or right?}
 \item{length}{Length of the unit, parallel with axis line.}
 
 \item{tick.length}{Height (width) of x-axis (y-axis) bracket.
-If \code{waiver()}, use \code{axis.ticks.length} from \code{\link{theme}}.}
+If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link{theme}}.}
 }
 \description{
 To be used with \code{\link{coord_flex_cart}},
 \code{\link{coord_capped_cart}}, etc. for displaying brackets instead
 of the axis ticks and lines.
+}
+\details{
+The looks of the brackets are taken from \code{theme(axis.ticks)}, or
+\code{theme(axis.ticks.x)} and \code{theme(axis.ticks.y)}, respectively.
+
+It does not re-calculate tick marks, but lets \code{scale_x_*} and \code{scale_y_*}
+calculate and draw ticks and labels, and then modifies the ticks with brackets.
 }
 \examples{
 p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +

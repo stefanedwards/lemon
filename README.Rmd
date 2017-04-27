@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
 
 # splot - Stefan's plotting package
 
-Just another [ggplot2](http://ggplot2.tidyverse.org) extension.
+Just another [ggplot2](http://ggplot2.tidyverse.org) and 
+[knitr](https://yihui.name/knitr/) extension package.
 
 
 ## Installation
@@ -48,5 +49,30 @@ ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
 ```
 
+
+## Extensions to knitr
+
+We automatically load knitr's `lnit_print` for 
+data frames and dplyr tables to provide automatic pretty printing of
+these using `kable`:
+
+Before loading `splot` package:
+```{r knit_print_disable,include=FALSE}
+options(knit_print=FALSE)
+```
+```{r}
+data(USArrests)
+head(USArrests)
+```
+
+After loading `splot`:
+```{r knit_print_enable,include=FALSE}
+options(knit_print=TRUE)
+```
+```{r}
+head(USArrests)
+```
+
+See `knit_print.data.frame`.
 
 

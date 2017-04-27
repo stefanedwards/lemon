@@ -11,7 +11,13 @@
 #' \code{\link{brackets_horisontal}} and \code{\link{brackets_vertical}}.
 #' 
 #' 
+#' @section Extending knitr:
 #' 
+#' We automatically load knitr's \code{\link[knitr]{knit_print}} for 
+#' data frames and dplyr tables to provide automatic pretty printing of
+#' data frame using \code{\link[knitr]{kable}}.
+#' 
+#' See \code{\link{knit_print.data.frame}}.
 #'
 #' @docType package
 #' @name splot
