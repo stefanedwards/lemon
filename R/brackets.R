@@ -42,7 +42,7 @@ brackets_horisontal <- function(direction = c('up','down'),
 
   # Returns a function
   function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "x", position, theme)
+    agrob <- ggplot2:::render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'
@@ -103,7 +103,7 @@ brackets_vertical <- function(direction = c('left','right'),
                               tick.length = waiver()) {
   direction=match.arg(direction)
   function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "y", position, theme)
+    agrob <- ggplot2:::render_axis(scale_details, axis, "y", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'

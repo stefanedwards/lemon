@@ -56,7 +56,6 @@ NULL
 #'   scale_x_continuous(sec.axis = sec_axis(~1/., name='Madness scale')) +
 #'   coord_capped_cart(bottom='none', left='none', right='both', top=brackets_horisontal())
 #' # Although we cannot recommend the above madness.
-#' @importFrom ggplot2 ggproto
 coord_capped_cart <- function(xlim = NULL,
                               ylim = NULL,
                               expand = TRUE,
@@ -123,7 +122,7 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
   # position: top or bottom / left or right
   # theme:
   function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "x", position, theme)
+    agrob <- ggplot2:::render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(as.numeric( switch(axis,
@@ -154,7 +153,7 @@ capped_vertical <- function(capped = c('top','bottom','both','none'),
   # position: top or bottom / left or right
   # theme:
   function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "y", position, theme)
+    agrob <- ggplot2:::render_axis(scale_details, axis, "y", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(as.numeric( switch(axis,

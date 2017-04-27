@@ -16,12 +16,12 @@ NULL
 #' grid lines, and axis lines.
 #' Many themes also do not draw axis lines.
 #' To ensure the modified axis lines are visible, use
-#' \code{theme(panel.border=element_blank(), axis.lines=element_line())}.
+#' \code{theme(panel.border=element_blank(), axis.line=element_line())}.
 #'
 #' @section User defined functions:
 #' The provided function in \code{top}, \code{right}, \code{bottom}, and \code{left}
-#' defaults to \code{render_axis} which is defined in \file{coord-.r}, which in
-#' turns calls \code{guide_axis} (see \file{guides-axis.r}).
+#' defaults to \code{render_axis} which is defined in \file{ggplot2/R/coord-.r}, which in
+#' turns calls \code{guide_axis} (see \file{ggplot2/R/guides-axis.r}).
 #'
 #' The provided function is with the arguments
 #' \code{scale_details}, \code{axis}, \code{scale}, \code{position}, and \code{theme},
@@ -40,13 +40,40 @@ NULL
 #'   limits are taken exactly from the data or \code{xlim}/\code{ylim}.
 #' @export
 #' @examples
-#' # ensures that the ranges of axes are equal to the specified ratio by
-#' # adjusting the plot aspect ratio
+#' 
+#' # A standard plot
+#' p <- ggplot(mtcars, aes(disp, wt)) +
+#'  geom_point() +
+#'  geom_smooth() + theme(panel.border=element_blank(), axis.line=element_line())
+#' 
+#' # We desire that left axis does not extend beyond '6'
+#' # and the x-axis is unaffected
+#' p + coord_capped_cart(left='top')
+#' 
+#' # Specifying 'bottom' caps the axis with at most the length of 'gap'
+#' p + coord_capped_cart(left='top', bottom='none')
+#' 
+#' # We can specify a ridiculus large 'gap', but the lines will always 
+#' # protrude to the outer most ticks.
+#' p + coord_capped_cart(left='top', bottom='none', gap=2)
+#' 
+#' # We can use 'capped_horisontal' and 'capped_vertical' to specify for
+#' # each axis individually.
+#' p + coord_capped_cart(left='top', bottom=capped_horisontal('none', gap=2))
+#' 
+#' # At this point we might as well drop using the short-hand and go full on:
+#' p + coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('left'))
+#' 
+#' # Also works with secondary axes:
+#' p + scale_y_continuous(sec.axis=sec_axis(~5*., name='wt times 5')) +
+#'   coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), right=capped_vertical('both', gap=0.02))
 #'
-#' p <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
-#' p + coord_fixed(ratio = 1)
-#' p + coord_fixed(ratio = 5)
-#' p + coord_fixed(ratio = 1/5)
+#'
+#' # Supports the usual 'coord_fixed':
+#' p + coord_flex_fixed(ratio=1.2, bottom=capped_horisontal('right'))
+#' 
+#' # and coord_flip:
+#' p + coord_flex_flip(ylim=c(2,5), bottom=capped_horisontal('right'))
 coord_flex_cart <- function(xlim = NULL,
                             ylim = NULL,
                             expand = TRUE,
@@ -55,12 +82,12 @@ coord_flex_cart <- function(xlim = NULL,
                             bottom = waiver(),
                             right = waiver()) {
   ggproto(NULL, CoordFlexCartesian,
-          limits = list(x = xlim, y = ylim),
-          expand = expand,
-          top = top,
-          left = left,
-          bottom = bottom,
-          right = right
+    limits = list(x = xlim, y = ylim),
+    expand = expand,
+    top = top,
+    left = left,
+    bottom = bottom,
+    right = right
   )
 }
 
@@ -97,7 +124,7 @@ coord_flex_fixed <- function(ratio = 1,
                              left = waiver(),
                              bottom = waiver(),
                              right = waiver()) {
-  ggproto(NULL, CoordFixed,
+  ggproto(NULL, CoordFlexFixed,
           limits = list(x = xlim, y = ylim),
           ratio = ratio,
           expand = expand,
@@ -119,8 +146,8 @@ coord_flex_fixed <- function(ratio = 1,
 # function the coord_flex classes were given.
 flex_render_axis_h <- function(self, scale_details, theme) {
   arrange <- scale_details$x.arrange %||% c("primary", "secondary")
-  top <- self$top %|W|% render_axis
-  bottom <- self$bottom %|W|% render_axis
+  top <- self$top %|W|% ggplot2:::render_axis
+  bottom <- self$bottom %|W|% ggplot2:::render_axis
   list(
     top = top(scale_details, arrange[1], "x", "top", theme),
     bottom = bottom(scale_details, arrange[2], "x", "bottom", theme)
@@ -128,8 +155,8 @@ flex_render_axis_h <- function(self, scale_details, theme) {
 }
 flex_render_axis_v <- function(self, scale_details, theme) {
   arrange <- scale_details$y.arrange %||% c("primary","secondary")
-  left <- self$left %|W|% render_axis
-  right <- self$right %|W|% render_axis
+  left <- self$left %|W|% ggplot2:::render_axis
+  right <- self$right %|W|% ggplot2:::render_axis
   list(
     left = left(scale_details, arrange[1], 'y', 'left', theme),
     right = right(scale_details, arrange[2], 'y', 'right', theme)
