@@ -65,7 +65,7 @@ devtools::install_github("stefanedwards/splot")
 
 
 
-## Usage
+## Axis lines
 
 We can display a limit on the axes range.
 ```{r usage1}
@@ -80,12 +80,33 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
 
 We could also show that the x-axis is categorical (or ordinal):
 ```{r brackets_demo}
-ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) + 
+(p <- ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) + 
   geom_point(position=position_jitter(width=0.1)) + 
-  coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('none')) +
+  coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('both')) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
+)
 ```
 
+When capping the axis lines, they are never capped further inwards than the ticks!
+Look up
+
+* `coord_capped_cart`, `coord_capped_flip`
+* `coord_flex_cart`, `coord_flex_flip`, `coord_flex_fixed`
+* `brackets_horisontal`, `brackets_vertical`
+* `capped_horisontal`, `capped_vertical`
+
+## Facets 
+
+Having produced such wonderous axes, it is a pity they are not plotted around 
+all panels when using faceting. 
+We have extended both `facet_grid` and `facet_wrap` to produce axis, ticks, and 
+labels on _all_ panels:
+
+```{r facets}
+p + facet_rep_wrap(~gear, ncol=2, label=label_both)
+```
+
+They work just like the normal ones; look up `facet_rep_grid` and `facet_rep_wrap`.
 
 ## Legends
 

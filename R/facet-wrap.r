@@ -14,7 +14,8 @@ facet_rep_wrap <- function(..., repeat.tick.labels=FALSE) {
 }
 
 
-#' @rdname ggplot2-ggproto
+#' @rdname splot-ggproto
+#' @keywords internal
 #' @format NULL
 #' @usage NULL
 #' @export

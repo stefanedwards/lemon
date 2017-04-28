@@ -77,7 +77,75 @@ ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height
 
 ## The `coord` objects
 
+ggplot2's Cartesian coordinates systems, `coord_cartesian`, have been extended 
+to allow for flexible specification of how axes are drawn. 
+You've seen them above. 
+The following table summarises the connection between ggplot2's coord functions
+and those of splot!.
 
+ ggplot2          | splot's flexible   | splot's short hand
+------------------|--------------------|--------------------
+`coord_cartesian` | `coord_flex_cart`  | `coord_capped_cart`
+`coord_flip`      | `coord_flex_flip`  | `coord_capped_flip`
+`coord_fixed`     | `coord_flex_fixed` | --
+
+The short hand functions in the table's right column simply are almost identical
+to those in the middle column.
+If one of the side arguments are specified with a character value, the 
+relevant axis drawing function is used. You can however choose to use e.g.
+`brackets_horisontal` in place.
+
+### The axis drawing functions
+
+The functions `capped_horisontal` or `brackets_vertical` returns a function
+that is called when ggplot2 prints the plot. It is called with the arguments
+
+    scale_details, axis, scale, position, theme
+
+and the function should return a grob.
+Some pointers to how it is used can be found in ggplot2's help pages; just run
+`?"ggplot2-ggproto"`. 
+In this package, we use ggplot2 to build the axes, then modify in place the
+return grobs.
+
+### Brackets
+
+The brackets comes in two orientations: 
+`brackets_horisontal` and `brackets_vertical`. 
+If you attempt to use a vertical bracket on a horisontal axis, it will fail with
+a undescriptive error.
+
+The bracket functions accept a `direction` argument, which can be used to control
+which direction the end-points are pointing:
+
+```{r brackets}
+p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
+  geom_point(position=position_jitter(width=0.3)) +
+  scale_x_continuous(breaks=c(4,5,6,8), sec.axis=dup_axis()) + 
+  scale_y_continuous(sec.axis=dup_axis()) +
+  coord_flex_cart(bottom=brackets_horisontal(), 
+                  top=brackets_horisontal(direction='down'),
+                  left=brackets_vertical(), 
+                  right=brackets_vertical(direction='right')) +
+  my.theme
+p
+```
+
+The look of the brackets are controlled via `theme(axis.ticks)`. 
+The length of the end-point are controlled via the theme 
+`theme(axis.ticks.length)`. If these needs to be specified for each margin,
+use the argument `tick.length`:
+
+```{r}
+p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
+  geom_point(position=position_jitter(width=0.3)) +
+  coord_flex_cart(bottom=brackets_horisontal(tick.length=unit(0, 'cm')), 
+                  left=brackets_vertical(tick.length = unit(1, 'cm'))) +
+  my.theme
+p
+```
+
+As shown above, using `tick.length=unit(0, 'cm')` results in a flat line.
 
 ## Facets
 
