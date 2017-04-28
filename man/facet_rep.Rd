@@ -10,18 +10,13 @@ facet_rep_grid(..., repeat.tick.labels = FALSE)
 facet_rep_wrap(..., repeat.tick.labels = FALSE)
 }
 \arguments{
-\item{...}{Arguments used for \code{\link[ggplot2]{facet_grid}}.}
+\item{...}{Arguments used for \code{\link[ggplot2]{facet_grid}} or
+\code{\link[ggplot2]{facet_wrap}}.}
 
-\item{repeat.tick.labels}{Logical, removes the labels (numbering) on an axis
-when \code{FALSE}.}
+\item{repeat.tick.labels}{Logical, removes the labels (numbering) on an inner
+axes when \code{FALSE}.}
 }
 \description{
 \code{\link[ggplot2]{facet_grid}} and \code{\link[ggplot2]{facet_wrap}}, but
 with axis lines and labels preserved on all panels.
 }
-\examples{
-ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  facet_wrap(~class)
-}
-

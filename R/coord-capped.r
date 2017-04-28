@@ -33,6 +33,7 @@ NULL
 #' @rdname coord_capped
 #' @export
 #' @examples
+#' library(ggplot2)
 #' # Notice how the axis lines of the following plot meet in the lower-left corner.
 #' p <- ggplot(mtcars, aes(x = mpg)) + geom_dotplot() +
 #'   theme_bw() +

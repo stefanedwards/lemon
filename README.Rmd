@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# splot! - Stefan's plot library of tricks
+# splot! --- Stefan's plot library of tricks
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and 
 [knitr](https://yihui.name/knitr/) extension package.
@@ -103,6 +103,7 @@ legends.
 Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring 
 you `g_legend`:
 ```{r g_legend,fig.height=3,fig.width=2,fig.cap='The legend grob, by itself.'}
+library(grid)
 legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)

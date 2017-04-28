@@ -25,6 +25,7 @@ NULL
 #'   If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link{theme}}.
 #'
 #' @examples
+#' library(ggplot2)
 #' p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +
 #'   geom_point(position=position_jitter(width=0.3)) +
 #'   theme_bw() +
@@ -39,7 +40,8 @@ NULL
 #' # A further adjustment,
 #' p + theme(panel.grid.major.x = element_blank())
 #' @import grid
-#' @importFrom  gtable gtable_col gtable_row gtable_width gtable_height
+#' @import ggplot2
+#' @import gtable
 brackets_horisontal <- function(direction = c('up','down'),
                                 length = unit(0.05, 'native'),
                                 tick.length = waiver()) {
@@ -71,12 +73,12 @@ brackets_horisontal <- function(direction = c('up','down'),
     labels <- agrob$children[[ind.notline]]$grobs[[ind.text]]
 
     gt <- switch(position,
-      top = gtable_col('axis',
+      top = gtable::gtable_col('axis',
         grobs = list(labels, brackets),
         width = unit(1, 'npc'),
         heights = unit.c(grobHeight(labels), tick.length)
       ),
-      bottom = gtable_col('axis',
+      bottom = gtable::gtable_col('axis',
         grobs = list(brackets, labels),
         width = unit(1, 'npc'),
         heights = unit.c(tick.length, grobHeight(labels))
@@ -89,8 +91,8 @@ brackets_horisontal <- function(direction = c('up','down'),
 
     ggplot2:::absoluteGrob(
       gList(gt),
-      width = gtable_width(gt),
-      height = gtable_height(gt),
+      width = gtable::gtable_width(gt),
+      height = gtable::gtable_height(gt),
       vp = justvp
     )
   }
@@ -132,12 +134,12 @@ brackets_vertical <- function(direction = c('left','right'),
     labels <- agrob$children[[ind.notline]]$grobs[[ind.text]]
 
     gt <- switch(position,
-      left = gtable_row('axis',
+      left = gtable::gtable_row('axis',
         grobs = list(labels, brackets),
         height = unit(1, 'npc'),
         widths = unit.c(grobWidth(labels), tick.length)
       ),
-        right = gtable_row('axis',
+        right = gtable::gtable_row('axis',
         grobs = list(brackets, labels),
         height = unit(1, 'npc'),
         widths = unit.c(tick.length, grobWidth(labels))
@@ -150,8 +152,8 @@ brackets_vertical <- function(direction = c('left','right'),
 
     ggplot2:::absoluteGrob(
       gList(gt),
-      width = gtable_width(gt),
-      height = gtable_height(gt),
+      width = gtable::gtable_width(gt),
+      height = gtable::gtable_height(gt),
       vp = justvp
     )
   }

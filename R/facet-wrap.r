@@ -2,12 +2,9 @@
 NULL
 
 #' @rdname facet_rep
+#' @inheritParams facet_rep_grid
 #' @import ggplot2
 #' @export
-#' @examples
-#' ggplot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   facet_wrap(~class)
 facet_rep_wrap <- function(..., repeat.tick.labels=FALSE) {
   f <- facet_wrap(...)
   params <- append(f$params, list(repeat.tick.labels=repeat.tick.labels))

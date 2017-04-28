@@ -34,6 +34,7 @@ Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}},
 and places legend underneath.
 }
 \examples{
+library(ggplot2)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)

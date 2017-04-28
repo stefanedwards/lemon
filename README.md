@@ -72,6 +72,7 @@ Scavenging the Internet, we have found some functions that help work with legend
 Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring you `g_legend`:
 
 ``` r
+library(grid)
 legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)

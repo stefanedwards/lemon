@@ -47,10 +47,11 @@ form \code{panel-{col}-{row}}. Use
 \preformatted{
 ggplot_gtable(ggplot_build(aplot))
 }
-to build a \code{\link[ggplot2]{gtable}} object, and print it to look at the
+to build a \code{\link[gtable]{gtable}} object, and print it to look at the
 names.
 }
 \examples{
+library(ggplot2)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
  geom_point(aes(colour = clarity)))
