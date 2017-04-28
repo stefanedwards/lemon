@@ -2,6 +2,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^/lib/$
+^lib\$
 .Rprofile
 ^README\.Rmd$
 ^README\*.png$
+^lib$

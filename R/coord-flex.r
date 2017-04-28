@@ -40,7 +40,7 @@ NULL
 #'   limits are taken exactly from the data or \code{xlim}/\code{ylim}.
 #' @export
 #' @examples
-#' 
+#' library(ggplot2)
 #' # A standard plot
 #' p <- ggplot(mtcars, aes(disp, wt)) +
 #'  geom_point() +
@@ -66,7 +66,8 @@ NULL
 #' 
 #' # Also works with secondary axes:
 #' p + scale_y_continuous(sec.axis=sec_axis(~5*., name='wt times 5')) +
-#'   coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), right=capped_vertical('both', gap=0.02))
+#'   coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), 
+#'   right=capped_vertical('both', gap=0.02))
 #'
 #'
 #' # Supports the usual 'coord_fixed':
@@ -165,32 +166,35 @@ flex_render_axis_v <- function(self, scale_details, theme) {
 
 # ggproto objects -------------------------------------------------------------
 
-#' @rdname ggplot2-ggproto
+#' @rdname splot-ggproto
+#' @keywords internal
 #' @format NULL
 #' @usage NULL
 #' @export
-#' @importFrom ggplot2 CoordCartesian ggproto
+#' @import ggplot2
 CoordFlexCartesian <- ggplot2::ggproto('CoordFlexCartesian',
                                        `_inherit` = ggplot2::CoordCartesian,
                               render_axis_h = flex_render_axis_h,
                               render_axis_v = flex_render_axis_v
 )
 
-#' @rdname ggplot2-ggproto
+#' @rdname splot-ggproto
+#' @keywords internal
 #' @format NULL
 #' @usage NULL
 #' @export
-#' @importFrom ggplot2 CoordFlip ggproto
+#' @import ggplot2
 CoordFlexFlipped <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::CoordFlip,
                             render_axis_h = flex_render_axis_h,
                             render_axis_v = flex_render_axis_v
 )
 
-#' @rdname ggplot2-ggproto
+#' @rdname splot-ggproto
+#' @keywords internal
 #' @format NULL
 #' @usage NULL
 #' @export
-#' @importFrom ggplot2 CoordFixed ggproto
+#' @import ggplot2
 CoordFlexFixed <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::CoordFixed,
                           render_axis_h = flex_render_axis_h,
                           render_axis_v = flex_render_axis_v

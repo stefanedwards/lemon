@@ -32,17 +32,31 @@ in relative measures on the entire plot:
 
 ```{r}
 library(ggplot2)
+library(grid)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
   geom_point(aes(colour = clarity)) +
-  theme(legend.position = c(0.1, 0.7))
+  theme(legend.position = c(0.06, 0.75))
 )
 ```
 
-This is however prone to badly positioning, if e.g. the plot is resized:
+This is however prone to badly positioning, if e.g. the plot is resized or 
+font size changed:
 
-```{r echo=FALSE,fig.height=3, fig.width=3}
-d
+```{r echo=FALSE,fig.cap='**Left:** Base font size set to 22 pt. **Right:** Zoom on plot that is plotted at 150% size.'}
+
+
+vp1 <- viewport(x=0, y=0, width=unit(0.5, 'npc'), just=c(0,0))
+vp2 <- viewport(x=0.5, y=1, width=unit(1.5, 'npc'), height=unit(1.5, 'npc'), just=c(0,1))
+grid.newpage()
+vp0 <- current.viewport()
+pushViewport(vp1)
+g <- ggplotGrob(d + theme_gray(base_size=26) + theme(legend.position = c(0.06, 0.75)))
+grid.draw(g)
+popViewport()
+pushViewport(vp2)
+grid.draw(ggplotGrob(d))
+
 ```
 
 With our function, we can specify exactly how we want it in the plotting area:
@@ -51,10 +65,24 @@ library(splot)
 reposition_legend(d, 'top left')
 ```
 
-And it stays there.
-```{r reposition_legend_small,eval=FALSE,fig.height=2, fig.width=2}
-reposition_legend(d, 'top left')
+And it stays there. Most of the time.
+```{r echo=FALSE,fig.cap='**Left:** Base font size set to 22 pt. **Right:** Zoom on plot that is plotted at 150% size.'}
+
+
+vp1 <- viewport(x=0, y=0, width=unit(0.5, 'npc'), just=c(0,0))
+vp2 <- viewport(x=0.5, y=1, width=unit(1.5, 'npc'), height=unit(1.5, 'npc'), just=c(0,1))
+grid.newpage()
+vp0 <- current.viewport()
+pushViewport(vp1)
+grid.draw(reposition_legend(d + theme_gray(base_size=26) + theme(legend.position = 'left'), 'top left', plot=FALSE))
+grid.draw(g)
+popViewport()
+pushViewport(vp2)
+grid.draw(reposition_legend(d, 'top left', plot=FALSE))
+
 ```
+
+The left plot is printed in full at the end of this document.
 
 ### Facets
 
@@ -96,3 +124,16 @@ which was furhter refined by `baptiste` at
 [ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
 
 `reposition_legend` was coded by [Stefan McKinnon Edwards](http://www.iysik.com/)/
+
+## Footnotes
+
+Example with `reposition_legend` that didn't quite work:
+```{r}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+d <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity)) 
+reposition_legend(d + theme_gray(base_size=26), 'top left')
+```
+
+
+

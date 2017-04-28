@@ -21,6 +21,8 @@ applied. Modifying the legend is easiest by applying themes etc.
 to the ggplot2 object, before calling \code{g_legend}.
 }
 \examples{
+library(ggplot2)
+library(grid)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
  geom_point(aes(colour = clarity)))
@@ -29,10 +31,9 @@ legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
 }
-\author{
-Stack Overflow
-}
 \seealso{
 \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}}
 }
-
+\author{
+Stack Overflow
+}

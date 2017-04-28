@@ -37,6 +37,7 @@ It does not re-calculate tick marks, but lets \code{scale_x_*} and \code{scale_y
 calculate and draw ticks and labels, and then modifies the ticks with brackets.
 }
 \examples{
+library(ggplot2)
 p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +
   geom_point(position=position_jitter(width=0.3)) +
   theme_bw() +
@@ -51,4 +52,3 @@ p
 # A further adjustment,
 p + theme(panel.grid.major.x = element_blank())
 }
-

@@ -47,10 +47,11 @@ form \code{panel-{col}-{row}}. Use
 \preformatted{
 ggplot_gtable(ggplot_build(aplot))
 }
-to build a \code{\link[ggplot2]{gtable}} object, and print it to look at the
+to build a \code{\link[gtable]{gtable}} object, and print it to look at the
 names.
 }
 \examples{
+library(ggplot2)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
  geom_point(aes(colour = clarity)))
@@ -66,10 +67,9 @@ reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.
 # For using with facets:
 reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-3-1')
 }
-\author{
-Stefan McKinnon Edwards <sme@iysik.com>
-}
 \seealso{
 \code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
 }
-
+\author{
+Stefan McKinnon Edwards <sme@iysik.com>
+}
