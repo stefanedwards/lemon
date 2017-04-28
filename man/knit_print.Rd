@@ -2,8 +2,8 @@
 % Please edit documentation in R/knit_print.r
 \name{knit_print.data.frame}
 \alias{knit_print.data.frame}
-\alias{knit_print.grouped_df}
 \alias{knit_print.tbl_df}
+\alias{knit_print.grouped_df}
 \title{knitr extension: Always use `kable` for data frames.}
 \usage{
 \method{knit_print}{data.frame}(x, options, ...)
@@ -42,4 +42,3 @@ data.frame
 \code{\link[knitr]{knit_print}}, \code{\link[knitr]{kable}}
 }
 \keyword{print}
-

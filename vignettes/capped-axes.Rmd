@@ -24,7 +24,7 @@ A quick demonstration of capping the lines.
 First, load the package, generate a dataset and display it.
 
 ```{r load_pkg_and_data,fig.cap='Default ggplot2 plotting.'}
-#library(ggplot2)
+library(ggplot2)
 library(splot)
 
 dat1 <- data.frame(
@@ -77,25 +77,116 @@ ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height
 
 ## The `coord` objects
 
+ggplot2's Cartesian coordinates systems, `coord_cartesian`, have been extended 
+to allow for flexible specification of how axes are drawn. 
+You've seen them above. 
+The following table summarises the connection between ggplot2's coord functions
+and those of splot!.
 
+ ggplot2          | splot's flexible   | splot's short hand
+------------------|--------------------|--------------------
+`coord_cartesian` | `coord_flex_cart`  | `coord_capped_cart`
+`coord_flip`      | `coord_flex_flip`  | `coord_capped_flip`
+`coord_fixed`     | `coord_flex_fixed` | --
+
+The short hand functions in the table's right column simply are almost identical
+to those in the middle column.
+If one of the side arguments are specified with a character value, the 
+relevant axis drawing function is used. You can however choose to use e.g.
+`brackets_horisontal` in place.
+
+### The axis drawing functions
+
+The functions `capped_horisontal` or `brackets_vertical` returns a function
+that is called when ggplot2 prints the plot. It is called with the arguments
+
+    scale_details, axis, scale, position, theme
+
+and the function should return a grob.
+Some pointers to how it is used can be found in ggplot2's help pages; just run
+`?"ggplot2-ggproto"`. 
+In this package, we use ggplot2 to build the axes, then modify in place the
+return grobs.
+
+### Brackets
+
+The brackets comes in two orientations: 
+`brackets_horisontal` and `brackets_vertical`. 
+If you attempt to use a vertical bracket on a horisontal axis, it will fail with
+a undescriptive error.
+
+The bracket functions accept a `direction` argument, which can be used to control
+which direction the end-points are pointing:
+
+```{r brackets}
+p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
+  geom_point(position=position_jitter(width=0.3)) +
+  scale_x_continuous(breaks=c(4,5,6,8), sec.axis=dup_axis()) + 
+  scale_y_continuous(sec.axis=dup_axis()) +
+  coord_flex_cart(bottom=brackets_horisontal(), 
+                  top=brackets_horisontal(direction='down'),
+                  left=brackets_vertical(), 
+                  right=brackets_vertical(direction='right')) +
+  my.theme
+p
+```
+
+The look of the brackets are controlled via `theme(axis.ticks)`. 
+The length of the end-point are controlled via the theme 
+`theme(axis.ticks.length)`. If these needs to be specified for each margin,
+use the argument `tick.length`:
+
+```{r}
+p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
+  geom_point(position=position_jitter(width=0.3)) +
+  coord_flex_cart(bottom=brackets_horisontal(tick.length=unit(0, 'cm')), 
+                  left=brackets_vertical(tick.length = unit(1, 'cm'))) +
+  my.theme
+p
+```
+
+As shown above, using `tick.length=unit(0, 'cm')` results in a flat line.
 
 ## Facets
 
-```{r eval=FALSE}
+Having produced such wonderous axes, it is a pity they are not plotted around 
+all panels when using faceting. 
 
-# Facet grid -----------------
-ggplot(dat1, aes(gp, y)) + geom_point() + 
-  coord_capped_flip(bottom = 'left', left='none') + 
-  theme(axis.title=element_blank(), plot.title=element_text(size=rel(1))) +
-  facet_rep_grid(~cl)
+```{r}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+(d <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity)) + 
+  coord_capped_cart(bottom='none', left='bottom') +
+  facet_grid(.~cut) + my.theme
+)
+```
 
-dat2 <- rbind(dat1, data.frame(gp=letters[1:3], y=rnorm(3, 2), cl=3, cl2='b'))
-ggplot(dat2, aes(gp, y)) + geom_point() + 
-  coord_capped_flip(bottom = 'left', left='none') + 
-  theme(axis.title=element_blank(), plot.title=element_text(size=rel(1))) +
-  facet_rep_grid(.~cl, scales='free_y')
+`facet_grid` and `facet_wrap` have been implemented in versions that display
+the axis lines (and labels) on all panels. They work exactly like ggplot2's 
+functions, and are named with `_rep_`:
+```{r}
+d + facet_rep_grid(.~cut)
+```
 
+If we want the labels shown as well, use the argument:
+```{r}
+d + facet_rep_grid(.~cut, repeat.tick.labels = TRUE)
+```
 
+It also works for `facet_wrap`:
+```{r}
+(d2 <- d + facet_rep_wrap(~cut, ncol=2))
+```
+
+Finally, the legend can be repositioned to fit in a panel by using 
+`reposition_legend`.
+See the vignette `legend`. 
+The addition of `theme(legend.background)` is merely to provide a border around
+the legend.
+```{r}
+d2 <- d2 + guides(colour=guide_legend(ncol=2)) + 
+  theme(legend.background = element_rect(colour='grey'))
+reposition_legend(d2, position='center', panel='panel-2-3')
 ```
 
 Also a quote using `>`:

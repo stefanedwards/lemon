@@ -31,11 +31,11 @@
 #' @import knitr
 knit_print.data.frame = function(x, options, ...) {
   if (getOption('knit_print', default=TRUE) == FALSE) 
-    return(normal_print(x, options, ...))
+    return(knitr::normal_print(x, options, ...))
   opts <- options$`kable.opts`
   if (is.null(opts)) opts <- NULL
   opts <- RCurl::merge.list(list(x=x, digits=2), opts)
-  res = paste(c("","", do.call(kable, opts)), collapse="\n")
+  res = paste(c("","", do.call(knitr::kable, opts)), collapse="\n")
   asis_output(res)
 }
 

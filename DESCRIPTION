@@ -1,24 +1,26 @@
 Package: splot
 Type: Package
-Title: splot - Stefan's plotting package
+Title: splot! - Stefan's plot library of tricks
+URL: https://github.com/stefanedwards/splot
+BugReports: https://github.com/stefanedwards/splot/issues
 Version: 0.2.0
-Author: Stefan McKinnon Edwards <sme@iysik.com>
+Author@R: person(c('Stefan','McKinnon'), 'Edwards', email='sme@iysik.com',
+    role=c('aut','ctb','cre'))
+Author: Stefan McKinnon Edwards <sme@iysik.com> [aut, ctb, cre]
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
 Description: Yet another ggplot2 and knitr extension package.
-Imports:
-    ggplot2,
-    grid,
-    gridExtra,
-    gtable,
-    RCurl
+    Includes functions for manipulating ggplot2 legends,
+    axis lines, and a bit of knitr magic.
 Depends:
-    ggplot2,
+    R (>= 3.1.0)
+Imports:
+    ggplot2 (>= 2.2.0),
     grid,
     gridExtra,
     gtable,
-Enhances: ggplot2,
-    knitr
-License: GPL-3
+    RCurl,
+    knitr (>= 1.12)
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
@@ -28,10 +30,11 @@ Collate:
     'coord-capped.r'
     'coord-flex.r'
     'facet-rep-lab.r'
+    'facet-wrap.r'
     'knit_print.r'
     'legends.r'
     'splot.r'
 Suggests:
-    knitr,
-    rmarkdown
+    rmarkdown,
+    stringr
 VignetteBuilder: knitr

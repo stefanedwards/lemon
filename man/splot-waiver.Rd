@@ -27,5 +27,8 @@ Code taken from \file{ggplot2/R/utilities.r}.
 \references{
 ggplot2
 }
+\seealso{
+\code{\link[ggplot2]{waiver}}
+}
 \keyword{internal}
 
