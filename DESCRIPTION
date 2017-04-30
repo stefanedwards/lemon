@@ -1,10 +1,11 @@
-Package: splot
+Package: lemon
 Type: Package
-Title: splot - Stefan's plotting package
+Title: Lemon - yet another ggplot2 extension package
 Version: 0.2.0
 Author: Stefan McKinnon Edwards <sme@iysik.com>
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
-Description: Yet another ggplot2 and knitr extension package.
+Description: Functions for working with ggplot's legends and axis lines,
+    with some extended facets, and knitr extensions.
 Imports:
     ggplot2,
     grid,
@@ -28,9 +29,10 @@ Collate:
     'coord-capped.r'
     'coord-flex.r'
     'facet-rep-lab.r'
+    'facet-wrap.r'
     'knit_print.r'
     'legends.r'
-    'splot.r'
+    'lemon.r'
 Suggests:
     knitr,
     rmarkdown

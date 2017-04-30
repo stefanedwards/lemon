@@ -47,7 +47,7 @@ d
 
 With our function, we can specify exactly how we want it in the plotting area:
 ```{r reposition_legend}
-library(splot)
+library(lemon)
 reposition_legend(d, 'top left')
 ```
 
@@ -84,6 +84,13 @@ Modifying the legend is done via usual routines of ggplot2:
 d3 <- d + facet_wrap(~cut, ncol=3) + scale_color_discrete(guide=guide_legend(ncol=3))
 reposition_legend(d3, 'center', panel='panel-3-2')
 ```
+
+## To do:
+
+* Extend legend placement to also top and left. Consider how it is centered (entire plot vs. panel).
+* Add g_legend vs. gtable_filter to vignette.
+* Demonstrate shared_legend vs. placing legend on "empty" cell.
+
 
 ## Acknowledgements
 

@@ -46,10 +46,10 @@ data(USArrests)
 head(USArrests)
 ```
 
-Now load `splot`.
+Now load `lemon`.
 
 ```{r}
-library(splot)
+library(lemon)
 ```
 
 **The same view is now nicely printed!**

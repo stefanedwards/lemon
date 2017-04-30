@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-splot - Stefan's plotting package
-=================================
+Lemon --- yet another ggplot2 extension package
+===============================================
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
@@ -12,10 +12,10 @@ Installation
 # install.packages("devtools")
 
 # Install release from GitHub:
-devtools::install_github("stefanedwards/splot", ref='v0.1')
+devtools::install_github("stefanedwards/lemon", ref='v0.2')
 
 # Or get the lastest development version from GitHub:
-devtools::install_github("stefanedwards/splot")
+devtools::install_github("stefanedwards/lemon")
 ```
 
 Usage
@@ -24,11 +24,14 @@ Usage
 We can display a limit on the axes range.
 
 ``` r
-library(splot)
+library(lemon)
 #> Loading required package: ggplot2
+#> Warning: package 'ggplot2' was built under R version 3.2.5
 #> Loading required package: grid
 #> Loading required package: gridExtra
+#> Warning: package 'gridExtra' was built under R version 3.2.5
 #> Loading required package: gtable
+#> Warning: package 'gtable' was built under R version 3.2.5
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
   coord_capped_cart(bottom='both', left='none') +
