@@ -8,6 +8,20 @@
 #' \code{\link{capped_vertical}}, but both accepts these as well as
 #' \code{\link{brackets_horisontal}} and \code{\link{brackets_vertical}}.
 #'
+#' @section Legends:
+#'
+#' \describe{
+#'   \item{Extract legend}{\code{\link{g_legend}}}
+#'   \item{Many plots, one legend}{\code{\link{grid_arrange_shared_legend}}}
+#'   \item{Place legend exactly on plot}{\code{\link{reposition_legend}}}
+#' }
+#'
+#' @section Facets:
+#'
+#' \code{\link{facet_rep_grid}} and \code{\link{facet_rep_wrap}} are extensions
+#' to the wellknown \code{\link[ggplot2]{facet_grid}} and
+#' \code{\link[ggplot2]{facet_wrap}} where axis lines and labels are drawn on
+#' all panels.
 #'
 #' @section Extending knitr:
 #'

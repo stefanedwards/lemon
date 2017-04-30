@@ -5,16 +5,15 @@
 #' @import gtable
 NULL
 
-#' Base ggproto classes for ggplot2
+#' ggproto classes used in splot!
 #'
 #' If you are creating a new geom, stat, position, or scale in another package,
 #' you'll need to extend from \code{ggplot2::Geom}, \code{ggplot2::Stat},
 #' \code{ggplot2::Position}, or \code{ggplot2::Scale}.
-#'
-#
-#' @seealso \code{\link[ggplot2]{ggproto}}
+#' 
+#' @seealso \code{\link[ggplot2]{ggproto}}, \code{\link[ggplot2]{ggplot2-ggproto}}
 #' @keywords internal
-#' @name ggplot2-ggproto
+#' @name splot-ggproto
 NULL
 
 #' A waiver object.
@@ -26,18 +25,19 @@ NULL
 #'
 #' Code taken from \file{ggplot2/R/utilities.r}.
 #'
+#' @seealso \code{\link[ggplot2]{waiver}}
 #' @references ggplot2
-#' @rdname waiver
+#' @rdname splot-waiver
 #' @keywords internal
 waiver <- function() structure(list(), class = "waiver")
 
 #' @param x The object to inquery is a \code{waiver}.
-#' @rdname waiver
+#' @rdname splot-waiver
 #' @keywords internal
 is.waive <- function(x) inherits(x, "waiver")
 
 
-#' @rdname waiver
+#' @rdname splot-waiver
 #' @keywords internal
 "%|W|%" <- function(a, b) {
   if (!is.waive(a)) a else b

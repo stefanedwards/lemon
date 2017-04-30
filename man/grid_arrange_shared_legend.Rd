@@ -34,6 +34,7 @@ Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}},
 and places legend underneath.
 }
 \examples{
+library(ggplot2)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)
@@ -45,4 +46,3 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 \seealso{
 \code{\link{g_legend}}, \code{\link{reposition_legend}}
 }
-

@@ -9,3 +9,5 @@ README/cache
 inst/doc
 
 lib/
+/lib/
+README/cache/

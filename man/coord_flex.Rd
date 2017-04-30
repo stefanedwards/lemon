@@ -2,8 +2,8 @@
 % Please edit documentation in R/coord-flex.r
 \name{coord_flex_cart}
 \alias{coord_flex_cart}
-\alias{coord_flex_fixed}
 \alias{coord_flex_flip}
+\alias{coord_flex_fixed}
 \title{Cartesian coordinates with flexible options for drawing axes}
 \usage{
 coord_flex_cart(xlim = NULL, ylim = NULL, expand = TRUE, top = waiver(),
@@ -51,8 +51,9 @@ and the function should return an \code{\link{absoluteGrob}} object.
 For examples of modifying the drawn object, see e.g.
 \code{\link{capped_horisontal}} or \code{\link{brackets_horisontal}}.
 }
-\examples{
 
+\examples{
+library(ggplot2)
 # A standard plot
 p <- ggplot(mtcars, aes(disp, wt)) +
  geom_point() +
@@ -78,7 +79,8 @@ p + coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('left'))
 
 # Also works with secondary axes:
 p + scale_y_continuous(sec.axis=sec_axis(~5*., name='wt times 5')) +
-  coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), right=capped_vertical('both', gap=0.02))
+  coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), 
+  right=capped_vertical('both', gap=0.02))
 
 
 # Supports the usual 'coord_fixed':
@@ -87,4 +89,3 @@ p + coord_flex_fixed(ratio=1.2, bottom=capped_horisontal('right'))
 # and coord_flip:
 p + coord_flex_flip(ylim=c(2,5), bottom=capped_horisontal('right'))
 }
-

@@ -16,6 +16,8 @@ NULL
 #' @import ggplot2
 #' @seealso \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}}
 #' @examples
+#' library(ggplot2)
+#' library(grid)
 #' dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 #' (d <- ggplot(dsamp, aes(carat, price)) +
 #'  geom_point(aes(colour = clarity)))
@@ -53,6 +55,7 @@ g_legend<-function(a.gplot){
 #' @export
 #' @seealso \code{\link{g_legend}}, \code{\link{reposition_legend}}
 #' @examples
+#' library(ggplot2)
 #' dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 #' p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 #' p2 <- qplot(cut, price, data = dsamp, colour = clarity)
@@ -120,7 +123,7 @@ grid_arrange_shared_legend <- function(...,
 #' \preformatted{
 #' ggplot_gtable(ggplot_build(aplot))
 #' }
-#' to build a \code{\link[ggplot2]{gtable}} object, and print it to look at the
+#' to build a \code{\link[gtable]{gtable}} object, and print it to look at the
 #' names.
 #'
 #' @param aplot a ggplot2 or gtable object.
@@ -144,6 +147,7 @@ grid_arrange_shared_legend <- function(...,
 #' @seealso \code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
 #' @export
 #' @examples
+#' library(ggplot2)
 #' dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 #' (d <- ggplot(dsamp, aes(carat, price)) +
 #'  geom_point(aes(colour = clarity)))

@@ -1,25 +1,25 @@
 Package: lemon
 Type: Package
 Title: Lemon - yet another ggplot2 extension package
+URL: https://github.com/stefanedwards/splot
+BugReports: https://github.com/stefanedwards/splot/issues
 Version: 0.2.0
-Author: Stefan McKinnon Edwards <sme@iysik.com>
+Author@R: person(c('Stefan','McKinnon'), 'Edwards', email='sme@iysik.com',
+    role=c('aut','ctb','cre'))
+Author: Stefan McKinnon Edwards <sme@iysik.com> [aut, ctb, cre]
 Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
 Description: Functions for working with ggplot's legends and axis lines,
     with some extended facets, and knitr extensions.
-Imports:
-    ggplot2,
-    grid,
-    gridExtra,
-    gtable,
-    RCurl
 Depends:
-    ggplot2,
+    R (>= 3.1.0)
+Imports:
+    ggplot2 (>= 2.2.0),
     grid,
     gridExtra,
     gtable,
-Enhances: ggplot2,
-    knitr
-License: GPL-3
+    RCurl,
+    knitr (>= 1.12)
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
@@ -34,6 +34,6 @@ Collate:
     'legends.r'
     'lemon.r'
 Suggests:
-    knitr,
-    rmarkdown
+    rmarkdown,
+    stringr
 VignetteBuilder: knitr

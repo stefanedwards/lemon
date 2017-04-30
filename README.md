@@ -5,6 +5,13 @@ Lemon --- yet another ggplot2 extension package
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
+This package contains functions primarily in these domains of ggplot2:
+
+-   ![Axis lines miniature](README/domain_axis_lines-1.png) Axis lines
+-   ![Facets miniature](README/domain_facets-1.png) Repeated axis lines on facets.
+-   Legends
+-   knitr
+
 Installation
 ------------
 
@@ -24,14 +31,8 @@ Usage
 We can display a limit on the axes range.
 
 ``` r
+<<<<<<< HEAD
 library(lemon)
-#> Loading required package: ggplot2
-#> Warning: package 'ggplot2' was built under R version 3.2.5
-#> Loading required package: grid
-#> Loading required package: gridExtra
-#> Warning: package 'gridExtra' was built under R version 3.2.5
-#> Loading required package: gtable
-#> Warning: package 'gtable' was built under R version 3.2.5
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
   coord_capped_cart(bottom='both', left='none') +
@@ -56,26 +57,29 @@ ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) +
 Legends
 -------
 
+Reposition the legend onto the plot. Exactly where you want it:
+
+``` r
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+d <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity))
+reposition_legend(d, 'top left')
+```
+
+![The legend repositioned onto the top left corner of the panel.](README/reposition_legend-1.png)
+
 Scavenging the Internet, we have found some functions that help work with legends.
 
 Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring you `g_legend`:
 
 ``` r
-dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
-(d <- ggplot(dsamp, aes(carat, price)) +
-geom_point(aes(colour = clarity)))
-```
-
-![](README/g_legend-1.png)
-
-``` r
-
+library(grid)
 legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
 ```
 
-![](README/g_legend-2.png)
+![The legend grob, by itself.](README/g_legend-1.png)
 
 [Shaun Jackman](http://rpubs.com/sjackman) [originally](%5Bhttp://rpubs.com/sjackman/grid_arrange_shared_legend) brought us the `grid_arrange_shared_legend`, which was furhter refined by `baptiste` ([original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)). We put it in a package.
 
@@ -88,7 +92,7 @@ p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 ```
 
-![](README/grid_arrange_shared_legend-1.png)
+![Four plots that share the same legend.](README/grid_arrange_shared_legend-1.png)
 
 Extensions to knitr
 -------------------
@@ -129,5 +133,6 @@ See `knit_print.data.frame`.
 To do:
 ------
 
--   Implement `facet` objects that repeat axes
 -   Describe coord objects in capped-axes vignette.
+-   Add `.dot` functions to knitr.
+
