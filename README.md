@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-splot! - Stefan's plot library of tricks
-========================================
+Lemon --- yet another ggplot2 extension package
+===============================================
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
@@ -19,10 +19,10 @@ Installation
 # install.packages("devtools")
 
 # Install release from GitHub:
-devtools::install_github("stefanedwards/splot", ref='v0.1')
+devtools::install_github("stefanedwards/lemon", ref='v0.2')
 
 # Or get the lastest development version from GitHub:
-devtools::install_github("stefanedwards/splot")
+devtools::install_github("stefanedwards/lemon")
 ```
 
 Usage
@@ -31,7 +31,8 @@ Usage
 We can display a limit on the axes range.
 
 ``` r
-library(splot)
+<<<<<<< HEAD
+library(lemon)
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
   coord_capped_cart(bottom='both', left='none') +
@@ -98,7 +99,7 @@ Extensions to knitr
 
 We automatically load knitr's `knit_print` for data frames and dplyr tables to provide automatic pretty printing of these using `kable`:
 
-Before loading `splot` package:
+Before loading `lemon` package:
 
 ``` r
 data(USArrests)
@@ -112,7 +113,7 @@ head(USArrests)
 #> Colorado      7.9     204       78 38.7
 ```
 
-After loading `splot`:
+After loading `lemon`:
 
 ``` r
 head(USArrests)
@@ -132,4 +133,5 @@ See `knit_print.data.frame`.
 To do:
 ------
 
--   Describe coord objects in capped-axes vignette.
+-   Add `.dot` functions to knitr.
+

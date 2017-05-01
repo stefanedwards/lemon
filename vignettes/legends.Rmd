@@ -61,7 +61,7 @@ grid.draw(ggplotGrob(d))
 
 With our function, we can specify exactly how we want it in the plotting area:
 ```{r reposition_legend}
-library(splot)
+library(lemon)
 reposition_legend(d, 'top left')
 ```
 
@@ -84,7 +84,7 @@ grid.draw(reposition_legend(d, 'top left', plot=FALSE))
 
 The left plot is printed in full at the end of this document.
 
-### Facets
+### Placing the legend in facets
 
 The above demonstration finds the panel named `panel`. This is default.
 If using facetting, the panels are typically named `panel-{column}-{row}`.
@@ -113,6 +113,31 @@ d3 <- d + facet_wrap(~cut, ncol=3) + scale_color_discrete(guide=guide_legend(nco
 reposition_legend(d3, 'center', panel='panel-3-2')
 ```
 
+
+## Shared legend across multiple plot
+
+The function `grid_arrange_shared_legend` extracts the legend from its first
+argument, combines the plots with the legend hidden using `arrangeGrob`, and
+finally appends the legend to one of the sides. 
+It even updates the plot's theme to orientate the legend correctly.
+
+```{r}
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+p1 <- qplot(carat, price, data = dsamp, colour = clarity)
+p2 <- qplot(cut, price, data = dsamp, colour = clarity)
+p3 <- qplot(color, price, data = dsamp, colour = clarity)
+p4 <- qplot(depth, price, data = dsamp, colour = clarity)
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='right')
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='bottom')
+
+```
+
+## To do:
+
+* Demonstrate shared_legend vs. placing legend on "empty" cell.
+
+
 ## Acknowledgements
 
 `g_legend` can be found in few variations across a multitude of
@@ -122,6 +147,7 @@ reposition_legend(d3, 'center', panel='panel-3-2')
 [Shaun Jackman](http://rpubs.com/sjackman) [original code](http://rpubs.com/sjackman/grid_arrange_shared_legend)
 which was furhter refined by `baptiste` at 
 [ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
+It has been further modified here.
 
 `reposition_legend` was coded by [Stefan McKinnon Edwards](http://www.iysik.com/)/
 

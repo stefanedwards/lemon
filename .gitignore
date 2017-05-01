@@ -4,8 +4,13 @@
 .RData
 .Ruserdata
 *.Rproj
+README/cache
 
 inst/doc
 
+lib/
 /lib/
+
+cache/
 README/cache/
+vignettes/capped-axes-cache/

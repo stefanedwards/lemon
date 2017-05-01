@@ -1,6 +1,4 @@
-#' splot! - Stefan's  plot library of tricks
-#'
-#' Just another ggplot2 extension.
+#' Lemon - yet another ggplot2 extension package
 #'
 #' @section Functions for axis:
 #'
@@ -34,7 +32,7 @@
 #' See \code{\link{knit_print.data.frame}}.
 #'
 #' @docType package
-#' @name splot
+#' @name lemon
 #' @author Stefan McKinnon Edwards <sme@@iysik.com>
 #' @import ggplot2
 #' @source \url{https://github.com/stefanedwards/splot}

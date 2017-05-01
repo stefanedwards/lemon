@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# splot! --- Stefan's plot library of tricks
+# Lemon --- yet another ggplot2 extension package
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and 
 [knitr](https://yihui.name/knitr/) extension package.
@@ -57,10 +57,10 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
 # install.packages("devtools")
 
 # Install release from GitHub:
-devtools::install_github("stefanedwards/splot", ref='v0.1')
+devtools::install_github("stefanedwards/lemon", ref='v0.2')
 
 # Or get the lastest development version from GitHub:
-devtools::install_github("stefanedwards/splot")
+devtools::install_github("stefanedwards/lemon")
 ```
 
 
@@ -69,7 +69,7 @@ devtools::install_github("stefanedwards/splot")
 
 We can display a limit on the axes range.
 ```{r usage1}
-library(splot)
+library(lemon)
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
   coord_capped_cart(bottom='both', left='none') +
@@ -175,8 +175,5 @@ See `knit_print.data.frame`.
 
 ## To do:
 
-* Describe coord objects in capped-axes vignette.
 * Add `.dot` functions to knitr.
-* Describe facets in this file.
-* Describe brackets orientation in legend vignette.
 
