@@ -1,5 +1,5 @@
 ---
-title: splot! --- Stefan's plot library of tricks
+title: Lemon --- yet another ggplot2 extension package
 author:
   - name: Stefan McKinnon Edwards
     affiliation: The Roslin Insititute, University of Edinburgh
