@@ -14,7 +14,9 @@ vignette: >
 ```{r setup,include=FALSE}
 library(knitr)
 
-knitr::opts_chunk$set(fig.height=4, fig.width=6)
+knitr::opts_chunk$set(fig.height=4, fig.width=6,
+                      cache=TRUE, autodep = TRUE, cache.path = 'legend-cache/')
+knitr::opts_template$set(smallfigure = list(fig.height=2, fig.width=3))
 ```
 
 ## Legend functions
@@ -30,7 +32,7 @@ This is in many instances a nice solution.
 If this is not desired, `theme(legend.position)` can be used to place the legend
 in relative measures on the entire plot:
 
-```{r}
+```{r fig.cap='Imprecise positioning of legend with `theme(legend.position)`.'}
 library(ggplot2)
 library(grid)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
@@ -60,15 +62,13 @@ grid.draw(ggplotGrob(d))
 ```
 
 With our function, we can specify exactly how we want it in the plotting area:
-```{r reposition_legend}
+```{r reposition_legend,fig.cap='Exact positioning of legend in the main panel.'}
 library(lemon)
 reposition_legend(d, 'top left')
 ```
 
 And it stays there. Most of the time.
 ```{r echo=FALSE,fig.cap='**Left:** Base font size set to 22 pt. **Right:** Zoom on plot that is plotted at 150% size.'}
-
-
 vp1 <- viewport(x=0, y=0, width=unit(0.5, 'npc'), just=c(0,0))
 vp2 <- viewport(x=0.5, y=1, width=unit(1.5, 'npc'), height=unit(1.5, 'npc'), just=c(0,1))
 grid.newpage()
@@ -79,10 +79,43 @@ grid.draw(g)
 popViewport()
 pushViewport(vp2)
 grid.draw(reposition_legend(d, 'top left', plot=FALSE))
-
 ```
 
 The left plot is printed in full at the end of this document.
+
+### Warning regarding extracting legend
+
+To our knowledge, there exists two methods for extracting the legend:
+
+```{r}
+g1 <- function(a.gplot){
+  if (!gtable::is.gtable(a.gplot))
+    a.gplot <- ggplotGrob(a.gplot)
+  leg <- which(sapply(a.gplot$grobs, function(x) x$name) == "guide-box")
+  a.gplot$grobs[[leg]]
+}
+g2 <- function(a.gplot){
+  if (!gtable::is.gtable(a.gplot))
+    a.gplot <- ggplotGrob(a.gplot)
+  gtable::gtable_filter(a.gplot, 'guide-box', fixed=TRUE)
+}
+```
+
+There is very little difference between them, as the latter essentially does
+the same as the former. The latter however encapsulated the former in a gtable.
+This is even more evident with multiple guides:
+
+```{r opts.label='smallfigure',fig.cap='Two guides in a single legend, in a grossly undersized figure.'}
+(da <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity, shape=cut)) +
+   theme(legend.box = 'horizontal')
+)
+print(g1(da))
+print(g2(da))
+```
+
+The function `reposition_legend` assumes the method given in `g1`,
+which is also given in `g_legend`.
 
 ### Placing the legend in facets
 
@@ -97,18 +130,18 @@ ggplot_gtable(ggplot_build(d2))
 
 So to place the legend in a specific panel, give its name:
 
-```{r reposition_legend_facet1}
+```{r reposition_legend_facet1,fig.cap='Placing the legend in a facet panel.'}
 reposition_legend(d2, 'top left', panel = 'panel-3-1')
 ```
 
 Likewise for `facet_wrap`. Incidentally, empty panels are also named here:
 
-```{r reposition_legend_facet2}
+```{r reposition_legend_facet2,fig.cap='Placing the legend in an empty panel when using `facet_wrap`.'}
 reposition_legend(d + facet_wrap(~cut, ncol=3), 'top left', panel='panel-3-2')
 ```
 
 Modifying the legend is done via usual routines of ggplot2:
-```{r reposition_legend_facet3}
+```{r reposition_legend_facet3,fig.cap='The looks of the legend is modified with usual ggplot2 options.'}
 d3 <- d + facet_wrap(~cut, ncol=3) + scale_color_discrete(guide=guide_legend(ncol=3))
 reposition_legend(d3, 'center', panel='panel-3-2')
 ```
@@ -121,22 +154,79 @@ argument, combines the plots with the legend hidden using `arrangeGrob`, and
 finally appends the legend to one of the sides. 
 It even updates the plot's theme to orientate the legend correctly.
 
-```{r}
+```{r fig.cap='...'}
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)
 p3 <- qplot(color, price, data = dsamp, colour = clarity)
 p4 <- qplot(depth, price, data = dsamp, colour = clarity)
-grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
-grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='right')
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='top')
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='bottom')
-
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='left')
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='right')
 ```
 
-## To do:
+## Shared legend with `grid.arrange`
 
-* Demonstrate shared_legend vs. placing legend on "empty" cell.
+A more flexible approach to combining plots and legends can be found in 
+Baptiste Auguie's `gridExtra`::`grid.arrange` and `arrangeGrob`. 
+The latter is the power house that produces a grob object, which the former
+then draws to the device.
+But being more flexible, it is somewhat less automated. 
 
+
+We demonstrate here how to combine 3 of the 4 plots above, with different 
+options for layout and placing the legend.
+
+```{r g_legend,include=FALSE,fig.cap=''}
+g_legend <- function(a.gplot){
+  if (!gtable::is.gtable(a.gplot))
+    a.gplot <- ggplotGrob(a.gplot)
+  #gtable_filter(a.gplot, 'guide-box', fixed=TRUE)
+  leg <- which(sapply(a.gplot$grobs, function(x) x$name) == "guide-box")
+  a.gplot$grobs[[leg]]
+}
+```
+```{r}
+library(gridExtra)
+legend <- g_legend(p1 + theme(legend.position='bottom'))
+grid.arrange(p1+theme(legend.position='hidden'), p2+theme(legend.position='hidden'),
+             p3+theme(legend.position='hidden'), legend)
+```
+
+```{r fig.cap='Using layout_matrix to have plots span different cells of a grid.'}
+grid.arrange(p1+theme(legend.position='hidden'), p2+theme(legend.position='hidden'),
+             p3+theme(legend.position='hidden'), legend,
+             layout_matrix=matrix(c(1,3,4,2,3,4), ncol=2))
+```
+
+In the figure above, a layout matrix was defined with three rows. 
+Subsequently, the three rows were of equal heights. 
+
+It is difficult to calculate the row heights to provide `grid.arrange` if we
+wanted to fix the height of the legend row's height. We could attempt
+```
+(unit(1, 'npc') - sum(legend$heights)) / 2
+```
+but division is not permitted on units.
+
+When `grid.arrange` is given a margin argument (e.g. `bottom`), it creates a 
+gtable object with a row or column of appropiate dimension. 
+The remainder of the gtable is re-sized to fit.
+We can therefore do:
+```{r fig.cap='Using layout_matrix to have plots span different cells of a grid, but with legend in a separate argument.'}
+grid.arrange(p1+theme(legend.position='hidden'), p2+theme(legend.position='hidden'),
+             p3+theme(legend.position='hidden'), bottom=legend$grobs[[1]],
+             layout_matrix=matrix(c(1,3,2,3), ncol=2))
+```
+
+There is however currently a shortcoming in `grid.arrange` and `arrangeGrob`
+that prevents it from using the full gtable object returned from `g_legend` in
+the margin arguments. We therefore subset to a specific grob[^gridExtra_fix].
+
+What worse is, if the legend contains multiple guides, the above approach will 
+not work directly. However, defining several `arrangeGrob` within each other
+is possible.
 
 ## Acknowledgements
 
@@ -162,4 +252,6 @@ reposition_legend(d + theme_gray(base_size=26), 'top left')
 ```
 
 
-
+[^gridExtra_fix]: We have submitted a solution to gridExtra that should allow
+the use of the entire gtable in the margin arguments:
+https://github.com/baptiste/gridextra/issues/39

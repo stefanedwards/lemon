@@ -13,4 +13,4 @@ lib/
 
 cache/
 README/cache/
-vignettes/capped-axes-cache/
+vignettes/*-cache/

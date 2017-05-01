@@ -19,22 +19,54 @@ Extracts the legend ('guide-box') from a ggplot2 object.
 The extraction is applied \emph{after} the plot is trained and themes are
 applied. Modifying the legend is easiest by applying themes etc.
 to the ggplot2 object, before calling \code{g_legend}.
+
+An alternative method for extracting the legend is using 
+\code{gridExtra::\link[gtable]{gtable_filter}}:
+
+\preformatted{
+  gtable_filter(ggplotGrob(a.ggplot.obj), 'guide-box')
+}
+
+This method however returns a \code{gtable} object which encapsulates
+the entire legend. The legend itself may be a collection of \code{gtable}.
+We have only noticed a problem with this extra layer when using the returned
+legend with \code{\link[gridExtra]{grid.arrange}} (see examples).
 }
 \examples{
 library(ggplot2)
 library(grid)
+library(gridExtra)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
- geom_point(aes(colour = clarity)))
+ geom_point(aes(colour = clarity)) +
+ theme(legend.position='bottom'))
 
 legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
+
+(d2 <- ggplot(dsamp, aes(x=carat, fill=clarity)) + 
+  geom_histogram(binwidth=0.1) +
+ theme(legend.position='bottom'))
+  
+grid.arrange(d  + theme(legend.position='hidden'),
+             d2 + theme(legend.position='hidden'), 
+             bottom=legend$grobs[[1]])
+# Above fails with more than one guide
+
+legend2 <- gtable_filter(ggplotGrob(d), 'guide-box')
+grid.arrange(d  + theme(legend.position='hidden'),
+             d2 + theme(legend.position='hidden'), 
+             bottom=legend2$grobs[[1]]$grobs[[1]])
+# Above fails with more than one guide
+ 
+             
 }
 \author{
 Stack Overflow
 }
 \seealso{
-\code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}}
+\code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}},
+         \code{\link[gtable]{gtable_filter}}
 }
 
