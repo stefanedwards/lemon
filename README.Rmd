@@ -175,6 +175,5 @@ See `knit_print.data.frame`.
 
 ## To do:
 
-* Describe coord objects in capped-axes vignette.
 * Add `.dot` functions to knitr.
 

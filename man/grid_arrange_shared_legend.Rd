@@ -4,17 +4,17 @@
 \alias{grid_arrange_shared_legend}
 \title{Share a legend between multiple plots}
 \source{
-Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman} 
+Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}),
   and further improved by \code{baptiste} at
   \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}
 }
 \usage{
 grid_arrange_shared_legend(..., ncol = length(list(...)), nrow = 1,
-  position = c("bottom", "right"), plot = TRUE)
+  position = c("bottom", "right", "top", "left"), plot = TRUE)
 }
 \arguments{
-\item{...}{ggplot2 objects. Their legends are automatically hidden. 
+\item{...}{ggplot2 objects. Their legends are automatically hidden.
 The legend is taken from the first argument.}
 
 \item{ncol}{Integer, number of columns to arrange plots in.}
@@ -46,3 +46,4 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 \seealso{
 \code{\link{g_legend}}, \code{\link{reposition_legend}}
 }
+

@@ -99,7 +99,7 @@ Extensions to knitr
 
 We automatically load knitr's `knit_print` for data frames and dplyr tables to provide automatic pretty printing of these using `kable`:
 
-Before loading `splot` package:
+Before loading `lemon` package:
 
 ``` r
 data(USArrests)
@@ -113,7 +113,7 @@ head(USArrests)
 #> Colorado      7.9     204       78 38.7
 ```
 
-After loading `splot`:
+After loading `lemon`:
 
 ``` r
 head(USArrests)
@@ -133,6 +133,5 @@ See `knit_print.data.frame`.
 To do:
 ------
 
--   Describe coord objects in capped-axes vignette.
 -   Add `.dot` functions to knitr.
 
