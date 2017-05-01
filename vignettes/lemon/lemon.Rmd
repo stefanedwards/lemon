@@ -1,0 +1,86 @@
+---
+title: Lemon --- yet another ggplot2 extension package
+author:
+  - name: Stefan McKinnon Edwards
+    affiliation: The Roslin Insititute, University of Edinburgh
+    address:
+    - Easter Bush
+    - Midlothian
+    - EH25 9RG
+    - Scotland, UK
+    email:  sme@iysik.com
+abstract: >
+  An abstract of less than 150 words.
+preamble: >
+  % Any extra latex you need in the preamble
+output: rticles::rjournal_article
+---
+
+## Introduction
+
+Motivation
+
+
+
+### A brief introduction to gtable
+
+We assume the reader is familiar with ggplot2 \citep{ggplot2},
+in how it differs from R's native plotting functions and that a `ggplot` object
+only *describes* the visualisation in terms of mapping between variables, geoms,
+and scales.
+
+We skip the narrative to the part when a ggplot object is to be drawn on a 
+device. Here, the device may be the screen, a plot window, a file, etc.
+Calling to view a ggplot object, either explicitly through `print` or `plot`, 
+or through any other of the multitude of functions, ggplot2 goes through
+the motions of training the object's scales on the data to finally produce a 
+printable object (see function `ggplot_build` in ggplot2 package).
+This object is a grob table -- a `gtable` object.
+
+The `gtable` object \citep{gtable} is of a completely different nature than the 
+`ggplot` object.
+Where the `ggplot` object describes the mapping between variables, geoms, and 
+scales, the `gtable` object describes which lines are drawn where. 
+It does so by using 'grobs', as introduced in the package `grid` by Paul Murrel.
+We will only give a brief introduction to `grob` objects, but refer to 
+e.g. \citet{Zhou2010} for a more general introduction.
+
+A `gtable` object is a hierarchical collection of `grob` and `gtable` objects,
+placing them in a table-like structure. 
+
+To understand a `gtable` object, 
+
+
+
+
+
+
+## Section title in sentence case
+
+This section may contain a figure such as Figure \ref{figure:rlogo}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics{Rlogo}
+  \caption{The logo of R.}
+  \label{figure:rlogo}
+\end{figure}
+
+## Another section
+
+There will likely be several sections, perhaps including code snippets, such as:
+
+```{r}
+x <- 1:10
+x
+```
+
+## Summary
+
+## Acknowledgements
+
+This article was initiated with the `rticles` package \citep{rticles}.
+
+
+This file is only a basic article template. For full details of _The R Journal_ style and information on how to prepare your article for submission, see the [Instructions for Authors](https://journal.r-project.org/share/author-guide.pdf).
+\bibliography{RJreferences}
