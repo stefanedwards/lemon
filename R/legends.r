@@ -9,13 +9,13 @@ NULL
 #' applied. Modifying the legend is easiest by applying themes etc.
 #' to the ggplot2 object, before calling \code{g_legend}.
 #'
-#' An alternative method for extracting the legend is using 
+#' An alternative method for extracting the legend is using
 #' \code{gridExtra::\link[gtable]{gtable_filter}}:
-#' 
+#'
 #' \preformatted{
 #'   gtable_filter(ggplotGrob(a.ggplot.obj), 'guide-box')
 #' }
-#' 
+#'
 #' This method however returns a \code{gtable} object which encapsulates
 #' the entire legend. The legend itself may be a collection of \code{gtable}.
 #' We have only noticed a problem with this extra layer when using the returned
@@ -41,23 +41,23 @@ NULL
 #' legend <- g_legend(d)
 #' grid.newpage()
 #' grid.draw(legend)
-#' 
-#' (d2 <- ggplot(dsamp, aes(x=carat, fill=clarity)) + 
+#'
+#' (d2 <- ggplot(dsamp, aes(x=carat, fill=clarity)) +
 #'   geom_histogram(binwidth=0.1) +
 #'  theme(legend.position='bottom'))
-#'   
+#'
 #' grid.arrange(d  + theme(legend.position='hidden'),
-#'              d2 + theme(legend.position='hidden'), 
+#'              d2 + theme(legend.position='hidden'),
 #'              bottom=legend$grobs[[1]])
 #' # Above fails with more than one guide
 #'
 #' legend2 <- gtable_filter(ggplotGrob(d), 'guide-box')
 #' grid.arrange(d  + theme(legend.position='hidden'),
-#'              d2 + theme(legend.position='hidden'), 
+#'              d2 + theme(legend.position='hidden'),
 #'              bottom=legend2$grobs[[1]]$grobs[[1]])
 #' # Above fails with more than one guide
-#'  
-#'              
+#'
+#'
 g_legend<-function(a.gplot){
   if (!gtable::is.gtable(a.gplot))
     a.gplot <- ggplotGrob(a.gplot)
@@ -227,8 +227,8 @@ reposition_legend <- function(aplot,
     x = unit(just[1], 'npc')
     y = unit(just[2], 'npc')
   }
-  if (is.null(x) & is.null(y) & is.null(just)) {
-    stop('Either supply `position` or `x`, `y`, and `just` arguments.')
+  if (is.null(x) | is.null(y) | is.null(just)) {
+    stop('Please supply either `position`, or `x`, `y`, and `just` arguments.')
   }
 
   # Extract legends and gtable
@@ -245,13 +245,18 @@ reposition_legend <- function(aplot,
 
   pn <- which(aplot$layout$name == panel)
   if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
-  if (inherits(aplot$grobs[[pn]], 'zeroGrob')) {
-    aplot$grobs[[pn]] <- legend
-  } else {
-    aplot$grobs[[pn]]$vp <- viewport(x=unit(0, 'npc'), y=unit(0, 'npc'), just=c(0,0), name=panel)
-    aplot$grobs[[pn]]$children <- gList(aplot$grobs[[pn]]$children, `guide-box`=legend)
-    aplot$grobs[[pn]]$childrenOrder <- append(aplot$grobs[[pn]]$childrenOrder, 'guide-box')
+  if (length(pn) > 1 ) {
+    warning('Multiple panels named `', panel, '`; using first found.')
+    pn <- pn[1]
   }
+  #if (inherits(aplot$grobs[[pn]], 'zeroGrob')) {
+  #  aplot$grobs[[pn]] <- legend
+  #} else {
+  #  aplot$grobs[[pn]]$vp <- viewport(x=unit(0, 'npc'), y=unit(0, 'npc'), just=c(0,0), name=panel)
+  #  aplot$grobs[[pn]]$children <- gList(aplot$grobs[[pn]]$children, `guide-box`=legend)
+  #  aplot$grobs[[pn]]$childrenOrder <- append(aplot$grobs[[pn]]$childrenOrder, 'guide-box')
+  #}
+  aplot <- with(aplot$layout[pn,], gtable_add_grob(aplot, legend, t=t, l=l, r=r, b=b))
 
   if (plot) {
     grid.newpage()
