@@ -67,14 +67,14 @@ library(lemon)
 reposition_legend(d, 'top left')
 ```
 
-And it stays there. Most of the time.
+And it stays there. 
 ```{r echo=FALSE,fig.cap='**Left:** Base font size set to 22 pt. **Right:** Zoom on plot that is plotted at 150% size.'}
 vp1 <- viewport(x=0, y=0, width=unit(0.5, 'npc'), just=c(0,0))
 vp2 <- viewport(x=0.5, y=1, width=unit(1.5, 'npc'), height=unit(1.5, 'npc'), just=c(0,1))
 grid.newpage()
 vp0 <- current.viewport()
 pushViewport(vp1)
-grid.draw(reposition_legend(d + theme_gray(base_size=26) + theme(legend.position = 'left'), 'top left', plot=FALSE))
+g <- reposition_legend(d + theme_gray(base_size=26) + theme(legend.position = 'left'), 'top left', plot=FALSE)
 grid.draw(g)
 popViewport()
 pushViewport(vp2)
@@ -82,6 +82,18 @@ grid.draw(reposition_legend(d, 'top left', plot=FALSE))
 ```
 
 The left plot is printed in full at the end of this document.
+
+For our final trick in this act, we reposition a legend with multiple guides.
+For this, use `theme(legend.box.background)` to put a background around the 
+entire legend, not just the individual guides.
+
+```{r fig.cap="Legend with multple guides on a tacky 'snow' background."}
+d2 <- d + aes(shape=cut) + 
+  theme(legend.box.background = element_rect(fill='#fffafa'),
+        legend.background = element_blank())
+reposition_legend(d2, 'left')
+```
+
 
 ### Warning regarding extracting legend
 
