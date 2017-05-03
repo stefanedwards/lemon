@@ -10,7 +10,7 @@ NULL
 #' to the ggplot2 object, before calling \code{g_legend}.
 #'
 #' An alternative method for extracting the legend is using
-#' \code{gridExtra::\link[gtable]{gtable_filter}}:
+#' \code{gtable::\link[gtable]{gtable_filter}}:
 #'
 #' \preformatted{
 #'   gtable_filter(ggplotGrob(a.ggplot.obj), 'guide-box')
@@ -31,6 +31,7 @@ NULL
 #'          \code{\link[gtable]{gtable_filter}}
 #' @examples
 #' library(ggplot2)
+#' library(gtable)
 #' library(grid)
 #' library(gridExtra)
 #' dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
@@ -145,7 +146,7 @@ grid_arrange_shared_legend <- function(...,
   # return gtable invisibly
   invisible(combined)
 }
-
+arrangeGrob <- gridExtra::arrangeGrob
 
 
 #' Reposition a legend onto a panel
