@@ -36,6 +36,7 @@ legend with \code{\link[gridExtra]{grid.arrange}} (see examples).
 library(ggplot2)
 library(grid)
 library(gridExtra)
+library(gtable)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
  geom_point(aes(colour = clarity)) +
@@ -62,11 +63,10 @@ grid.arrange(d  + theme(legend.position='hidden'),
  
              
 }
-\author{
-Stack Overflow
-}
 \seealso{
 \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}},
          \code{\link[gtable]{gtable_filter}}
 }
-
+\author{
+Stack Overflow
+}
