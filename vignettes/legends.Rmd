@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     fig_caption: yes
+    toc: true # table of content true
 vignette: >
   %\VignetteIndexEntry{Capping axis lines}
   %\VignetteEngine{knitr::rmarkdown}
@@ -82,6 +83,16 @@ grid.draw(reposition_legend(d, 'top left', plot=FALSE))
 ```
 
 The left plot is printed in full at the end of this document.
+
+### Multiple legends per guide
+
+```{r fig.cap='It also works with multiple legends per guide.'}
+da <- ggplot(dsamp, aes(carat, price)) +
+  geom_point(aes(colour = clarity, shape=cut)) +
+   theme(legend.box = 'horizontal', legend.box.just='bottom')
+reposition_legend(da, 'bottom right')
+```
+
 
 ### Warning regarding extracting legend
 
