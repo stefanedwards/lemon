@@ -30,6 +30,7 @@ Collate:
     'coord-flex.r'
     'facet-rep-lab.r'
     'facet-wrap.r'
+    'guides-axis.r'
     'knit_print.r'
     'legends.r'
     'lemon.r'
