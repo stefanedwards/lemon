@@ -1,6 +1,12 @@
 # lemon 0.2.0.9000
 
-* Create CITATION file.
+* **TODO:** Create `grobHeight` on gtables.
+
+* `knit_print` functions are removed (without deprecating them) and replaced
+  by `lemon_print` and `load_lemon_print` for pushing `lemon_print` into 
+  `knit_print.data.frame`, etc.
+
+* **TODO:** Create CITATION file.
 
 # lemon 0.2.0
 
