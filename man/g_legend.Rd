@@ -20,8 +20,8 @@ The extraction is applied \emph{after} the plot is trained and themes are
 applied. Modifying the legend is easiest by applying themes etc.
 to the ggplot2 object, before calling \code{g_legend}.
 
-An alternative method for extracting the legend is using 
-\code{gridExtra::\link[gtable]{gtable_filter}}:
+An alternative method for extracting the legend is using
+\code{gtable::\link[gtable]{gtable_filter}}:
 
 \preformatted{
   gtable_filter(ggplotGrob(a.ggplot.obj), 'guide-box')
@@ -34,6 +34,7 @@ legend with \code{\link[gridExtra]{grid.arrange}} (see examples).
 }
 \examples{
 library(ggplot2)
+library(gtable)
 library(grid)
 library(gridExtra)
 library(gtable)
@@ -46,27 +47,28 @@ legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
 
-(d2 <- ggplot(dsamp, aes(x=carat, fill=clarity)) + 
+(d2 <- ggplot(dsamp, aes(x=carat, fill=clarity)) +
   geom_histogram(binwidth=0.1) +
  theme(legend.position='bottom'))
-  
+
 grid.arrange(d  + theme(legend.position='hidden'),
-             d2 + theme(legend.position='hidden'), 
+             d2 + theme(legend.position='hidden'),
              bottom=legend$grobs[[1]])
 # Above fails with more than one guide
 
 legend2 <- gtable_filter(ggplotGrob(d), 'guide-box')
 grid.arrange(d  + theme(legend.position='hidden'),
-             d2 + theme(legend.position='hidden'), 
+             d2 + theme(legend.position='hidden'),
              bottom=legend2$grobs[[1]]$grobs[[1]])
 # Above fails with more than one guide
- 
-             
+
+
+}
+\author{
+\href{http://baptiste.github.io/}{Baptiste Auguié}
 }
 \seealso{
 \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}},
          \code{\link[gtable]{gtable_filter}}
 }
-\author{
-Stack Overflow
-}
+

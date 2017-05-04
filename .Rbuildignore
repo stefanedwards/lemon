@@ -1,10 +1,11 @@
 # Rproject
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^/lib/$
+^lib/$
 ^lib\$
 .Rprofile
 ^README\.Rmd$
 ^README\*.png$
 ^lib$
 ^cache/$
+^cache\$

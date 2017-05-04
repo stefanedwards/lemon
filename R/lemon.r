@@ -34,6 +34,10 @@
 #' @docType package
 #' @name lemon
 #' @author Stefan McKinnon Edwards <sme@@iysik.com>
+#' Contributions from \href{http://baptiste.github.io/}{Baptiste Auguié} on
+#' \code{\link{g_legend}} and \code{\link{grid_arrange_shared_legend}}.
+#' Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
+#' \code{\link{grid_arrange_shared_legend}}.
 #' @import ggplot2
 #' @source \url{https://github.com/stefanedwards/splot}
 "_PACKAGE"

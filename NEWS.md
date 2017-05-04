@@ -1,17 +1,11 @@
 # lemon 0.2.0.9000
 
-* TODO: Copy in non-exported ggplot2 and gtable functions in preparation for 
-CRAN submission (render_axis and absoluteGrob).
-
-* Update g_legend to be authored by baptiste
-(https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs/047381b48b0f0ef51a174286a595817f01a0dfad)
-
-* Add baptiste and Shaun Jackson (grid_arrange_shared_legend) to contributing
-authors.
+* Create CITATION file.
 
 # lemon 0.2.0
 
 * Legend functions (`g_legend`, `grid_arrange_shared_legend`, `reposition_legend`).
+  Two first functions provided by Baptiste Auguié and Shaun Jackson.
 
 # lemon 0.1.0
 

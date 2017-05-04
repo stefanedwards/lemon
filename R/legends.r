@@ -24,7 +24,7 @@ NULL
 #' @param a.gplot ggplot2 or gtable object.
 #' @return gtable (grob) object. Draw with \code{\link[grid]{grid.draw}}.
 #' @export
-#' @author Stack Overflow
+#' @author \href{http://baptiste.github.io/}{Baptiste Auguié}
 #' @import ggplot2
 #' @import gtable
 #' @seealso \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}},
@@ -72,8 +72,9 @@ g_legend<-function(a.gplot){
 #' Share a legend between multiple plots
 #'
 #' Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}},
-#' and places legend underneath.
+#' and places legend in a margin.
 #'
+#' 
 #'
 #' @param ... ggplot2 objects. Their legends are automatically hidden.
 #'            The legend is taken from the first argument.
@@ -82,12 +83,14 @@ g_legend<-function(a.gplot){
 #' @param position 'bottom' or 'right' for positioning legend.
 #' @param plot Logical, when \code{TRUE} (default), draws combined plot on a
 #'             new page.
-#' @return gtable of combined plot, invisibly.
-#' @source
+#' @return gtable of combined plot, invisibly. 
+#'   Draw  gtable object using \code{\link[grid]{grid.draw}}.
+#' @author
 #'   Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
 #'   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}),
-#'   and further improved by \code{baptiste} at
-#'   \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}
+#'   and further improved by \href{http://baptiste.github.io/}{Baptiste Auguié}  at
+#'   \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}.
+#'   Stefan McKinnon Edwards added left and top margins.
 #' @import ggplot2 gridExtra grid
 #' @export
 #' @seealso \code{\link{g_legend}}, \code{\link{reposition_legend}}

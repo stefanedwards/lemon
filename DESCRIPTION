@@ -1,13 +1,22 @@
 Package: lemon
 Type: Package
 Title: Lemon - yet another ggplot2 extension package
-URL: https://github.com/stefanedwards/splot
-BugReports: https://github.com/stefanedwards/splot/issues
+URL: https://github.com/stefanedwards/lemon
+BugReports: https://github.com/stefanedwards/lemon/issues
 Version: 0.2.0.9000
-Author@R: person(c('Stefan','McKinnon'), 'Edwards', email='sme@iysik.com',
-    role=c('aut','ctb','cre'))
-Author: Stefan McKinnon Edwards <sme@iysik.com> [aut, ctb, cre]
-Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
+Date: 2017-05-04
+Author@R: c(
+    person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
+    role=c('aut','ctb','cre')),
+    person('Baptiste','Auguie', role='ctb',
+    comment='For g_legend and grid_arrange_shared_legend'),
+    person('Shaun','Jackman', role='ctb',
+    comment='For grid_arrange_shared_legend'),
+    person("Hadley", "Wickham", , "hadley@rstudio.com", "ctb",
+    comment='ggplot2 functions'),
+    person("Winston", "Chang", , "winston@rstudio.com", "ctb",
+    comment='ggplot2 functions')
+    )
 Description: Functions for working with ggplot's legends and axis lines,
     with some extended facets, and knitr extensions.
 Depends:
@@ -22,7 +31,7 @@ Imports:
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
 Collate:
     'ggplot2.r'
     'brackets.R'

@@ -4,7 +4,6 @@
 \name{lemon}
 \alias{lemon}
 \alias{lemon-package}
-\alias{lemon-package}
 \title{Lemon - yet another ggplot2 extension package}
 \source{
 \url{https://github.com/stefanedwards/splot}
@@ -50,15 +49,11 @@ data frame using \code{\link[knitr]{kable}}.
 
 See \code{\link{knit_print.data.frame}}.
 }
-
-\seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/stefanedwards/splot}
-  \item Report bugs at \url{https://github.com/stefanedwards/splot/issues}
-}
-
-}
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
+Contributions from \href{http://baptiste.github.io/}{Baptiste Auguié} on
+\code{\link{g_legend}} and \code{\link{grid_arrange_shared_legend}}.
+Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
+\code{\link{grid_arrange_shared_legend}}.
 }
+

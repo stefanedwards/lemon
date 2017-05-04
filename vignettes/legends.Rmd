@@ -244,12 +244,15 @@ is possible.
 
 ## Acknowledgements
 
-`g_legend` can be found in few variations across a multitude of
+`g_legend` was proposed as early as June 2012 by Baptiste Auguié 
+(http://baptiste.github.io/) on 
+[ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs/047381b48b0f0ef51a174286a595817f01a0dfad). 
+It has since propogated throughout 
 [Stack Overflow](http://www.stackoverflow.com) answers.
 
 `grid_arrange_shared_legend` was originally proposed by 
 [Shaun Jackman](http://rpubs.com/sjackman) [original code](http://rpubs.com/sjackman/grid_arrange_shared_legend)
-which was furhter refined by `baptiste` at 
+which was further refined by `baptiste` at 
 [ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
 It has been further modified here.
 
