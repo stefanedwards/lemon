@@ -32,7 +32,7 @@ knit_hooks$set(source = function(x, options){
   if (!is.null(options$verbatim) && options$verbatim){
     opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
     bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
-    stringr::str_c(bef, paste(knitr:::indent_block(x, "    "), collapse = '\n'), "\n    ```\n")
+    stringr::str_c(bef, paste(knitr:::indent_block(x, "    "), collapse = '\n'), "\n    ```\n\n")
   } else {
      hook_source_def(x, options)
   }
@@ -46,10 +46,11 @@ data(USArrests)
 head(USArrests)
 ```
 
-Now load `lemon`.
+Now load `lemon` and the lemon_print functions.
 
 ```{r}
 library(lemon)
+load_lemon_print()
 ```
 
 **The same view is now nicely printed!**
@@ -59,33 +60,61 @@ head(USArrests)
 
 Notice how we specified `kable` options using the chunk option `kable.opts`.
 
+### How it works
+
+knitr uses a S3 generic function, `knit_print`, to print objects. 
+[Method dispatching in R ](http://adv-r.had.co.nz/S3.html) means that by 
+defining a function, say `knit_print.data.frame`, calling `knit_print(df)` will
+call our function *if* `df` was a data frame.
+
+To have knitr use our function when outputting a data frame, we define the 
+function `knit_print.data.frame` (and similar for data frames passed through
+dplyr functions, i.e `tbl_df` and `grouped_df`).
+
+We called our function `lemon_print_data_frame` as we decided loading the 
+package should not immediate push the functions into the global namespace.
+Calling `load_lemon_print` does this for you.
+
+Disabling the function is by usual chunk options, `render = normal_print`.
+check `?knit_print`.
+
 **Disabling the functions.**
 
-```{r disable_knit_print}
-options(knit_print=FALSE)
+```{r normal_print,render=normal_print,verbatim=TRUE}
 head(USArrests)
 ```
 
 You can still ask for `kable`.
 
-```{r}
-kable(head(USArrests))
+```{r results='asis',render=normal_print,verbatim=TRUE}
+kable(head(USArrests),caption='Normal `kable` usage.')
 ```
 
-**`knit_print` re-enabled.**
 
-```{r reenable_knit_print}
-options(knit_print=TRUE)
-head(USArrests)
-```
 
-The above code block, when edited in RStudio, would look like this:
+### It uses kable
+
+We have mentioned `kable` a couple of times.
+That is because the `lemon_print` for data frames uses 
+`kable` of the knitr package.
+
+**Some common arguments:**
+
+* `caption`: Table caption. See example in demonstration.
+* `align`: Vector of column alignments with `'l'`, `'c'`, and `'r'`.
+Or, a single element, i.e. `c('c','l','r') = 'clr')`.
+
+
+## Why does it matter
+
+The second code block, when edited in RStudio, would look like this:
 ![Viewing data frames in R Notebooks in RStudio](knit_print_capture.png)
+And, as demonstrated, the rendered document has the data frame printed nicely.
 
-We can still use `kable`,
+If we do not wish this behaviour, but still use `kable`,
 ```{r}
 kable(head(USArrests))
 ```
 
-But in RStudio, it would look like this:
+RStudio would look like this:
 ![RStudio renders kable'd data frames rather eh](knit_print_capture2.png)
