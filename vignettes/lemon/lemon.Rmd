@@ -16,6 +16,15 @@ preamble: >
 output: rticles::rjournal_article
 ---
 
+
+```{r setup,include=FALSE}
+library(knitr)
+library(ggplot2)
+
+knitr::opts_chunk$set(fig.height=4, fig.width=6,
+                      cache=TRUE, autodep = TRUE, cache.path = 'cache/')
+```
+
 ## Introduction
 
 Motivation
@@ -24,29 +33,63 @@ Motivation
 
 ### A brief introduction to gtable
 
-We assume the reader is familiar with ggplot2 \citep{ggplot2},
-in how it differs from R's native plotting functions and that a `ggplot` object
-only *describes* the visualisation in terms of mapping between variables, geoms,
-and scales.
+We assume the reader is familiar with ggplot2 \citep{ggplot2}.
+In short, it differs from R's native plotting functions in that it only 
+*describes* the visualisation.
+The ggplot object returned from calling `ggplot(data, aes(...)) + ...`
+only describes the mapping between variables, geoms (points, bars, etc.),
+and scales, and the theme.
 
-We skip the narrative to the part when a ggplot object is to be drawn on a 
-device. Here, the device may be the screen, a plot window, a file, etc.
+The 'gtable' package \citep{gtable} and object has its introduction when a ggplot 
+object is to be drawn on a device. 
+Here, the device may be the screen, a plot window, a file, etc.
 Calling to view a ggplot object, either explicitly through `print` or `plot`, 
 or through any other of the multitude of functions, ggplot2 goes through
 the motions of training the object's scales on the data to finally produce a 
 printable object (see function `ggplot_build` in ggplot2 package).
-This object is a grob table -- a `gtable` object.
+This object is a grob table -- a gtable object.
 
-The `gtable` object \citep{gtable} is of a completely different nature than the 
-`ggplot` object.
-Where the `ggplot` object describes the mapping between variables, geoms, and 
-scales, the `gtable` object describes which lines are drawn where. 
-It does so by using 'grobs', as introduced in the package `grid` by Paul Murrel.
-We will only give a brief introduction to `grob` objects, but refer to 
-e.g. \citet{Zhou2010} for a more general introduction.
+The gtable object is of a completely different nature than the 
+ggplot object.
+Where the ggplot object describes the mapping between variables, geoms, and 
+scales, the gtable object describes which lines are drawn where. 
+It does so by using graphical objects -- 'grobs' -- 
+as introduced in the package 'grid' by Paul Murrell.
+We will only give a brief introduction to grob objects, but refer to 
+e.g. \citet{Zhou2010} for a more general introduction, that also includes
+the important 'viewports'.
+Other authors, such as Baptiste Auguié who has made considerable contributions
+to using ggplot2, has a guide at
+https://github.com/baptiste/gridextra/wiki/gtable.
 
-A `gtable` object is a hierarchical collection of `grob` and `gtable` objects,
+
+A gtable object is a hierarchical collection of grob and gtable objects,
 placing them in a table-like structure. 
+The two important components of each gtable object are 
+the `layout` data frame and the `grobs` list.
+
+Before continuing our exploration of the gtable object, we start with an example
+that demonstrates the different between the ggplot object and the gtable object.
+
+```{r}
+p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+```
+
+```{r overlay}
+overlay <- gpar(colour='black')
+
+g <- ggplotGrob(p)
+grid.draw(g)
+y <- unit(0, 'npc')
+for (i in 0:(nrow(g))) {
+  grid.lines(x=c(0,1), y=y, gp=overlay)
+  y <- y + g$heights[i]
+}
+ys <- 
+hlines <- polylineGrob(x=rep(c(0,1), each=nrow(g)+1), y=unit.c(unit(0,'npc'), g$heights, unit(0,'npc'), g$heights), id = rep(1:nrow(g)+1, times=2), gp = overlay )
+grid.draw(hlines)
+
+```
 
 To understand a `gtable` object, 
 
