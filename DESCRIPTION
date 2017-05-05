@@ -40,9 +40,9 @@ Collate:
     'facet-rep-lab.r'
     'facet-wrap.r'
     'guides-axis.r'
-    'knit_print.r'
     'legends.r'
     'lemon.r'
+    'lemon_print.r'
 Suggests:
     rmarkdown,
     stringr

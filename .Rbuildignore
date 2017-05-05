@@ -9,3 +9,5 @@
 ^lib$
 ^cache/$
 ^cache\$
+^cran-comments.md$
+^.*.lnk$

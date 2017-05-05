@@ -1,5 +1,5 @@
 ---
-title: "Use `kable` for printing data frames"
+title: "Lemon print -- pretty printing data frames and tables"
 author: "Stefan McKinnon Edwards <sme@iysik.com>"
 date: "`r Sys.Date()`"
 output:
@@ -22,7 +22,8 @@ while ensuring that the knitted document also has the
 ```{r setup,include=FALSE}
 library(knitr)
 
-knitr::opts_chunk$set(fig.height=4, fig.width=6, verbatim=FALSE)
+knitr::opts_chunk$set(fig.height=4, fig.width=6, verbatim=FALSE,
+                      cache=TRUE, autodep = TRUE, cache.path='lemon_print-cache/')
 
 # Show chunk verbatim
 # Source: http://stackoverflow.com/questions/19908158/show-an-r-markdown-chunk-in-the-final-output
@@ -60,7 +61,7 @@ head(USArrests)
 
 Notice how we specified `kable` options using the chunk option `kable.opts`.
 
-### How it works
+## How it works
 
 knitr uses a S3 generic function, `knit_print`, to print objects. 
 [Method dispatching in R ](http://adv-r.had.co.nz/S3.html) means that by 
@@ -108,7 +109,7 @@ Or, a single element, i.e. `c('c','l','r') = 'clr')`.
 ## Why does it matter
 
 The second code block, when edited in RStudio, would look like this:
-![Viewing data frames in R Notebooks in RStudio](knit_print_capture.png)
+![Viewing data frames in R Notebooks in RStudio](lemon_print_capture.png)
 And, as demonstrated, the rendered document has the data frame printed nicely.
 
 If we do not wish this behaviour, but still use `kable`,
@@ -117,4 +118,11 @@ kable(head(USArrests))
 ```
 
 RStudio would look like this:
-![RStudio renders kable'd data frames rather eh](knit_print_capture2.png)
+![RStudio renders kable'd data frames rather eh](lemon_print_capture2.png)
+
+## Other objects covered
+
+```{r kable.opts=list(caption='Summary tables are printed with some default options.'),verbatim=TRUE}
+summary(USArrests)
+```
+

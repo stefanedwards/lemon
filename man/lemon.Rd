@@ -4,6 +4,7 @@
 \name{lemon}
 \alias{lemon}
 \alias{lemon-package}
+\alias{lemon-package}
 \title{Lemon - yet another ggplot2 extension package}
 \source{
 \url{https://github.com/stefanedwards/splot}
@@ -47,7 +48,16 @@ We automatically load knitr's \code{\link[knitr]{knit_print}} for
 data frames and dplyr tables to provide automatic pretty printing of
 data frame using \code{\link[knitr]{kable}}.
 
-See \code{\link{knit_print.data.frame}}.
+See \code{\link{load_lemon_print}} or \code{\link{lemon_print_data_frame}}.
+}
+
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/stefanedwards/lemon}
+  \item Report bugs at \url{https://github.com/stefanedwards/lemon/issues}
+}
+
 }
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
@@ -56,4 +66,3 @@ Contributions from \href{http://baptiste.github.io/}{Baptiste Auguié} on
 Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
 \code{\link{grid_arrange_shared_legend}}.
 }
-

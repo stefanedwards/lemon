@@ -5,8 +5,12 @@
 * `knit_print` functions are removed (without deprecating them) and replaced
   by `lemon_print` and `load_lemon_print` for pushing `lemon_print` into 
   `knit_print.data.frame`, etc.
+  `lemon_print` has been extended to also work on tables (i.e. a summary), but
+  does not work nicely for cross-tabulation tables.
 
 * **TODO:** Create CITATION file.
+
+* Extend `lemon_print` to work on cross-tabulation tables.
 
 # lemon 0.2.0
 
