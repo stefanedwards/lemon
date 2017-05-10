@@ -1,4 +1,7 @@
-#' Lemon - yet another ggplot2 extension package
+#' Lemon - Freshing up your ggplots
+#'
+#' Collection of misc. functions for changing subtle aspects of ggplots.
+#' Works mostly on gtables produced prior to printing.
 #'
 #' @section Functions for axis:
 #'
@@ -34,10 +37,12 @@
 #' @docType package
 #' @name lemon
 #' @author Stefan McKinnon Edwards <sme@@iysik.com>
+#' 
 #' Contributions from \href{http://baptiste.github.io/}{Baptiste Auguié} on
 #' \code{\link{g_legend}} and \code{\link{grid_arrange_shared_legend}}.
+#' 
 #' Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
 #' \code{\link{grid_arrange_shared_legend}}.
 #' @import ggplot2
-#' @source \url{https://github.com/stefanedwards/splot}
+#' @source \url{https://github.com/stefanedwards/lemon}
 "_PACKAGE"
