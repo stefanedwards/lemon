@@ -12,7 +12,7 @@ NULL
 #'
 #' The looks of the brackets are taken from \code{theme(axis.ticks)}, or
 #' \code{theme(axis.ticks.x)} and \code{theme(axis.ticks.y)}, respectively.
-#' 
+#'
 #' It does not re-calculate tick marks, but lets \code{scale_x_*} and \code{scale_y_*}
 #' calculate and draw ticks and labels, and then modifies the ticks with brackets.
 #'
@@ -50,7 +50,7 @@ brackets_horisontal <- function(direction = c('up','down'),
 
   # Returns a function
   function(scale_details, axis, scale, position, theme) {
-    agrob <- ggplot2:::render_axis(scale_details, axis, "x", position, theme)
+    agrob <- render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'
@@ -89,7 +89,7 @@ brackets_horisontal <- function(direction = c('up','down'),
       bottom = viewport(y = 1, just = 'top', height = gtable_height(gt))
     )
 
-    ggplot2:::absoluteGrob(
+    absoluteGrob(
       gList(gt),
       width = gtable::gtable_width(gt),
       height = gtable::gtable_height(gt),
@@ -111,7 +111,7 @@ brackets_vertical <- function(direction = c('left','right'),
                               tick.length = waiver()) {
   direction=match.arg(direction)
   function(scale_details, axis, scale, position, theme) {
-    agrob <- ggplot2:::render_axis(scale_details, axis, "y", position, theme)
+    agrob <- render_axis(scale_details, axis, "y", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'
@@ -150,7 +150,7 @@ brackets_vertical <- function(direction = c('left','right'),
       right = viewport(x = 0, just = 'left', width = gtable_width(gt))
     )
 
-    ggplot2:::absoluteGrob(
+    absoluteGrob(
       gList(gt),
       width = gtable::gtable_width(gt),
       height = gtable::gtable_height(gt),

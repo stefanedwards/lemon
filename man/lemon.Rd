@@ -4,12 +4,13 @@
 \name{lemon}
 \alias{lemon}
 \alias{lemon-package}
-\title{Lemon - yet another ggplot2 extension package}
+\title{Lemon - Freshing up your ggplots}
 \source{
-\url{https://github.com/stefanedwards/splot}
+\url{https://github.com/stefanedwards/lemon}
 }
 \description{
-Lemon - yet another ggplot2 extension package
+Collection of misc. functions for changing subtle aspects of ggplots.
+Works mostly on gtables produced prior to printing.
 }
 \section{Functions for axis}{
 
@@ -47,9 +48,15 @@ We automatically load knitr's \code{\link[knitr]{knit_print}} for
 data frames and dplyr tables to provide automatic pretty printing of
 data frame using \code{\link[knitr]{kable}}.
 
-See \code{\link{knit_print.data.frame}}.
+See \code{\link{load_lemon_print}} or \code{\link{lemon_print_data_frame}}.
 }
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
+
+Contributions from \href{http://baptiste.github.io/}{Baptiste Auguié} on
+\code{\link{g_legend}} and \code{\link{grid_arrange_shared_legend}}.
+
+Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
+\code{\link{grid_arrange_shared_legend}}.
 }
 

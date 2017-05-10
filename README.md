@@ -25,14 +25,24 @@ devtools::install_github("stefanedwards/lemon", ref='v0.2')
 devtools::install_github("stefanedwards/lemon")
 ```
 
-Usage
------
+Axis lines
+----------
 
 We can display a limit on the axes range.
 
 ``` r
-<<<<<<< HEAD
 library(lemon)
+#> 
+#> Attaching package: 'lemon'
+#> The following objects are masked from 'package:splot':
+#> 
+#>     brackets_horisontal, brackets_horizontal, brackets_vertical,
+#>     capped_horisontal, capped_vertical, coord_capped_cart,
+#>     coord_capped_flip, coord_flex_cart, coord_flex_fixed,
+#>     coord_flex_flip, CoordFlexCartesian, CoordFlexFixed,
+#>     CoordFlexFlipped, facet_rep_grid, facet_rep_wrap,
+#>     FacetGridRepeatLabels, FacetWrapRepeatLabels, g_legend,
+#>     grid_arrange_shared_legend, reposition_legend
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
   coord_capped_cart(bottom='both', left='none') +
@@ -46,13 +56,34 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
 We could also show that the x-axis is categorical (or ordinal):
 
 ``` r
-ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) + 
+(p <- ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) + 
   geom_point(position=position_jitter(width=0.1)) + 
-  coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('none')) +
+  coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('both')) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
+)
 ```
 
 ![](README/brackets_demo-1.png)
+
+When capping the axis lines, they are never capped further inwards than the ticks! Look up
+
+-   `coord_capped_cart`, `coord_capped_flip`
+-   `coord_flex_cart`, `coord_flex_flip`, `coord_flex_fixed`
+-   `brackets_horisontal`, `brackets_vertical`
+-   `capped_horisontal`, `capped_vertical`
+
+Facets
+------
+
+Having produced such wonderous axes, it is a pity they are not plotted around all panels when using faceting. We have extended both `facet_grid` and `facet_wrap` to produce axis, ticks, and labels on *all* panels:
+
+``` r
+p + facet_rep_wrap(~gear, ncol=2, label=label_both)
+```
+
+![](README/facets-1.png)
+
+They work just like the normal ones; look up `facet_rep_grid` and `facet_rep_wrap`.
 
 Legends
 -------
@@ -134,4 +165,3 @@ To do:
 ------
 
 -   Add `.dot` functions to knitr.
-

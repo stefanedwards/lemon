@@ -10,23 +10,23 @@ reposition_legend(aplot, position = NULL, legend = NULL, panel = "panel",
 \arguments{
 \item{aplot}{a ggplot2 or gtable object.}
 
-\item{position}{Where to place the legend in the panel. 
+\item{position}{Where to place the legend in the panel.
 Overrules \code{x}, \code{y}, and \code{just} arguments.}
 
-\item{legend}{The legend to place, if \code{NULL} (default), 
-it is extracted from \code{aplot} if 
+\item{legend}{The legend to place, if \code{NULL} (default),
+it is extracted from \code{aplot} if
 this is a ggplot2 object.}
 
-\item{panel}{Name of panel in gtable.}
+\item{panel}{Name of panel in gtable. See description.}
 
 \item{x}{horisontal coordinate of legend, with 0 at left.}
 
 \item{y}{vertical coordiante of legend, with 0 at bottom.}
 
-\item{just}{'Anchor point' of legend; it is this point of the legend that is 
+\item{just}{'Anchor point' of legend; it is this point of the legend that is
 placed at the \code{x} and \code{y} coordinates.}
 
-\item{plot}{Logical, when \code{TRUE} (default), draws plot with legend 
+\item{plot}{Logical, when \code{TRUE} (default), draws plot with legend
 repositioned on a new page.}
 }
 \value{
@@ -42,13 +42,14 @@ any grob as legend.
 To modify the look of the legend, use themes and the natural ggplot functions
 found in \code{\link[ggplot2]{guide_legend}}.
 
-Panel name is \code{panel}, but when using facets, it typically takes the 
-form \code{panel-{col}-{row}}. Use
-\preformatted{
-ggplot_gtable(ggplot_build(aplot))
-}
-to build a \code{\link[gtable]{gtable}} object, and print it to look at the
-names.
+Panel name is by default \code{panel}, but when using facets it typically 
+takes the form \code{panel-{col}-{row}}, but not for wrapped facets.
+Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
+\code{\link{gtable_show_names}} to display all the names of the gtable 
+object.
+
+\code{panel} takes multiple names, and will then use these component's 
+extremes for placing the legend.
 }
 \examples{
 library(ggplot2)
@@ -67,9 +68,10 @@ reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.
 # For using with facets:
 reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-3-1')
 }
-\seealso{
-\code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
-}
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
 }
+\seealso{
+\code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
+}
+

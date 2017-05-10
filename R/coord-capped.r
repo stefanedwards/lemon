@@ -83,7 +83,6 @@ coord_capped_cart <- function(xlim = NULL,
 #' @rdname coord_capped
 #' @export
 #' @inheritParams coord_flex_cart
-#' @importFrom ggplot2 ggproto
 coord_capped_flip <- function(xlim = NULL,
                               ylim = NULL,
                               expand = TRUE,
@@ -113,7 +112,7 @@ coord_capped_flip <- function(xlim = NULL,
 #' @inheritParams coord_capped_cart
 #' @rdname coord_capped
 #' @export
-#' @importFrom grid unit
+#' @import grid
 capped_horisontal <- function(capped = c('both','left','right','none'),
                               gap = 0.01) {
   capped <- match.arg(capped)
@@ -123,7 +122,7 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
   # position: top or bottom / left or right
   # theme:
   function(scale_details, axis, scale, position, theme) {
-    agrob <- ggplot2:::render_axis(scale_details, axis, "x", position, theme)
+    agrob <- render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(as.numeric( switch(axis,
@@ -144,7 +143,7 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
 #' @inheritParams capped_horisontal
 #' @rdname coord_capped
 #' @export
-#' @importFrom grid unit
+#' @import grid
 capped_vertical <- function(capped = c('top','bottom','both','none'),
                             gap = 0.01) {
   capped <- match.arg(capped)
@@ -154,7 +153,7 @@ capped_vertical <- function(capped = c('top','bottom','both','none'),
   # position: top or bottom / left or right
   # theme:
   function(scale_details, axis, scale, position, theme) {
-    agrob <- ggplot2:::render_axis(scale_details, axis, "y", position, theme)
+    agrob <- render_axis(scale_details, axis, "y", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(as.numeric( switch(axis,
