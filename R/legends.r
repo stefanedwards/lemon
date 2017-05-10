@@ -162,13 +162,14 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' To modify the look of the legend, use themes and the natural ggplot functions
 #' found in \code{\link[ggplot2]{guide_legend}}.
 #'
-#' Panel name is \code{panel}, but when using facets, it typically takes the
-#' form \code{panel-{col}-{row}}. Use
-#' \preformatted{
-#' ggplot_gtable(ggplot_build(aplot))
-#' }
-#' to build a \code{\link[gtable]{gtable}} object, and print it to look at the
-#' names.
+#' Panel name is by default \code{panel}, but when using facets it typically 
+#' takes the form \code{panel-{col}-{row}}, but not for wrapped facets.
+#' Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
+#' \code{\link{gtable_show_names}} to display all the names of the gtable 
+#' object.
+#'
+#' \code{panel} takes multiple names, and will then use these component's 
+#' extremes for placing the legend.
 #'
 #' @param aplot a ggplot2 or gtable object.
 #' @param position Where to place the legend in the panel.
@@ -176,7 +177,7 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' @param legend The legend to place, if \code{NULL} (default),
 #'               it is extracted from \code{aplot} if
 #'               this is a ggplot2 object.
-#' @param panel Name of panel in gtable.
+#' @param panel Name of panel in gtable. See description.
 #' @param x horisontal coordinate of legend, with 0 at left.
 #' @param y vertical coordiante of legend, with 0 at bottom.
 #' @param just 'Anchor point' of legend; it is this point of the legend that is
@@ -248,20 +249,10 @@ reposition_legend <- function(aplot,
 
   legend$vp <- viewport(x=x, y=y, just=just,  width=sum(legend$widths), height=sum(legend$heights))
 
-  pn <- which(aplot$layout$name == panel)
+  pn <- which(aplot$layout$name %in% panel)
   if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
-  if (length(pn) > 1 ) {
-    warning('Multiple panels named `', panel, '`; using first found.')
-    pn <- pn[1]
-  }
-  #if (inherits(aplot$grobs[[pn]], 'zeroGrob')) {
-  #  aplot$grobs[[pn]] <- legend
-  #} else {
-  #  aplot$grobs[[pn]]$vp <- viewport(x=unit(0, 'npc'), y=unit(0, 'npc'), just=c(0,0), name=panel)
-  #  aplot$grobs[[pn]]$children <- gList(aplot$grobs[[pn]]$children, `guide-box`=legend)
-  #  aplot$grobs[[pn]]$childrenOrder <- append(aplot$grobs[[pn]]$childrenOrder, 'guide-box')
-  #}
-  aplot <- with(aplot$layout[pn,], gtable_add_grob(aplot, legend, t=t, l=l, r=r, b=b))
+
+  aplot <- with(aplot$layout[pn,], gtable_add_grob(aplot, legend, t=min(t), l=min(l), r=max(r), b=max(b)))
 
   if (plot) {
     grid.newpage()

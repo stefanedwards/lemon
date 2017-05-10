@@ -69,6 +69,7 @@ reposition_legend(d, 'top left')
 ```
 
 And it stays there. 
+
 ```{r echo=FALSE,fig.cap='**Left:** Base font size set to 22 pt. **Right:** Zoom on plot that is plotted at 150% size.'}
 vp1 <- viewport(x=0, y=0, width=unit(0.5, 'npc'), just=c(0,0))
 vp2 <- viewport(x=0.5, y=1, width=unit(1.5, 'npc'), height=unit(1.5, 'npc'), just=c(0,1))
@@ -82,7 +83,7 @@ pushViewport(vp2)
 grid.draw(reposition_legend(d, 'top left', plot=FALSE))
 ```
 
-The left plot is printed in full at the end of this document.
+The left plot is printed in full size at the end of this document.
 
 ### Multiple legends per guide
 For our final trick in this act, we reposition a legend with multiple guides.
@@ -135,11 +136,11 @@ which is also given in `g_legend`.
 
 The above demonstration finds the panel named `panel`. This is default.
 If using facetting, the panels are typically named `panel-{column}-{row}`.
-Look at the column `name` in the following output.
+We use `gtable_show_names` to display the names of the facetted panels.
 
-```{r}
+```{r fig.cap="Facetted panels' names."}
 d2 <- d + facet_grid(.~cut)
-ggplot_gtable(ggplot_build(d2))
+gtable_show_names(d2)
 ```
 
 So to place the legend in a specific panel, give its name:
@@ -160,6 +161,19 @@ d3 <- d + facet_wrap(~cut, ncol=3) + scale_color_discrete(guide=guide_legend(nco
 reposition_legend(d3, 'center', panel='panel-3-2')
 ```
 
+
+Also supports spanning multiple panels:
+```{r reposition_multiple_panels,fig.cap='Supplying `reposition_legend` with multple panel-names allows the legend to span them.'}
+d4 <- d + facet_wrap(~cut, ncol=4) + scale_color_discrete(guide=guide_legend(nrow=2))
+reposition_legend(d4, 'center', panel=c('panel-2-2','panel-4-2'))
+```
+
+The panel names are not easy to figure, especially those from `facet_wrap`.
+We refer to `gtable_show_names` to get a look at where they are:
+
+```{r gtable_show_names,fig.cap="Use of `gtable_show_names` to reveal the panels' names."}
+gtable_show_names(d4)
+```
 
 ## Shared legend across multiple plot
 

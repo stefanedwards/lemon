@@ -17,7 +17,7 @@ Overrules \code{x}, \code{y}, and \code{just} arguments.}
 it is extracted from \code{aplot} if
 this is a ggplot2 object.}
 
-\item{panel}{Name of panel in gtable.}
+\item{panel}{Name of panel in gtable. See description.}
 
 \item{x}{horisontal coordinate of legend, with 0 at left.}
 
@@ -42,13 +42,14 @@ any grob as legend.
 To modify the look of the legend, use themes and the natural ggplot functions
 found in \code{\link[ggplot2]{guide_legend}}.
 
-Panel name is \code{panel}, but when using facets, it typically takes the
-form \code{panel-{col}-{row}}. Use
-\preformatted{
-ggplot_gtable(ggplot_build(aplot))
-}
-to build a \code{\link[gtable]{gtable}} object, and print it to look at the
-names.
+Panel name is by default \code{panel}, but when using facets it typically 
+takes the form \code{panel-{col}-{row}}, but not for wrapped facets.
+Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
+\code{\link{gtable_show_names}} to display all the names of the gtable 
+object.
+
+\code{panel} takes multiple names, and will then use these component's 
+extremes for placing the legend.
 }
 \examples{
 library(ggplot2)
