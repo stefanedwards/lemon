@@ -16,6 +16,15 @@ preamble: >
 output: rticles::rjournal_article
 ---
 
+
+```{r setup,include=FALSE}
+library(knitr)
+library(ggplot2)
+
+knitr::opts_chunk$set(fig.height=4, fig.width=6,
+                      cache=TRUE, autodep = TRUE, cache.path = 'cache/')
+```
+
 ## Introduction
 
 Motivation
@@ -24,35 +33,99 @@ Motivation
 
 ### A brief introduction to gtable
 
-We assume the reader is familiar with ggplot2 \citep{ggplot2},
-in how it differs from R's native plotting functions and that a `ggplot` object
-only *describes* the visualisation in terms of mapping between variables, geoms,
-and scales.
+We assume the reader is familiar with ggplot2 \citep{ggplot2}. 
+In short, it differs from R's native plotting functions in that it only
+*describes* the visualisation. 
+The ggplot object returned from calling 
+`ggplot(data, aes(...)) + ...` only describes the mapping between variables, 
+geoms (points, bars, etc.), and scales, and the theme.
 
-We skip the narrative to the part when a ggplot object is to be drawn on a 
-device. Here, the device may be the screen, a plot window, a file, etc.
+
+The 'gtable' package \citep{gtable} and object has its introduction when a ggplot 
+object is to be drawn on a device. 
+Here, the device may be the screen, a plot window, a file, etc.
 Calling to view a ggplot object, either explicitly through `print` or `plot`, 
 or through any other of the multitude of functions, ggplot2 goes through
 the motions of training the object's scales on the data to finally produce a 
 printable object (see function `ggplot_build` in ggplot2 package).
-This object is a grob table -- a `gtable` object.
+This object is a grob table -- a gtable object.
 
-The `gtable` object \citep{gtable} is of a completely different nature than the 
-`ggplot` object.
-Where the `ggplot` object describes the mapping between variables, geoms, and 
-scales, the `gtable` object describes which lines are drawn where. 
-It does so by using 'grobs', as introduced in the package `grid` by Paul Murrel.
-We will only give a brief introduction to `grob` objects, but refer to 
-e.g. \citet{Zhou2010} for a more general introduction.
+The gtable object is of a completely different nature than the 
+ggplot object.
+Where the ggplot object describes the mapping between variables, geoms, and 
+scales, the gtable object describes which lines are drawn where. 
+It does so by using graphical objects -- 'grobs' -- 
+as introduced in the package 'grid' by Paul Murrell.
+We will only give a brief introduction to grob objects, but refer to 
+e.g. \citet{Zhou2010} for a more general introduction, that also includes
+the important 'viewports'.
+Other authors, such as Baptiste Augui\'{e} who has made considerable contributions
+to using ggplot2, has a guide at
+https://github.com/baptiste/gridextra/wiki/gtable.
+We will however focus this introduction on the gtavle object returned from ggplot.
 
-A `gtable` object is a hierarchical collection of `grob` and `gtable` objects,
+
+A gtable object is a hierarchical collection of grob and gtable objects,
 placing them in a table-like structure. 
+The two important components of each gtable object are 
+the `layout` data frame and the `grobs` list.
 
-To understand a `gtable` object, 
+Before continuing our exploration of the gtable object, we start with an example
+that demonstrates the different between the ggplot object and the gtable object.
+Below is a piece of code that creates a plot.
+`p` is a ggplot object and when called in an interactive R session, 
+`print.ggplot(p)` is called to display the graphics. 
+This function creates the gtable object which is drawn by passing it to 
+`grid.draw` of the 'grid' package. 
+The same functionality can be obtained by calling `ggplotGrob`.
+The difference between the ggplot and gtable object is clear when we print the 
+latter:
+
+```{r}
+p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+g <- ggplotGrob(p)
+g
+```
+
+
+The table structure is revealed, displaying the two important components, the 
+layout and the grob list. 
+Each grob (or a collection of grobs) appears on each row in conjunction with 
+which cells they span. For example, the first grob (`background`) spans the 
+first to tenth row, counting from the top, 
+and first column to seventh column, counting from left. 
+The grob that contains the actual graph (`panel`) occupies just the cell in the 
+sixth row and fourth column. 
+The panel is however drawn *on top* of the background, as
+indicated by the z-index. 
+
+
+The main component of interest is `panel`, which contains the actual plot. 
+The background component is a simple rectGrob (`rect[..]`), 
+The grob descriptor (`gTree[..]`) tells us that this is a collection of grobs, 
+as is the left-hand axis ('`axis-l`', `absoluteGrob[..]`). 
+They are both grob lists, but the latter differs from the former by having
+a height and width defined.
+The axis line, ticks, and labels, a child grob of the left-hand axis grob, is
+itself a gtable. 
+Finally, many components are of the type `zeroGrob`, 
+which are essentially the grobs' version of `NULL`, a blank placeholder. 
 
 
 
+The order of the layout data frame and grobs list are intrinsically linked, but not enforced. The layout data frame can be accessed via `g$layout` and the grobs list via `g$grobs`, and they can be manipulated separately. The The grob descriptors, shown in the last column of output 1 are thus picked up only when printing this view.
 
+The gtable is also described by the heights and widths of rows and columns. 
+
+
+We utilise the functions `gtable_show_grill` and `gtable_show_names` in 
+succession to visualise the elements.
+
+```{r}
+library(grid)
+grill <- gtable_show_grill(p)
+grid.draw(gtable_show_names(grill, plot=FALSE))
+```
 
 
 ## Section title in sentence case
