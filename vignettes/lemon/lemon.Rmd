@@ -56,6 +56,7 @@ Where the ggplot object describes the mapping between variables, geoms, and
 scales, the gtable object describes which lines are drawn where. 
 It does so by using graphical objects -- 'grobs' -- 
 as introduced in the package 'grid' by Paul Murrell.
+\citep{RGraphics2005,RGraphics2011}
 We will only give a brief introduction to grob objects, but refer to 
 e.g. \citet{Zhou2010} for a more general introduction, that also includes
 the important 'viewports'.
@@ -111,11 +112,34 @@ itself a gtable.
 Finally, many components are of the type `zeroGrob`, 
 which are essentially the grobs' version of `NULL`, a blank placeholder. 
 
-
+A list's elements is known as components!
 
 The order of the layout data frame and grobs list are intrinsically linked, but not enforced. The layout data frame can be accessed via `g$layout` and the grobs list via `g$grobs`, and they can be manipulated separately. The The grob descriptors, shown in the last column of output 1 are thus picked up only when printing this view.
 
+### Widths and heights
 The gtable is also described by the heights and widths of rows and columns. 
+These two components are each a '`unit.list`' with a component for each row or 
+column.
+A quick glance at `g`'s widths tells us a lot:
+
+```{r}
+g$widths
+```
+
+These can be compared to the columns of (figure with gtable_show_names);
+the first and last are the plot's margins, given with `theme(plot.margin)`.
+The second width, `1grobwidth`, refers to the actual width of the y-axis title
+'mpg'. The third width, `sum(1grobwidth, 2.75pt)`, is literally the width *plus*
+2.75 pt, with the width here being those of the y-axis labels. 
+We will in general see grob-widths and grob-heights for text elements.
+The fourth width, `1null`, simply expands into the available space and is here 
+used to maximise the width of the actual graphing area.
+The two remaining widths of 0 cm are those for a right-hand side axis, which can 
+be seen on the (`gtable_show_grill`), where their respective columns have been
+expanded for us to view.
+
+The elements of widths, and similarily for heights, are not fixed. 
+Adding a legend or using facetting will change them.
 
 
 We utilise the functions `gtable_show_grill` and `gtable_show_names` in 
@@ -123,6 +147,7 @@ succession to visualise the elements.
 
 ```{r}
 library(grid)
+library(lemon)
 grill <- gtable_show_grill(p)
 grid.draw(gtable_show_names(grill, plot=FALSE))
 ```
