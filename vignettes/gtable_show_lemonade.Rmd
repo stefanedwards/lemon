@@ -56,6 +56,7 @@ for (i in 1:nrow(g$layout)) {
   t <- textGrob(g$layout$name[i], rot = rot)
   g$grobs[[i]] <- grobTree(r, t)
 }
+grid.newpage()
 grid.draw(g)
 ```
 
@@ -103,5 +104,101 @@ for (i in 2:ncol(g)) {
   if (is.small(g$widths[[i]])) g$widths[[i]] <- unit(2, 'line')
 }
 
+grid.newpage()
 grid.draw(g)
 ```
+
+```{r}
+gtable_show_grill <- function(x, plot=TRUE) {
+  if (is.ggplot(x)) x <- ggplotGrob(x)
+  
+  gp.gutter <- gpar(colour='grey', lty='dashed')
+  if (is.null(x$vp)) {
+    x$vp <- viewport(clip = 'on')
+  }
+
+  x <- gtable_add_cols(x, unit(2, 'line'), 0)
+  for (i in 2:nrow(x)) {
+    x <- gtable_add_grob(x, t=i, l=1, clip='off', grobs=grobTree(
+      textGrob(sprintf('[%d, ]', i-1)),
+      linesGrob(x=unit(c(-100,100), 'npc'), y=1, gp=gp.gutter)
+    ), name='lemon')
+    if (is.small(x$heights[[i]])) x$heights[[i]] <- unit(1, 'line')
+  }
+  x <- gtable_add_rows(x, unit(1, 'line'), 0)
+  for (i in 2:ncol(x)) {
+    x <- gtable_add_grob(x, t=1, l=i, clip='off', grobs=grobTree(
+      textGrob(sprintf('[ ,%d]', i-1)),
+      linesGrob(x=1, unit(c(-100, 100), 'npc'), gp=gp.gutter)
+    ), name='lemon')
+    if (is.small(x$widths[[i]])) x$widths[[i]] <- unit(2, 'line')
+  }
+  
+  if (plot) {
+    grid.newpage()
+    grid.draw(x)
+  }
+  
+  invisible(x)
+}
+gtable_show_grill(p)
+```
+
+
+```{r}
+gtable_show_names <- function(x, plot=TRUE) {
+  if (is.ggplot(x)) x <- ggplotGrob(x)
+  
+  for (i in 1:nrow(x$layout)) {
+    if (x$layout$name[i] == 'lemon') next
+    if (grepl('ylab', x$layout$name[i])) {
+      rot <- 90
+    } else if (grepl('-l', x$layout$name[i])) {
+      rot <- 90
+    } else if (grepl('-r', x$layout$name[i])) {
+      rot <- 90
+    } else {
+      rot <- 0
+    }
+  
+    r <- rectGrob(gp=gpar(col='black', fill='white', alpha=1/4))
+    t <- textGrob(x$layout$name[i], rot = rot)
+    x$grobs[[i]] <- grobTree(r, t)
+  }
+  
+    if (plot) {
+    grid.newpage()
+    grid.draw(x)
+  }
+  
+  invisible(x)
+}
+gtable_show_names(p)
+```
+
+
+```{r}
+gtable_show_names(gtable_show_grill(p, plot=FALSE))
+```
+
+```{r error=FALSE}
+try(rm(list=c('gtable_show_names','gtable_show_grill')), silent=TRUE)
+library(lemon)
+
+
+print(p)
+grid.draw(gtable_show_names(p, plot=FALSE))
+```
+
+```{r error=TRUE}
+gp <- ggplotGrob(p)
+gp <- gtable_add_rows(gp, g$heights[1], 0)
+gp <- gtable_add_cols(gp, unit(1.5, 'line'))
+gp <- gtable_add_grob(gp, linesGrob(x=0.5, gp=gpar(colour='grey', lwd=1.2)), t=1, b=nrow(gp), l=ncol(gp))
+
+g <- gtable_show_names(gtable_show_grill(p, plot=FALSE), plot=FALSE)
+g <- cbind(gp, g)
+grid.newpage()
+grid.draw(g)
+```
+
