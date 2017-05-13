@@ -27,7 +27,17 @@ knitr::opts_chunk$set(fig.height=4, fig.width=6,
 
 ## Introduction
 
-Motivation
+The ggplot2 package \citep{ggplot2} which utilises the 'grammar of graphics' to
+describe a plot is hugely popular. 
+Since version 2.0, it has featured an official extension mechanism that has
+spawned a number of packages that extends the capabilities of ggplot2.
+At the time of writing, \url{ggplot2-exts.org} features 29 packages, 
+ranging from themes of popular sources (`ggthemes`, \citealt{ggthemes}),
+to visualisation of graphs (`ggraphs`, \citealt{ggraph}).
+
+We are adding another package to the list.
+
+
 
 
 
