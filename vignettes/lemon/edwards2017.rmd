@@ -13,6 +13,8 @@ abstract: >
   An abstract of less than 150 words.
 preamble: >
   % Any extra latex you need in the preamble
+  \newcommand{\gtable}{\code{`gtable'}}
+  \newcommand{\ggplot}{\code{`ggplot'}}
 output: rticles::rjournal_article
 ---
 
@@ -27,7 +29,7 @@ knitr::opts_chunk$set(fig.height=4, fig.width=6, fig.path='figures/',
 load_lemon_print()
 ```
 
-## Introduction
+\section{Introduction}
 
 The \CRANpkg{ggplot2} package \citep{ggplot2} which utilises the 'grammar of graphics' to
 describe a plot is hugely popular. 
@@ -53,7 +55,7 @@ We then give examples of the funcions introduced in this package.
 
 
 
-### A brief introduction to gtable
+\section{A brief introduction to gtable}
 
 We assume the reader is familiar with \CRANpkg{ggplot2} \citep{ggplot2}. 
 In short, it differs from R's native plotting functions in that we use it to 
@@ -79,7 +81,7 @@ We will however focus this introduction on the gtable object returned from ggplo
 The \dfn{gtable} object of the \CRANpkg{gtable} package \citep{gtable} 
 has its introduction when a ggplot object is to be drawn on a device. 
 Here, the device may be the screen, a plot window, a file, etc.
-Calling to view a ggplot object, either explicitly through `print` or `plot`, 
+Calling to view a ggplot object, either explicitly through \code{print} or \code{plot},
 or through any other of the multitude of functions, ggplot2 goes through
 the motions of training the object's scales on the data to finally produce a 
 printable object (see function \code{ggplot\_build} in ggplot2 package).
@@ -122,29 +124,23 @@ scales, the gtable object positions the plot's features in a table-like structur
 Each feature of the plot, i.e\. the background, an axis, or the actual graph ('panel')
 are displayed on a row.
 
-### The gtable object
+\subsection{The gtable object}
 
 A gtable object is a hierarchical collection of grob and gtable objects,
 placing them in a table-like structure. 
 The most important components of each gtable object are 
 the \code{layout} data frame and the \code{grobs} list that position and contain the 
 plot's features,
-in addition to \ocde{widths} and \code{heights} unit lists that describe the 
+in addition to \code{widths} and \code{heights} unit lists that describe the 
 column widths and row heights.
 These are displayed in figure \ref{fig:gtable_show_names}, superimposed on the plot.
 
-```{r gtable_show_names,echo=FALSE,fig.label='gif:gtable_show_names',fig.cap='Overlaying figure \\ref{fig:p_object} with the layout names and grill, by \\code{gtable\\_show\\_names} and \\code{gtable\\_show\\_grill}.'}
+```{r gtable_show_names,echo=FALSE,fig.label='fig:gtable_show_names',fig.cap='Overlaying figure \\ref{fig:p_object} with the layout names and grill, by \\code{gtable\\_show\\_names} and \\code{gtable\\_show\\_grill}.'}
 library(lemon)
 library(gtable)
 library(grid)
-s <- gtable_show_names(gtable_show_grill(p, plot=FALSE), plot=FALSE)
-g1 <- gtable_add_cols(g, s$widths[[1]], 0)
-g1 <- gtable_add_rows(g1, s$heights[[1]], 0)
-g1$widths <- s$widths
-g1$heights <- s$heights
-
-grid.draw(g1)
-grid.draw(s)
+s <- gtable_show_grill(p)
+grid.draw(gtable_show_names(s, plot=FALSE, rect.gp=gpar(fill='white', col='white', alpha=1/4)))
 ```
 
 The main feature of interest is \code{panel}, which contains the actual graph.
@@ -190,7 +186,7 @@ The layout data frame can be accessed via \code{g\$layout} and the grobs list vi
 normally would data frames and lists, respectively. 
 
 
-### Widths and heights
+\subsection{Widths and heights}
 The gtable is also described by the heights and widths of rows and columns. 
 These two components are each a 'unit.list' with a component for each row or 
 column.
@@ -209,23 +205,48 @@ We will in general see grob-widths and grob-heights for text elements.
 The fourth width, \code{1null}, simply expands into the available space and is here 
 used to maximise the width of the actual graphing area.
 The two remaining widths of 0 cm are those for a right-hand side axis, which can 
-be seen on the (\code{gtable\_show\_grill}), where their respective columns have been
+be seen on figure \ref{fig:gtable_show_names}, where their respective columns have been
 expanded for us to view.
 
 The elements of widths, and similarily for heights, are not fixed to those shown here.
 Adding a legend or using facetting will change them.
 
 
-### Manipulating the gtable object
+\subsection{Manipulating the gtable object}
 
-The \CRANpkg{gtable} packag supplies a number of functions for manipulating
-a gtable object, such as adding rows and columns (\code{gtable\_add\_rows}, \code{gtable\_add\_cols}),
-combining several gtable objects together as if they were matrices (\code{cbind}, \code{rbind}),
+The \CRANpkg{gtable} package supplies a number of functions for manipulating
+a gtable object, such as adding rows and columns (\code{gtable\_add\_rows},
+\code{gtable\_add\_cols}), combining several gtable objects together as if 
+they were matrices (\code{cbind}, \code{rbind}),
 or adding new features to the gtable object (\code{gtable\_add\_grob}).
 
 These functions are usually sufficient for manipulating the gtable object.
 Knowing the components of the gtable object however allows us to manipulate 
 the gtable object in an alternative and direct fashion.
+
+\subsubsection{Adding or replacing features}
+
+For adding a grob, \pkg{gtable} comes with the function 
+\code{gtable\_add\_grob(x, grobs, t, l, b, r, z, clip, name)}.
+This adds a new row to the \code{x\$layout} data frame with the coordinates of the
+spanning cells, a \code{name} for the grob, 
+and appends \code{grobs} to the \code{x\$grobs} list.
+
+\emph{Replacing a grob} is however more tricky. 
+To do so, we have to work out which index in the \code{grobs} list corresponds 
+to the feature that is to be replaced. 
+The following example replaces the x-axis label with a pink box.
+
+```{r}
+g <- ggplotGrob(p)
+i <- which(g$layout$name == 'xlab-b')
+g$grobs[[i]] <- roundrectGrob(r=unit(0.5, 'snpc'), gp=gpar(fill='pink', col='black'))
+grid.draw(g)
+```
+
+One could naturally just have added the grob with \code{gtable\_add\_grob}.
+The example however also illustrates how to \emph{extract} a grob, if the grob
+needed altering.
 
 \emph{Row heights} and \emph{column widths} can be directly altered by changing the element
 of \code{g\$heights} or \code{g\$widths}. 
@@ -246,14 +267,15 @@ grid::grid.draw(g)
 
 As \code{g\$widths} is a \code{unit.list} object, it requires using double square brackets
 for replacing an element. This also implies changing the widths must be done
-one by one, or by building a new unit.list object entirely.
+one by one, or by building a new \code{`unit.list'} object entirely.
 
-*Adding 
+\section{Demonstration}
 
 
-## Summary
+\section{Summary}
 
-## Acknowledgements
+
+\subsection{Acknowledgements}
 
 This article was initiated with the `rticles` package \citep{rticles}.
 
