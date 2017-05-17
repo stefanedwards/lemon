@@ -29,8 +29,8 @@ library(ggplot2)
 library(lemon)
 
 knitr::opts_knit$set(out.format='latex')
-knitr::opts_chunk$set(fig.width=5.5, fig.height=5.5/4*3, fig.path='edwards2017-',
-                      cache=FALSE, autodep = TRUE, cache.path = 'cache/')
+knitr::opts_chunk$set(fig.width=5.5, fig.height=5.5/4*2.5, fig.path='edwards2017-',
+                      cache=TRUE, autodep = TRUE, cache.path = 'cache/')
 ```
 
 \section{Introduction}
@@ -303,19 +303,98 @@ reposition_legend(p %+% aes(color=cyl), position = 'top right')
 
 The appearences of the legend is not modified in any way, thus modifying it is
 done by the usual methods of \CRANpkg{ggplot2}. These could be
-\code{theme(legend.direction)} or \code{guide_legend(...)}.
+\code{theme(legend.direction)} or \code{guide\_legend(...)}.
 We also highlight \code{theme(legend.box.background)} when having 
 multiple legends as the component \code{theme(legend.background)} only affects
 the background of each singular legend, not the area spanning all legends.
 
-```{r}
-reposition_legend(p %+% aes(color=cyl, size=qsec), position = 'top right')
+The function can also be used to add multiple legends to different locations,
+as demonstrated in figure \ref{fig:multiple_legends}.
+
+```{r multiple_legends}
 x <- p %+% aes(color=cyl, size=qsec)
 g <- g_legend(x)
 x <- reposition_legend(x, position='bottom left', legend=g$grobs[[2]], plot=FALSE)
 x <- reposition_legend(x, position='top right', legend=g$grobs[[1]], plot=FALSE)
 grid.draw(x)
 ```
+\captionof{figure}{Repositioning multiple legends to different locations.}
+\label{fig:multiple_legends}
+
+The above code also demonstrates the usage of \code{g\_legend} to extract the 
+legend from a plot.
+We must however emphasise that \code{g\_legend} was first proposed by
+Baptiste Augui\'{e} as early as June 2012 on \CRANpkg{ggplot2}'s 
+Github wiki\footnote{\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs/047381b48b0f0ef51a174286a595817f01a0dfad}}.
+Baptiste Augui\'{e} is the author of \CRANpkg{gridExtra} \citep{gridExtra}.
+It has since propogated throughout a swarm of 
+Stack Overflow answers.
+For this same reason, Baptiste Augui\'{e} has been added as contributor to this
+package.
+
+Lastly, a modified version of \code{grid.arrange} with a shared legend is 
+demonstrated in figure \ref{fig:brackets}.
+The function \code{grid\_arrange\_shared\_legend} supplied in this package
+is modified from Shaun Jackman's 
+version\footnote{\url{http://rpubs.com/sjackman/grid\_arrange\_shared\_legend}} 
+and Baptiste Augui\'{e} 
+version\footnote{\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}}.
+
+\subsection{Axis lines and brackets}
+
+
+The second domain of functions in \pkg{lemon} is for axis lines and brackets.
+We desired to alter the axis lines to be capped to tick marks, or even replaced
+by brackets.
+
+In the following example, three functions are demonstrated: 
+brackets, capped axis lines, 
+
+```{r brackets}
+p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +
+  geom_point(position=position_jitter(width=0.3)) +
+  theme_bw()
+
+# Demonstrate brackets
+p1 <- p + coord_flex_cart(bottom=brackets_horisontal(length=unit(0.08, 'npc'))) +
+  theme(panel.border = element_blank(), axis.line = element_line(),
+        panel.grid.major.x = element_blank())
+
+p <- ggplot(mpg, aes(displ, hwy, colour=class)) + geom_point() +
+  theme_bw()
+
+# Demonstrate capped axis lines
+p2 <- p + coord_capped_cart(bottom='right', left='none', gap = 0.03) +
+  theme(panel.border = element_blank(), axis.line = element_line(),
+        panel.grid.major.x = element_blank())
+
+
+# Demonstrate shared legend
+grid_arrange_shared_legend(p1, p2, position='bottom')
+```
+\captionof{figure}{
+  \emph{Left:} Displaying brackets on an axis to indicate categorical values.
+  \emph{Right:} Capped axis lines, with x-axis capped at right-most tick, and
+               y-axis capped by a small proportion.
+}
+\label{fig:brackets}
+
+\emph{To do:} Explain features of brackets (direction, height, style taken from theme),
+and capped lines (coords, flexible coords), added theme for polishing, etc.
+
+
+The use of axis lines to be more informative of the displayed data has been
+shown in \citep[p.\ 130]{Tufte2001} with \dfn{range-frames}, where axis lines
+are limited to the range of the displayed data.
+This has been implemented in \CRANpkg{ggthemes} \citep{ggthemes} with
+\code{geom_rangeframe}.
+
+Our capped axis lines differs from these by intending to display the valid range
+the values may take. E.g.\ correlations where the value cannot exceed \pm 1.
+
+\CRANpkg{ggplot2}'s facets however avoid displaying redundant axis lines and 
+labels, when the scale is identical along a row or column.
+
 
 
 \section{Summary}
@@ -327,6 +406,11 @@ This article was initiated with the `rticles` package \citep{rticles}.
 
 The author, SME, was funded by the MRC (FARSPhase: a Flexible, widely Applicable, Robust, and Scalable phasing algorithm for human genetics, grant no. MR/M000370/1),
 while working on this software.
+
+\href{https://baptiste.github.io/}{Baptiste Augui\'{e}} for his work on many
+functions for \CRANpkg{ggplot2} and \CRANpkg{grid} for which without, 
+this package could not have been possible.
+
 
 This file is only a basic article template. For full details of _The R Journal_ style and information on how to prepare your article for submission, see the [Instructions for Authors](https://journal.r-project.org/share/author-guide.pdf).
 
