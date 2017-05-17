@@ -166,7 +166,7 @@ flex_render_axis_v <- function(self, scale_details, theme) {
 
 # ggproto objects -------------------------------------------------------------
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL
@@ -178,7 +178,7 @@ CoordFlexCartesian <- ggplot2::ggproto('CoordFlexCartesian',
                               render_axis_v = flex_render_axis_v
 )
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL
@@ -189,7 +189,7 @@ CoordFlexFlipped <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::
                             render_axis_v = flex_render_axis_v
 )
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL
