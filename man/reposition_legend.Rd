@@ -48,8 +48,11 @@ Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
 \code{\link{gtable_show_names}} to display all the names of the gtable 
 object.
 
-\code{panel} takes multiple names, and will then use these component's 
+\code{panel} takes multiple names, and will then use these components'
 extremes for placing the legend.
+
+If \code{panel} is an integer vector of length 2 or 4, these elements are
+used directly for top-left and bottom-right coordinates.
 }
 \examples{
 library(ggplot2)

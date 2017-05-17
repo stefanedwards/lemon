@@ -168,8 +168,11 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' \code{\link{gtable_show_names}} to display all the names of the gtable 
 #' object.
 #'
-#' \code{panel} takes multiple names, and will then use these component's 
+#' \code{panel} takes multiple names, and will then use these components'
 #' extremes for placing the legend.
+#' 
+#' If \code{panel} is an integer vector of length 2 or 4, these elements are
+#' used directly for top-left and bottom-right coordinates.
 #'
 #' @param aplot a ggplot2 or gtable object.
 #' @param position Where to place the legend in the panel.
@@ -248,12 +251,17 @@ reposition_legend <- function(aplot,
     aplot <- ggplot_gtable(ggplot_build(aplot + theme(legend.position='hidden')))
 
   legend$vp <- viewport(x=x, y=y, just=just,  width=sum(legend$widths), height=sum(legend$heights))
-
-  pn <- which(aplot$layout$name %in% panel)
-  if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
-
-  aplot <- with(aplot$layout[pn,], gtable_add_grob(aplot, legend, t=min(t), l=min(l), r=max(r), b=max(b)))
-
+  
+  if (is.character(panel)) {
+    pn <- which(aplot$layout$name %in% panel)
+    if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
+  
+    aplot <- with(aplot$layout[pn,], gtable_add_grob(aplot, legend, t=min(t), l=min(l), r=max(r), b=max(b)))
+  } else if ((is.numeric(panel) | is.integer(panel)) & length(panel) %in% c(2,4)) {
+    panel <- rep(as.integer(panel), length.out=4)
+    aplot <- gtable_add_grob(aplot, legend, t=panel[1], l=panel[2], b=panel[3], r=panel[4])
+  }
+  
   if (plot) {
     grid.newpage()
     grid.draw(aplot)
