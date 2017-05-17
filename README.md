@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Lemon --- yet another ggplot2 extension package
-===============================================
+Lemon --- Freshing up your ggplots
+==================================
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
@@ -25,13 +25,12 @@ devtools::install_github("stefanedwards/lemon", ref='v0.2')
 devtools::install_github("stefanedwards/lemon")
 ```
 
-Usage
------
+Axis lines
+----------
 
 We can display a limit on the axes range.
 
 ``` r
-<<<<<<< HEAD
 library(lemon)
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
@@ -46,13 +45,34 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
 We could also show that the x-axis is categorical (or ordinal):
 
 ``` r
-ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) + 
+(p <- ggplot(mtcars, aes(x=as.factor(cyl), y=mpg)) + 
   geom_point(position=position_jitter(width=0.1)) + 
-  coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('none')) +
+  coord_flex_cart(bottom=brackets_horisontal(), left=capped_vertical('both')) +
   theme_light() + theme(panel.border=element_blank(), axis.line = element_line())
+)
 ```
 
 ![](README/brackets_demo-1.png)
+
+When capping the axis lines, they are never capped further inwards than the ticks! Look up
+
+-   `coord_capped_cart`, `coord_capped_flip`
+-   `coord_flex_cart`, `coord_flex_flip`, `coord_flex_fixed`
+-   `brackets_horisontal`, `brackets_vertical`
+-   `capped_horisontal`, `capped_vertical`
+
+Facets
+------
+
+Having produced such wonderous axes, it is a pity they are not plotted around all panels when using faceting. We have extended both `facet_grid` and `facet_wrap` to produce axis, ticks, and labels on *all* panels:
+
+``` r
+p + facet_rep_wrap(~gear, ncol=2, label=label_both)
+```
+
+![](README/facets-1.png)
+
+They work just like the normal ones; look up `facet_rep_grid` and `facet_rep_wrap`.
 
 Legends
 -------
@@ -97,41 +117,11 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 Extensions to knitr
 -------------------
 
-We automatically load knitr's `knit_print` for data frames and dplyr tables to provide automatic pretty printing of these using `kable`:
-
-Before loading `lemon` package:
-
-``` r
-data(USArrests)
-head(USArrests)
-#>            Murder Assault UrbanPop Rape
-#> Alabama      13.2     236       58 21.2
-#> Alaska       10.0     263       48 44.5
-#> Arizona       8.1     294       80 31.0
-#> Arkansas      8.8     190       50 19.5
-#> California    9.0     276       91 40.6
-#> Colorado      7.9     204       78 38.7
-```
-
-After loading `lemon`:
-
-``` r
-head(USArrests)
-```
-
-|            |  Murder|  Assault|  UrbanPop|  Rape|
-|------------|-------:|--------:|---------:|-----:|
-| Alabama    |    13.2|      236|        58|  21.2|
-| Alaska     |    10.0|      263|        48|  44.5|
-| Arizona    |     8.1|      294|        80|  31.0|
-| Arkansas   |     8.8|      190|        50|  19.5|
-| California |     9.0|      276|        91|  40.6|
-| Colorado   |     7.9|      204|        78|  38.7|
-
-See `knit_print.data.frame`.
+Temporarily under maintaince. But do see `lemon_print_data_frame`.
 
 To do:
 ------
 
+-   Update reposition\_legend to accept tl or tlbr coordinates in panel argument.
+-   Re-define knit\_print functions to be actively called, see knitr\_hook.
 -   Add `.dot` functions to knitr.
-

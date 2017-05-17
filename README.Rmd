@@ -11,11 +11,12 @@ knitr::opts_chunk$set(
   fig.path = "README/",
   cache.path = "README/cache/",
   cache = TRUE,
-  autodep=TRUE
+  autodep=TRUE,
+  cache.rebuild = TRUE
 )
 ```
 
-# Lemon --- yet another ggplot2 extension package
+# Lemon --- Freshing up your ggplots
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and 
 [knitr](https://yihui.name/knitr/) extension package.
@@ -24,7 +25,7 @@ This package contains functions primarily in these domains of ggplot2:
 
 ```{r domain_axis_lines,include=FALSE,fig.height=0.5,fig.width=0.5}
 library(ggplot2)
-library(splot)
+library(lemon)
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point(size=0.1) + 
   coord_capped_cart(bottom=brackets_horisontal(), left='both') +
@@ -149,31 +150,12 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 
 ## Extensions to knitr
 
-We automatically load knitr's `knit_print` for 
-data frames and dplyr tables to provide automatic pretty printing of
-these using `kable`:
-
-Before loading `splot` package:
-```{r knit_print_disable,include=FALSE}
-options(knit_print=FALSE)
-```
-```{r}
-data(USArrests)
-head(USArrests)
-```
-
-After loading `splot`:
-```{r knit_print_enable,include=FALSE}
-options(knit_print=TRUE)
-```
-```{r}
-head(USArrests)
-```
-
-See `knit_print.data.frame`.
+Temporarily under maintaince. But do see `lemon_print_data_frame`.
 
 
 ## To do:
 
+* Update reposition_legend to accept tl or tlbr coordinates in panel argument.
+* Re-define knit_print functions to be actively called, see knitr_hook.
 * Add `.dot` functions to knitr.
 
