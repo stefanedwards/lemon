@@ -1,5 +1,5 @@
 ---
-title: \pkg{Lemon} --- yet another ggplot2 extension package
+title: \pkg{lemon} --- Freshing up your ggplots
 author:
   - name: Stefan McKinnon Edwards
     affiliation: The Roslin Insititute, University of Edinburgh
@@ -13,9 +13,13 @@ abstract: >
   An abstract of less than 150 words.
 preamble: >
   % Any extra latex you need in the preamble
+  \usepackage{caption}
   \newcommand{\gtable}{\code{`gtable'}}
   \newcommand{\ggplot}{\code{`ggplot'}}
-output: rticles::rjournal_article
+output: 
+  rticles::rjournal_article:
+    md_extensions: +latex_macros-tex_math_single_backslash
+
 ---
 
 
@@ -24,9 +28,9 @@ library(knitr)
 library(ggplot2)
 library(lemon)
 
-knitr::opts_chunk$set(fig.height=4, fig.width=6, fig.path='figures/',
-                      cache=TRUE, autodep = TRUE, cache.path = 'cache/')
-load_lemon_print()
+knitr::opts_knit$set(out.format='latex')
+knitr::opts_chunk$set(fig.width=5.5, fig.height=5.5/4*3, fig.path='edwards2017-',
+                      cache=FALSE, autodep = TRUE, cache.path = 'cache/')
 ```
 
 \section{Introduction}
@@ -65,7 +69,7 @@ to draw where.
 The majority of the \pkg{lemon} package's functions however works on the 
 graphical objects that describe what is being drawn. 
 These graphic objects of the \CRANpkg{grid} package, 
-or grobs \citep{Murell2005}, appear after ggplot2 has done 
+or grobs \citep{Murrell2005}, appear after ggplot2 has done 
 its magic on translating the grammar of graphics into instructions of what to draw where.
 
 We will only give a brief introduction to grob objects, but refer to 
@@ -88,7 +92,7 @@ printable object (see function \code{ggplot\_build} in ggplot2 package).
 This object is a grob table -- a gtable object -- that is drawn by the
 'grid' package \citep{Murrell2005,Murrell2011} (but you as a user do not necessarily see this).
 
-To get us started, we define a plot using ggplot2 of a simple scatter plot:
+To get us started, we create a simple scatter plot using ggplot2:
 
 ```{r}
 library(ggplot2)
@@ -96,33 +100,30 @@ p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + labs(title='A scatter plot')
 g <- ggplotGrob(p)
 ```
 
-\begin{figure}[htbp]
-  \centering
-```{r p_object,echo=FALSE}
+The first object, \code{p}, is a ggplot object, and the second object, \code{g}, 
+a gtable object. 
+Calling to print the objects, implicitly by calling the object from the command 
+line of R or directly with \code{print}, we obtain the output given in figure 
+\ref{fig:p_object} for the ggplot object, and below / figure \ref{fig:g_object} for the gtable object:
+
+```{r p_object}
 print(p)
 ```
-  \caption{Printing a simple ggplot object.}
-  \label{fig:p_object}
-\end{figure}
+\captionof{figure}{Printing the ggplot object.}
+\label{fig:p_object}
 
-
-The first object, `p`, is a ggplot object, and the second object, `g`, a gtable
-object. 
-Calling to print the objects, implicitly by calling the object from the command line
-of R or directly with `print`, we obtain the output given in figure \ref{fig:p_object} 
-for the ggplot object, and the following for the gtable object:
-
-```{r g_object,fig.label='fig:g_object',fig.cap='Printing the gtable object.'}
+```{r g_object}
 print(g)
 ```
-
+  \captionof{figure}{Printing the gtable object.}
+  \label{fig:g_object}
 
 The gtable object is of a completely different nature than the 
 ggplot object.
 Where the ggplot object describes the mapping between variables, geoms, and 
 scales, the gtable object positions the plot's features in a table-like structure.
 Each feature of the plot, i.e\. the background, an axis, or the actual graph ('panel')
-are displayed on a row.
+are each displayed on a row.
 
 \subsection{The gtable object}
 
@@ -148,28 +149,28 @@ A seen on figure \ref{fig:g_object}, \code{panel} occurs in the
 `r scales::ordinal(which(g$layout$name == 'panel'))` row, 
 and thus `r scales::ordinal(which(g$layout$name == 'panel'))` grob in the grob list.
 The three first columns in figure \ref{fig:g_object} are compiled from 
-the layout data frame, which can be accessed via \code{\$layout}, and is for the panel,
+the \code{layout} data frame and is for the panel,
 
-```{r render=normal_print}
+
+```{r}
 subset(g$layout, name == 'panel')
 ```
 
-with the first four columns corresponding to top, left, bottom, and right coordinate.
-The grob can be drawn across multiple cells, covering both multiple rows and / or
-multiple rows. 
-The top-left cell is determined by the top and left coordinate (\code{t} and \code{l}), while the 
-bottom-right cell is determined by the bottom and right coordinate (\code{b} and \code{r}).
-Grobs are drawn on top of each other, starting with lowest z-index, as given 
+A grob can be drawn across multiple cells, covering both multiple rows and / or
+multiple rows.
+This span is specified by the top-left cell and bottom-right cell, 
+corrosponding to the \code{t}, \code{l}, \code{b}, and \code{r} coordinates above.
+Grobs can also drawn on top of each other, starting with lowest z-index, as given 
 by the \code{z} column.
-Enabling 'clipping', by setting \code{clip} to \code{'on'}, 
+When 'clipping' is enabled, by setting \code{clip} to \code{'on'}, 
 anything drawn outside the spanned cells is hidden.
 The \code{name} column allows us to locate the grobs for futher manipulation.
 
 
 We mention shortly here, that a grob in this context can be a simple grob primitive 
-such as a rectangle (see the background) or a \code{zeroGrob} (a blank placeholder),
-or a collection of grobs such as the panel and axes (\code{absoluteGrob} and \code{titleGrob}
-are both specialised classes of grid's \code{gTree}). 
+such as a rectangle (see the background) or a \code{'zeroGrob'} (a blank placeholder),
+or a collection of grobs such as the panel and axes (\code{'absoluteGrob'} and \code{'titleGrob'}
+are both specialised classes of grid's \code{'gTree'}). 
 
 For \code{panel}, the grob too is a collection of grobs, in the form of a \code{gTree}
 with a list of children grobs:
@@ -196,7 +197,7 @@ A quick glance at the widths of \code{g} tells us a lot:
 g$widths
 ```
 
-These can be compared to the columns of (figure with gtable_show_names);
+These can be compared to the columns of figure \ref{fig:gtable_show_names};
 the first and last are the plot's margins, given with \code{theme(plot.margin)}.
 The second width, \code{1grobwidth}, refers to the actual width of the y-axis title
 'mpg'. The third width, \code{sum(1grobwidth, 2.75pt)}, is literally the width \emph{plus}
@@ -235,7 +236,8 @@ and appends \code{grobs} to the \code{x\$grobs} list.
 \emph{Replacing a grob} is however more tricky. 
 To do so, we have to work out which index in the \code{grobs} list corresponds 
 to the feature that is to be replaced. 
-The following example replaces the x-axis label with a pink box.
+The following example demonstrates this and then replaces the x-axis label with 
+a pink box.
 
 ```{r}
 g <- ggplotGrob(p)
@@ -243,8 +245,13 @@ i <- which(g$layout$name == 'xlab-b')
 g$grobs[[i]] <- roundrectGrob(r=unit(0.5, 'snpc'), gp=gpar(fill='pink', col='black'))
 grid.draw(g)
 ```
+\captionof{figure}{Replacing the x-axis label grob with a pink square.}
+\label{fig:replace_grob}
 
-One could naturally just have added the grob with \code{gtable\_add\_grob}.
+
+One could naturally just have added the grob with \code{gtable\_add\_grob},
+placing it on top of the x-axis label. But if the grob was not filled with a 
+solid colour, the label would still appear.
 The example however also illustrates how to \emph{extract} a grob, if the grob
 needed altering.
 
@@ -260,7 +267,7 @@ and we can proceed to update the widths.
 
 ```{r}
 g <- ggplotGrob(p)
-(layout <- subset(g$layout, name == 'panel'))
+layout <- subset(g$layout, name == 'panel')
 g$widths[[layout$l]] <- unit(5, 'cm')
 grid::grid.draw(g)
 ```
@@ -271,6 +278,45 @@ one by one, or by building a new \code{`unit.list'} object entirely.
 
 \section{Demonstration}
 
+The \pkg{lemon} package has functions for working with the legend (or 'guide-box') and axis lines.
+
+\subsection{Legends}
+
+The primary contribution here is the function \code{reposition\_legend}.
+The default behaviour for \CRANpkg{ggplot2} is to place the legend in one of
+the four margins of the plot.
+Repositioning the legend to occur within the panel can be done by supplying 
+a two-element numeric vector, specifying the position \emph{relative to the 
+entire plot}, to \code{theme(legend.position)}.
+This has the unfortunate effect that the legend is not positioned correctly after
+changing any size of the plot (e.g.\ resizing the plot's size or changing the font sizes).
+
+The function \code{reposition\_legend} allows us to position the relative to
+any cell of the gtable. In order to do so, it forces the plot into a \gtable
+object, which is always returned.
+
+```{r reposition_legend}
+reposition_legend(p %+% aes(color=cyl), position = 'top right')
+```
+\captionof{figure}{Repositioning the legend on to the main panel.}
+\label{fig:reposition_legend}
+
+The appearences of the legend is not modified in any way, thus modifying it is
+done by the usual methods of \CRANpkg{ggplot2}. These could be
+\code{theme(legend.direction)} or \code{guide_legend(...)}.
+We also highlight \code{theme(legend.box.background)} when having 
+multiple legends as the component \code{theme(legend.background)} only affects
+the background of each singular legend, not the area spanning all legends.
+
+```{r}
+reposition_legend(p %+% aes(color=cyl, size=qsec), position = 'top right')
+x <- p %+% aes(color=cyl, size=qsec)
+g <- g_legend(x)
+x <- reposition_legend(x, position='bottom left', legend=g$grobs[[2]], plot=FALSE)
+x <- reposition_legend(x, position='top right', legend=g$grobs[[1]], plot=FALSE)
+grid.draw(x)
+```
+
 
 \section{Summary}
 
@@ -279,6 +325,9 @@ one by one, or by building a new \code{`unit.list'} object entirely.
 
 This article was initiated with the `rticles` package \citep{rticles}.
 
+The author, SME, was funded by the MRC (FARSPhase: a Flexible, widely Applicable, Robust, and Scalable phasing algorithm for human genetics, grant no. MR/M000370/1),
+while working on this software.
 
 This file is only a basic article template. For full details of _The R Journal_ style and information on how to prepare your article for submission, see the [Instructions for Authors](https://journal.r-project.org/share/author-guide.pdf).
+
 \bibliography{edwards2017}
