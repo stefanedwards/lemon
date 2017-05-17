@@ -122,6 +122,5 @@ Temporarily under maintaince. But do see `lemon_print_data_frame`.
 To do:
 ------
 
--   Update reposition\_legend to accept tl or tlbr coordinates in panel argument.
 -   Re-define knit\_print functions to be actively called, see knitr\_hook.
 -   Add `.dot` functions to knitr.
