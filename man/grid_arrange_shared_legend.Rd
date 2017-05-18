@@ -3,12 +3,6 @@
 \name{grid_arrange_shared_legend}
 \alias{grid_arrange_shared_legend}
 \title{Share a legend between multiple plots}
-\source{
-Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
-  (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}),
-  and further improved by \code{baptiste} at
-  \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}
-}
 \usage{
 grid_arrange_shared_legend(..., ncol = length(list(...)), nrow = 1,
   position = c("bottom", "right", "top", "left"), plot = TRUE)
@@ -27,11 +21,12 @@ The legend is taken from the first argument.}
 new page.}
 }
 \value{
-gtable of combined plot, invisibly.
+gtable of combined plot, invisibly. 
+  Draw  gtable object using \code{\link[grid]{grid.draw}}.
 }
 \description{
 Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}},
-and places legend underneath.
+and places legend in a margin.
 }
 \examples{
 library(ggplot2)
@@ -42,6 +37,13 @@ p3 <- qplot(color, price, data = dsamp, colour = clarity)
 p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
+}
+\author{
+Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
+  (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}),
+  and further improved by \href{http://baptiste.github.io/}{Baptiste Auguié}  at
+  \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}.
+  Stefan McKinnon Edwards added left and top margins.
 }
 \seealso{
 \code{\link{g_legend}}, \code{\link{reposition_legend}}

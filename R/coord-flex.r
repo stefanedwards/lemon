@@ -45,34 +45,34 @@ NULL
 #' p <- ggplot(mtcars, aes(disp, wt)) +
 #'  geom_point() +
 #'  geom_smooth() + theme(panel.border=element_blank(), axis.line=element_line())
-#' 
+#'
 #' # We desire that left axis does not extend beyond '6'
 #' # and the x-axis is unaffected
 #' p + coord_capped_cart(left='top')
-#' 
+#'
 #' # Specifying 'bottom' caps the axis with at most the length of 'gap'
 #' p + coord_capped_cart(left='top', bottom='none')
-#' 
-#' # We can specify a ridiculus large 'gap', but the lines will always 
+#'
+#' # We can specify a ridiculus large 'gap', but the lines will always
 #' # protrude to the outer most ticks.
 #' p + coord_capped_cart(left='top', bottom='none', gap=2)
-#' 
+#'
 #' # We can use 'capped_horisontal' and 'capped_vertical' to specify for
 #' # each axis individually.
 #' p + coord_capped_cart(left='top', bottom=capped_horisontal('none', gap=2))
-#' 
+#'
 #' # At this point we might as well drop using the short-hand and go full on:
 #' p + coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('left'))
-#' 
+#'
 #' # Also works with secondary axes:
 #' p + scale_y_continuous(sec.axis=sec_axis(~5*., name='wt times 5')) +
-#'   coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), 
+#'   coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'),
 #'   right=capped_vertical('both', gap=0.02))
 #'
 #'
 #' # Supports the usual 'coord_fixed':
 #' p + coord_flex_fixed(ratio=1.2, bottom=capped_horisontal('right'))
-#' 
+#'
 #' # and coord_flip:
 #' p + coord_flex_flip(ylim=c(2,5), bottom=capped_horisontal('right'))
 coord_flex_cart <- function(xlim = NULL,
@@ -147,8 +147,8 @@ coord_flex_fixed <- function(ratio = 1,
 # function the coord_flex classes were given.
 flex_render_axis_h <- function(self, scale_details, theme) {
   arrange <- scale_details$x.arrange %||% c("primary", "secondary")
-  top <- self$top %|W|% ggplot2:::render_axis
-  bottom <- self$bottom %|W|% ggplot2:::render_axis
+  top <- self$top %|W|% render_axis
+  bottom <- self$bottom %|W|% render_axis
   list(
     top = top(scale_details, arrange[1], "x", "top", theme),
     bottom = bottom(scale_details, arrange[2], "x", "bottom", theme)
@@ -156,8 +156,8 @@ flex_render_axis_h <- function(self, scale_details, theme) {
 }
 flex_render_axis_v <- function(self, scale_details, theme) {
   arrange <- scale_details$y.arrange %||% c("primary","secondary")
-  left <- self$left %|W|% ggplot2:::render_axis
-  right <- self$right %|W|% ggplot2:::render_axis
+  left <- self$left %|W|% render_axis
+  right <- self$right %|W|% render_axis
   list(
     left = left(scale_details, arrange[1], 'y', 'left', theme),
     right = right(scale_details, arrange[2], 'y', 'right', theme)
@@ -166,7 +166,7 @@ flex_render_axis_v <- function(self, scale_details, theme) {
 
 # ggproto objects -------------------------------------------------------------
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL
@@ -178,7 +178,7 @@ CoordFlexCartesian <- ggplot2::ggproto('CoordFlexCartesian',
                               render_axis_v = flex_render_axis_v
 )
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL
@@ -189,7 +189,7 @@ CoordFlexFlipped <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::
                             render_axis_v = flex_render_axis_v
 )
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL

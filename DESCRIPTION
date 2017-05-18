@@ -1,13 +1,22 @@
 Package: lemon
 Type: Package
-Title: Lemon - yet another ggplot2 extension package
-URL: https://github.com/stefanedwards/splot
-BugReports: https://github.com/stefanedwards/splot/issues
-Version: 0.2.0.9000
-Author@R: person(c('Stefan','McKinnon'), 'Edwards', email='sme@iysik.com',
-    role=c('aut','ctb','cre'))
-Author: Stefan McKinnon Edwards <sme@iysik.com> [aut, ctb, cre]
-Maintainer: Stefan McKinnon Edwards <sme@iysik.com>
+Title: Lemon - Freshing up your ggplots
+URL: https://github.com/stefanedwards/lemon
+BugReports: https://github.com/stefanedwards/lemon/issues
+Version: 0.3.0
+Date: 2017-05-18
+Authors@R: c(
+    person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
+    role=c('aut','ctb','cre')),
+    person('Baptiste','Auguie', role='ctb',
+    comment='For g_legend and grid_arrange_shared_legend'),
+    person('Shaun','Jackman', role='ctb',
+    comment='For grid_arrange_shared_legend'),
+    person("Hadley", "Wickham", , "hadley@rstudio.com", "ctb",
+    comment='ggplot2 functions'),
+    person("Winston", "Chang", , "winston@rstudio.com", "ctb",
+    comment='ggplot2 functions')
+    )
 Description: Functions for working with ggplot's legends and axis lines,
     with some extended facets, and knitr extensions.
 Depends:
@@ -30,10 +39,13 @@ Collate:
     'coord-flex.r'
     'facet-rep-lab.r'
     'facet-wrap.r'
-    'knit_print.r'
+    'gtable_show-.r'
+    'guides-axis.r'
     'legends.r'
     'lemon.r'
+    'lemon_print.r'
 Suggests:
     rmarkdown,
-    stringr
+    stringr,
+    dplyr
 VignetteBuilder: knitr

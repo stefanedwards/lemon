@@ -1,12 +1,22 @@
-# lemon 0.2.0.9000
+# lemon 0.3.0.9000
 
-* TODO: Copy in non-exported ggplot2 and gtable functions in preparation for 
-CRAN submission.
+* **TODO:** Create `grobHeight` on gtables.
 
+* **TODO:** Create CITATION file.
+
+* **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
+
+# lemon 0.3.0
+
+* `knit_print` functions are removed (without deprecating them) and replaced
+  by `lemon_print`.
+  `lemon_print` has been extended to also work on tables (i.e. a summary), but
+  does not work nicely for cross-tabulation tables.
 
 # lemon 0.2.0
 
 * Legend functions (`g_legend`, `grid_arrange_shared_legend`, `reposition_legend`).
+  Two first functions provided by Baptiste Auguié and Shaun Jackson.
 
 # lemon 0.1.0
 
@@ -17,4 +27,4 @@ Cartesian coordinates (`coord_capped_cart`, `coord_capped_flip`,
 
 * Facets that repeat the labels (`facet_rep_grid`, `facet_rep_wrap`).
 
-* `knitr` printing functions (`knit_print.data.frame`, etc.).
+* `knitr` printing functions (`knit_print.data.frame`, etc.) [REMOVED per 0.2.9000].

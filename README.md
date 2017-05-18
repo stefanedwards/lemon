@@ -117,10 +117,11 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 Extensions to knitr
 -------------------
 
-Temporarily under maintaince. But do see `lemon_print_data_frame`.
+`knitr` allows S3 methods for `knit_print` for specialised printing of objects. We provide `lemon_print` for data frames, dplyr tables, and summary objects, that can be used to render the output, without mucking up the code source. An added benefit is that we can use RStudio's inline data frame viewer:
+
+![Viewing data frames in R Notebooks in RStudio](vignettes/lemon_print_capture.png)
 
 To do:
 ------
 
--   Re-define knit\_print functions to be actively called, see knitr\_hook.
 -   Add `.dot` functions to knitr.
