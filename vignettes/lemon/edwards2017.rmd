@@ -9,6 +9,7 @@ author:
     - EH25 9RG
     - Scotland, UK
     email:  sme@iysik.com
+    orcid: 0000-0002-4628-8148
 abstract: >
   An abstract of less than 150 words.
 preamble: >
@@ -30,12 +31,12 @@ library(lemon)
 
 knitr::opts_knit$set(out.format='latex')
 knitr::opts_chunk$set(fig.width=5.5, fig.height=5.5/4*2.5, fig.path='edwards2017-',
-                      cache=TRUE, autodep = TRUE, cache.path = 'cache/')
+                      cache=FALSE, autodep = TRUE, cache.path = 'cache/')
 ```
 
 \section{Introduction}
 
-The \CRANpkg{ggplot2} package \citep{ggplot2} which utilises the 'grammar of graphics' to
+The \CRANpkg{ggplot2} package \citep{ggplot2009,ggplot2016} which utilises the 'grammar of graphics' to
 describe a plot is hugely popular. 
 Since version 2.0, it has featured an official extension mechanism that has
 spawned a number of packages that extends the capabilities of ggplot2.
@@ -152,9 +153,13 @@ The three first columns in figure \ref{fig:g_object} are compiled from
 the \code{layout} data frame and is for the panel,
 
 
-```{r}
+```{r render=lemon_print,format='latex'}
 subset(g$layout, name == 'panel')
 ```
+\begin{verbatim}
+#> t l b r z clip  name
+#> 5 6 4 6 4 1   on panel
+\end{verbatim}
 
 A grob can be drawn across multiple cells, covering both multiple rows and / or
 multiple rows.
@@ -178,6 +183,16 @@ with a list of children grobs:
 ```{r}
 str(g$grobs[[which(g$layout$name == 'panel')]], max.level=1)
 ```
+\begin{verbatim}
+#> List of 5
+#>  $ name         : chr "panel-1.gTree.225"
+#>  $ gp           : NULL
+#>  $ vp           : NULL
+#>  $ children     :List of 5
+#>   ..- attr(*, "class")= chr "gList"
+#>  $ childrenOrder: chr [1:5] "grill.gTree.223" "NULL" "geom_point.points.210" "NULL" ...
+#>  - attr(*, "class")= chr [1:3] "gTree" "grob" "gDesc"
+\end{verbatim}
 
 
 Although the order of the layout data frame and grobs list are 
@@ -201,7 +216,7 @@ These can be compared to the columns of figure \ref{fig:gtable_show_names};
 the first and last are the plot's margins, given with \code{theme(plot.margin)}.
 The second width, \code{1grobwidth}, refers to the actual width of the y-axis title
 'mpg'. The third width, \code{sum(1grobwidth, 2.75pt)}, is literally the width \emph{plus}
-2.75 pt, with the width here being those of the y-axis labels. 
+2.75\,pt, with the width here being those of the y-axis labels. 
 We will in general see grob-widths and grob-heights for text elements.
 The fourth width, \code{1null}, simply expands into the available space and is here 
 used to maximise the width of the actual graphing area.
@@ -239,7 +254,7 @@ to the feature that is to be replaced.
 The following example demonstrates this and then replaces the x-axis label with 
 a pink box.
 
-```{r}
+```{r replace_grob}
 g <- ggplotGrob(p)
 i <- which(g$layout$name == 'xlab-b')
 g$grobs[[i]] <- roundrectGrob(r=unit(0.5, 'snpc'), gp=gpar(fill='pink', col='black'))
@@ -265,12 +280,14 @@ In the following example, we find the row in the layout data frame corresponding
 The relevant column is then specified by the \code{l} coordinate,
 and we can proceed to update the widths.
 
-```{r}
+```{r change_width}
 g <- ggplotGrob(p)
 layout <- subset(g$layout, name == 'panel')
 g$widths[[layout$l]] <- unit(5, 'cm')
 grid::grid.draw(g)
 ```
+\captionof{figure}{The scatter plot with the width of the panel set to 5\,cm.}
+\label{fig:change_width}
 
 As \code{g\$widths} is a \code{unit.list} object, it requires using double square brackets
 for replacing an element. This also implies changing the widths must be done
@@ -379,25 +396,74 @@ grid_arrange_shared_legend(p1, p2, position='bottom')
 }
 \label{fig:brackets}
 
-\emph{To do:} Explain features of brackets (direction, height, style taken from theme),
-and capped lines (coords, flexible coords), added theme for polishing, etc.
+The \code{coord} functions are analogous to \CRANpkg{ggplot2}'s Cartesian Coordinate
+functions (\code{coord\_cartesian}, \code{coord\_flip}, and \code{coord\_fixed}).
+The \code{coord\_capped\_\*} functions are wrappers for \code{coord\_flex\_\*},
+which in turn are classes inheriting from the relevant Cartesian \code{Coord} 
+classes.
+The difference between our \code{coord\_flex\_\*} and their super classes is 
+how that ours accept user defined functions for rendering the axes
+such as those returned from \code{capped\_horisontal} or \code{brackets\_horisontal}.
+
+The appearences of the customised axis lines are taken from their corresponding
+components of \code{theme} for consistency.
+The bracket functions accepts arguments to change the direction of the end `ticks',
+as well as the length of the bracket and the length of the end `ticks'.
 
 
 The use of axis lines to be more informative of the displayed data has been
-shown in \citep[p.\ 130]{Tufte2001} with \dfn{range-frames}, where axis lines
+shown in \citep[p.\,130]{Tufte2001} with \dfn{range-frames}, where axis lines
 are limited to the range of the displayed data.
 This has been implemented in \CRANpkg{ggthemes} \citep{ggthemes} with
-\code{geom_rangeframe}.
+\code{geom\_rangeframe}.
 
 Our capped axis lines differs from these by intending to display the valid range
-the values may take. E.g.\ correlations where the value cannot exceed \pm 1.
+the values may take. E.g.\ correlations where the value cannot exceed \textpm\,1.
 
-\CRANpkg{ggplot2}'s facets however avoid displaying redundant axis lines and 
+
+
+
+\subsection{Facets with repeated axis lines}
+
+\CRANpkg{ggplot2}'s facets avoid displaying redundant axis lines and 
 labels, when the scale is identical along a row or column.
+This is mostly a good idea, but as demonstrated, we have put some effort into how
+the axis lines are drawn and as such, we want to have them displayed on all
+facet panels.
 
+
+The function \code{facet\_rep\_grid} is demonstrated in figure \ref{fig:facet_rep}.
+As with the \code{coord\_flex\_\*} functions, the facets with repeated axis lines
+are analogous to \CRANpkg{ggplot2}'s facet functions 
+(\code{facet\_grid} and \code{facet\_wrap}), and are implemented by subclassing
+the corresponding classes using the new extension mechanism that came with
+\CRANpkg{ggplot2} v.\ 2.2.0.
+
+```{r facet_rep}
+d <- ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(colour = clarity)) + 
+  coord_capped_cart(bottom='none', left='bottom') +
+  facet_grid(.~cut) + theme_bw() + 
+  theme(panel.border = element_blank(), axis.line = element_line(),
+        legend.position='bottom')
+d + facet_rep_grid(.~cut)
+```
+\captionof{figure}{Faceting with axis lines repeated across all panels.}
+\label{fig:facet_rep}
 
 
 \section{Summary}
+
+\subsection{Availability}
+
+The \pkg{lemon} package is currently available on GitHub and can be installed as
+
+\begin{verbatim}
+devtools::install_github("stefanedwards/lemon")
+\end{verbatim}
+
+The package is being prepared for submission to CRAN.
+
 
 
 \subsection{Acknowledgements}
