@@ -5,7 +5,8 @@
 \title{Reposition a legend onto a panel}
 \usage{
 reposition_legend(aplot, position = NULL, legend = NULL, panel = "panel",
-  x = NULL, y = NULL, just = NULL, plot = TRUE)
+  x = NULL, y = NULL, just = NULL, name = "guide-box", clip = "on",
+  z = Inf, plot = TRUE)
 }
 \arguments{
 \item{aplot}{a ggplot2 or gtable object.}
@@ -25,6 +26,9 @@ this is a ggplot2 object.}
 
 \item{just}{'Anchor point' of legend; it is this point of the legend that is
 placed at the \code{x} and \code{y} coordinates.}
+
+\item{name, clip, z}{Parameters forwarded to 
+\code{\link[gtable]{gtable_add_grob}}.}
 
 \item{plot}{Logical, when \code{TRUE} (default), draws plot with legend
 repositioned on a new page.}
@@ -48,8 +52,11 @@ Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
 \code{\link{gtable_show_names}} to display all the names of the gtable 
 object.
 
-\code{panel} takes multiple names, and will then use these component's 
+\code{panel} takes multiple names, and will then use these components'
 extremes for placing the legend.
+
+If \code{panel} is an integer vector of length 2 or 4, these elements are
+used directly for top-left and bottom-right coordinates.
 }
 \examples{
 library(ggplot2)

@@ -11,11 +11,12 @@ knitr::opts_chunk$set(
   fig.path = "README/",
   cache.path = "README/cache/",
   cache = TRUE,
-  autodep=TRUE
+  autodep=TRUE,
+  cache.rebuild = TRUE
 )
 ```
 
-# Lemon --- yet another ggplot2 extension package
+# Lemon --- Freshing up your ggplots
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and 
 [knitr](https://yihui.name/knitr/) extension package.
@@ -149,29 +150,41 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 
 ## Extensions to knitr
 
-We automatically load knitr's `knit_print` for 
-data frames and dplyr tables to provide automatic pretty printing of
-these using `kable`:
+`knitr` allows S3 methods for `knit_print` for specialised printing of objects.
+We provide `lemon_print` for data frames, dplyr tables, and summary objects, 
+that can  be used to render the output, without mucking up the code source.
+An added benefit is that we can use RStudio's inline data frame viewer:
 
-Before loading `lemon` package:
-```{r knit_print_disable,include=FALSE}
-options(knit_print=FALSE)
-```
-```{r}
-data(USArrests)
-head(USArrests)
-```
+![Viewing data frames in R Notebooks in RStudio](vignettes/lemon_print_capture.png)
 
-After loading `lemon`:
-```{r knit_print_enable,include=FALSE}
-options(knit_print=TRUE)
-```
-```{r}
-head(USArrests)
+
+### Relative file paths made safe
+
+Using `knitr` for computations that use external binaries and/or write temporary
+files, setting the root directory for `knitr`'s knitting saves the user from a
+file mess. E.g.
+
+```r
+knitr::opts_knit$set(root.dir=TMPDIR)
 ```
 
-See `knit_print.data.frame`.
+But we want to keep our file paths relative for the scripts / document to be 
+transferable. We introduce the `.dot` functions:
 
+```r
+TMPDIR=tempdir()
+
+.data <- .dot('data')
+
+knitr_opts_knit$set(root.dir=TMPDIR)
+```
+
+We can then load our data file using the created `.data` function,
+even though the chunk is executed from TMPDIR.
+
+```r
+dat <- read.table(.data('mydata.tab'))
+```
 
 ## To do:
 

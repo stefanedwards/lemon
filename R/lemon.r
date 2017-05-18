@@ -32,7 +32,9 @@
 #' data frames and dplyr tables to provide automatic pretty printing of
 #' data frame using \code{\link[knitr]{kable}}.
 #'
-#' See \code{\link{load_lemon_print}} or \code{\link{lemon_print_data_frame}}.
+#' See \code{\link{lemon_print}} or \code{vignette('lemon_print', 'lemon')}.
+#'
+#' Relative paths safe from hanging directory: \code{\link{.dot}}.
 #'
 #' @docType package
 #' @name lemon

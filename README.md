@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Lemon --- yet another ggplot2 extension package
-===============================================
+Lemon --- Freshing up your ggplots
+==================================
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
@@ -32,17 +32,6 @@ We can display a limit on the axes range.
 
 ``` r
 library(lemon)
-#> 
-#> Attaching package: 'lemon'
-#> The following objects are masked from 'package:splot':
-#> 
-#>     brackets_horisontal, brackets_horizontal, brackets_vertical,
-#>     capped_horisontal, capped_vertical, coord_capped_cart,
-#>     coord_capped_flip, coord_flex_cart, coord_flex_fixed,
-#>     coord_flex_flip, CoordFlexCartesian, CoordFlexFixed,
-#>     CoordFlexFlipped, facet_rep_grid, facet_rep_wrap,
-#>     FacetGridRepeatLabels, FacetWrapRepeatLabels, g_legend,
-#>     grid_arrange_shared_legend, reposition_legend
 ggplot(mtcars, aes(x=cyl, y=mpg)) + 
   geom_point() + 
   coord_capped_cart(bottom='both', left='none') +
@@ -128,38 +117,33 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 Extensions to knitr
 -------------------
 
-We automatically load knitr's `knit_print` for data frames and dplyr tables to provide automatic pretty printing of these using `kable`:
+`knitr` allows S3 methods for `knit_print` for specialised printing of objects. We provide `lemon_print` for data frames, dplyr tables, and summary objects, that can be used to render the output, without mucking up the code source. An added benefit is that we can use RStudio's inline data frame viewer:
 
-Before loading `lemon` package:
+![Viewing data frames in R Notebooks in RStudio](vignettes/lemon_print_capture.png)
 
-``` r
-data(USArrests)
-head(USArrests)
-#>            Murder Assault UrbanPop Rape
-#> Alabama      13.2     236       58 21.2
-#> Alaska       10.0     263       48 44.5
-#> Arizona       8.1     294       80 31.0
-#> Arkansas      8.8     190       50 19.5
-#> California    9.0     276       91 40.6
-#> Colorado      7.9     204       78 38.7
-```
+### Relative file paths made safe
 
-After loading `lemon`:
+Using `knitr` for computations that use external binaries and/or write temporary files, setting the root directory for `knitr`'s knitting saves the user from a file mess. E.g.
 
 ``` r
-head(USArrests)
+knitr::opts_knit$set(root.dir=TMPDIR)
 ```
 
-|            |  Murder|  Assault|  UrbanPop|  Rape|
-|------------|-------:|--------:|---------:|-----:|
-| Alabama    |    13.2|      236|        58|  21.2|
-| Alaska     |    10.0|      263|        48|  44.5|
-| Arizona    |     8.1|      294|        80|  31.0|
-| Arkansas   |     8.8|      190|        50|  19.5|
-| California |     9.0|      276|        91|  40.6|
-| Colorado   |     7.9|      204|        78|  38.7|
+But we want to keep our file paths relative for the scripts / document to be transferable. We introduce the `.dot` functions:
 
-See `knit_print.data.frame`.
+``` r
+TMPDIR=tempdir()
+
+.data <- .dot('data')
+
+knitr_opts_knit$set(root.dir=TMPDIR)
+```
+
+We can then load our data file using the created `.data` function, even though the chunk is executed from TMPDIR.
+
+``` r
+dat <- read.table(.data('mydata.tab'))
+```
 
 To do:
 ------

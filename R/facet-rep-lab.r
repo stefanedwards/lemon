@@ -39,7 +39,7 @@ remove_labels_from_axis <- function(axisgrob) {
   axisgrob
 }
 
-#' @rdname splot-ggproto
+#' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
 #' @usage NULL

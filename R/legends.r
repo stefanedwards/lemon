@@ -168,8 +168,11 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' \code{\link{gtable_show_names}} to display all the names of the gtable 
 #' object.
 #'
-#' \code{panel} takes multiple names, and will then use these component's 
+#' \code{panel} takes multiple names, and will then use these components'
 #' extremes for placing the legend.
+#' 
+#' If \code{panel} is an integer vector of length 2 or 4, these elements are
+#' used directly for top-left and bottom-right coordinates.
 #'
 #' @param aplot a ggplot2 or gtable object.
 #' @param position Where to place the legend in the panel.
@@ -182,6 +185,8 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' @param y vertical coordiante of legend, with 0 at bottom.
 #' @param just 'Anchor point' of legend; it is this point of the legend that is
 #'             placed at the \code{x} and \code{y} coordinates.
+#' @param name,clip,z Parameters forwarded to 
+#'             \code{\link[gtable]{gtable_add_grob}}.
 #' @param plot Logical, when \code{TRUE} (default), draws plot with legend
 #'             repositioned on a new page.
 #' @return
@@ -214,6 +219,9 @@ reposition_legend <- function(aplot,
                              x=NULL,
                              y=NULL,
                              just=NULL,
+                             name='guide-box',
+                             clip='on',
+                             z=Inf,
                              plot=TRUE) {
 
   # Work out positioning
@@ -247,13 +255,47 @@ reposition_legend <- function(aplot,
   if (!inherits(aplot, 'gtable'))
     aplot <- ggplot_gtable(ggplot_build(aplot + theme(legend.position='hidden')))
 
+  # Update name if already found. No idea why this is necessary.
+  if (any(grepl(name, aplot$layout$name))) {
+    add <- gregexpr(paste0('(?!', name, '-?)([[:digit:]]+)'), aplot$layout$name, perl = TRUE)
+    add <- regmatches(aplot$layout$name, add)
+    add <- as.integer(unlist(add))
+    if (length(add) > 0) {
+      add <- max(add) + 1
+    } else {
+      add <- 1
+    }
+    name <- paste(name, add, sep='-')
+  }
+  
   legend$vp <- viewport(x=x, y=y, just=just,  width=sum(legend$widths), height=sum(legend$heights))
-
-  pn <- which(aplot$layout$name %in% panel)
-  if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
-
-  aplot <- with(aplot$layout[pn,], gtable_add_grob(aplot, legend, t=min(t), l=min(l), r=max(r), b=max(b)))
-
+  legend$name <- name
+  
+  if (is.character(panel)) {
+    pn <- which(aplot$layout$name %in% panel)
+    if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
+  
+    aplot <- with(aplot$layout[pn,], 
+                  gtable_add_grob(aplot, 
+                                  legend, 
+                                  t = min(t), 
+                                  l = min(l), 
+                                  r = max(r), 
+                                  b = max(b),
+                                  name = legend$name
+                                  ))
+  } else if ((is.numeric(panel) | is.integer(panel)) & length(panel) %in% c(2,4)) {
+    panel <- rep(as.integer(panel), length.out=4)
+    aplot <- gtable_add_grob(aplot, 
+                             legend, 
+                             t = panel[1], 
+                             l = panel[2], 
+                             b = panel[3], 
+                             r = panel[4], 
+                             name = legend$name
+                             )
+  }
+  
   if (plot) {
     grid.newpage()
     grid.draw(aplot)

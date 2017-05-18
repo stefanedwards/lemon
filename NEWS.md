@@ -1,16 +1,19 @@
-# lemon 0.2.0.9000
+# lemon 0.3.0.9000
 
 * **TODO:** Create `grobHeight` on gtables.
 
-* `knit_print` functions are removed (without deprecating them) and replaced
-  by `lemon_print` and `load_lemon_print` for pushing `lemon_print` into 
-  `knit_print.data.frame`, etc.
-  `lemon_print` has been extended to also work on tables (i.e. a summary), but
-  does not work nicely for cross-tabulation tables.
-
 * **TODO:** Create CITATION file.
 
-* Extend `lemon_print` to work on cross-tabulation tables.
+* **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
+
+* Added `.dot` functions for supplying `setwd()` safe relative file paths.
+
+# lemon 0.3.0
+
+* `knit_print` functions are removed (without deprecating them) and replaced
+  by `lemon_print`.
+  `lemon_print` has been extended to also work on tables (i.e. a summary), but
+  does not work nicely for cross-tabulation tables.
 
 # lemon 0.2.0
 
@@ -26,4 +29,4 @@ Cartesian coordinates (`coord_capped_cart`, `coord_capped_flip`,
 
 * Facets that repeat the labels (`facet_rep_grid`, `facet_rep_wrap`).
 
-* `knitr` printing functions (`knit_print.data.frame`, etc.).
+* `knitr` printing functions (`knit_print.data.frame`, etc.) [REMOVED per 0.2.9000].

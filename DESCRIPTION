@@ -3,8 +3,8 @@ Type: Package
 Title: Lemon - Freshing up your ggplots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
-Version: 0.2.0.9000
-Date: 2017-05-04
+Version: 0.3.0
+Date: 2017-05-18
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
     role=c('aut','ctb','cre')),
@@ -37,6 +37,7 @@ Collate:
     'brackets.R'
     'coord-capped.r'
     'coord-flex.r'
+    'dot.r'
     'facet-rep-lab.r'
     'facet-wrap.r'
     'gtable_show-.r'
@@ -46,5 +47,6 @@ Collate:
     'lemon_print.r'
 Suggests:
     rmarkdown,
-    stringr
+    stringr,
+    dplyr
 VignetteBuilder: knitr

@@ -7,14 +7,17 @@
 \usage{
 gtable_show_grill(x, plot = TRUE)
 
-gtable_show_names(x, plot = TRUE)
+gtable_show_names(x, plot = TRUE, rect.gp = gpar(col = "black", fill =
+  "white", alpha = 1/4))
 }
 \arguments{
-\item{x}{A gtable object. If given a ggplot object, it is converted to a 
+\item{x}{A gtable object. If given a ggplot object, it is converted to a
 gtable object with \code{\link[ggplot2]{ggplotGrob}}.}
 
-\item{plot}{Logical. When \code{TRUE} (default), draws resulting gtable 
+\item{plot}{Logical. When \code{TRUE} (default), draws resulting gtable
 object on a new page.}
+
+\item{rect.gp}{Graphical parameters (\code{\link[grid]{gpar}}) for background drop.}
 }
 \value{
 Modified gtable object, invisibly.
@@ -23,8 +26,8 @@ Modified gtable object, invisibly.
 Visualises the table structure or the names of the gtable's components.
 }
 \details{
-These functions are highly similar to 
-\code{\link[gtable]{gtable_show_layout}}. 
+These functions are highly similar to
+\code{\link[gtable]{gtable_show_layout}}.
 \code{gtable_show_grill} draws the grid of the underlying table, and places
 row and column indicies in the margin.
 \code{gtable_show_names} replaces the grobs with a semi-transparent rectangle
@@ -46,4 +49,3 @@ p <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
 
 gtable_show_names(p)
 }
-
