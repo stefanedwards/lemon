@@ -121,6 +121,30 @@ Extensions to knitr
 
 ![Viewing data frames in R Notebooks in RStudio](vignettes/lemon_print_capture.png)
 
+### Relative file paths made safe
+
+Using `knitr` for computations that use external binaries and/or write temporary files, setting the root directory for `knitr`'s knitting saves the user from a file mess. E.g.
+
+``` r
+knitr::opts_knit$set(root.dir=TMPDIR)
+```
+
+But we want to keep our file paths relative for the scripts / document to be transferable. We introduce the `.dot` functions:
+
+``` r
+TMPDIR=tempdir()
+
+.data <- .dot('data')
+
+knitr_opts_knit$set(root.dir=TMPDIR)
+```
+
+We can then load our data file using the created `.data` function, even though the chunk is executed from TMPDIR.
+
+``` r
+dat <- read.table(.data('mydata.tab'))
+```
+
 To do:
 ------
 

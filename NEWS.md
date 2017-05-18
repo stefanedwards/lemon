@@ -6,6 +6,8 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* Added `.dot` functions for supplying `setwd()` safe relative file paths.
+
 # lemon 0.3.0
 
 * `knit_print` functions are removed (without deprecating them) and replaced

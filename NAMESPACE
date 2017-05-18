@@ -2,6 +2,8 @@
 
 S3method(lemon_print,data.frame)
 S3method(lemon_print,table)
+export(.dot)
+export(.dot2)
 export(CoordFlexCartesian)
 export(CoordFlexFixed)
 export(CoordFlexFlipped)

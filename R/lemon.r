@@ -34,6 +34,8 @@
 #'
 #' See \code{\link{lemon_print}} or \code{vignette('lemon_print', 'lemon')}.
 #'
+#' Relative paths safe from hanging directory: \code{\link{.dot}}.
+#'
 #' @docType package
 #' @name lemon
 #' @author Stefan McKinnon Edwards <sme@@iysik.com>
