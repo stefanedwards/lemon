@@ -4,21 +4,52 @@
 #' Convenience function for working with R Notebooks that ensures data frames
 #' (and dplyr tables) are printed with \code{\link[knitr]{kable}} while
 #' allowing RStudio to render the data frame dynamically for inline display.
+#' 
+#' 
+#' These functions divert data frame and summary output to 
+#' \code{\link[knitr]{kable}} for nicely printing the output.
+#' 
+#' For \emph{options to \code{kable}}, they can be given directly as 
+#' chunk-options (see arguments to \code{\link[knitr]{kable}}), or though
+#' as a list to a special chunk-option \code{kable.opts}.
 #'
-#' \code{load_lemon_print} pushes \code{lemon_print} functions into relevant
-#' S3 functions (\code{knit_print}) in the global namespace, potentially
-#' overriding pre-existing functions.
+#' For more examples, see \code{vignette('lemon_print', package='lemon')}.
 #'
-#' @section Knitr chunks:
+#' @section Knitr usage:
 #'
-#' To supply \code{\link[knitr]{kable}} functions such as \code{caption} or
-#' \code{col.names}, set chunk options \code{kable.opts}:
-#'
+#' To use for a single chunk, do
 #' \preformatted{
-#' ```{r kable.opts=list(caption='This is kable table caption.')}`
+#' ```{r render=lemon_print,caption='My data frame'}
 #' data.frame
 #' ```
 #' }
+#' 
+#' \strong{Note:} We are \emph{not} calling the function, 
+#' but instead refering to it.
+#' 
+#' An alternate route for specifying \code{\link[knitr]{kable}} arguments is as:
+#' 
+#' \preformatted{
+#' ```{r render=lemon_print,kable.opts=list(align='l')}
+#' data.frame
+#' ```
+#' }
+#' 
+#' The option \code{kable.opts} takes precendence over arguments given directly
+#' as chunk-options.
+#' 
+#'  
+#'
+#' To enable as default printing method for \emph{all chunks}, include
+#' 
+#' \preformatted{
+#'   knit_print.data.frame <- lemon_print
+#'   knit_print.table <- lemon_print
+#' }
+#'
+#' \strong{Note:} We are \emph{not} calling the function, 
+#' but instead assigning the \code{\link[knitr]{knit_print}} functions
+#' for some classes.
 #'
 #' To disable, temporarily, specify chunk option:
 #' \preformatted{
@@ -35,54 +66,43 @@
 #' @rdname lemon_print
 #' @export
 #' @import knitr
-lemon_print_data_frame = function(x, options, ...) {
-  opts <- options$`kable.opts`
-  if (is.null(opts)) opts <- NULL
-  opts <- RCurl::merge.list(opts, list(digits=2))
+lemon_print <- function(x, options, ...) {
+  UseMethod('lemon_print', x)
+}
+
+#' @inheritParams lemon_print
+#' @export
+#' @rdname lemon_print
+#' @import RCurl
+lemon_print.data.frame = function(x, options, ...) {
+  kable.opts <- options$`kable.opts`
+  opts <- options[c('format','digits','row.names','col.names','caption','align','format.args','escape')]
+  if (is.null(kable.opts)) kable.opts <- list()
+  opts <- RCurl::merge.list(kable.opts, opts)
   opts$x <- x
   res = paste(c("","", do.call(knitr::kable, opts)), collapse="\n")
   asis_output(res)
 }
 
-#' @inheritParams lemon_print_data_frame
+#' @inheritParams lemon_print
 #' @export
 #' @rdname lemon_print
-lemon_print_table <- function(x, options=list(), ...) {
-  l <- grepl("NA's[ ]+:[[:digit:]]+", x)
-  x[l] <- gsub("NA's", "`NA`s", x[l], fixed=TRUE)
-  x[is.na(x)] <- ' '
-  #margins <- names(dimnames(x))  # to stuff if x is a cross-tabulated table.
-  #if (!is.null(margins)) {
-  #  x <- cbind(dimnames(x)[[2]], x)
-  #  colnames(x)[1] = margins[2]
-  #  colnames(x)[2] = paste(margins[1],colnames(x)[2],sep='<br>')
-  #}
-  options$`kable.opts` <- RCurl::merge.list(options$`kable.opts`, 
-                                            list(row.names=FALSE, 
-                                                 align='l'))
-  lemon_print_data_frame(x, options, ...)
-}
-
-#' @rdname lemon_print
-#' @param ignore Logical; when \code{TRUE}, print warning when overwriting 
-#'               pre-existing names in \code{\link[base]{.GlobalEnv}}.
-#' @param safe Logical; when \code{TRUE}, does not overwrite pre-existing names
-#'             in \code{\link[base]{.GlobalEnv}}.
-#' @export
-load_lemon_print <- function(ignore=FALSE, safe=FALSE) {
-  set <- list('knit_print.data.frame'=lemon_print_data_frame,
-              'knit_print.tbl_df'=lemon_print_data_frame,
-              'knit_print.grouped_df'=lemon_print_data_frame,
-              'knit_print.table'=lemon_print_table)
-  look <- names(set)
-  preexisting <- which(look %in% ls(pos=1, all.names=TRUE))
-  if (safe) ignore <- TRUE
-  if (length(preexisting) > 0 & !ignore) {
-    warning('`load_lemon_print` is overwriting ',
-            paste(look[preexisting], collapse=', '), ' in global namespace.',call.=FALSE)
+lemon_print.table <- function(x, options, ...) {
+  # Do nothing for cross-tabulation tables.
+  if (is.null(dimnames(x))) return(knitr::knit_print(unclass(x), options, ...))
+  if (!is.null(names(dimnames(x))) & all(names(dimnames(x)) == '')) 
+    return(knitr::knit_print(unclass(x), options,  ...))
+  
+  # detect if we have a summary
+  if (length(dim(x)) == 2 & all(dimnames(x)[[1]] == '') & all(dimnames(x)[[2]] != '')) {
+    l <- grepl("NA's[ ]+:[[:digit:]]+", x)
+    x[l] <- gsub("NA's", "`NA`s", x[l], fixed=TRUE)
+    x[is.na(x)] <- ' '
+    options$`kable.opts` <- RCurl::merge.list(options$`kable.opts`, 
+                                              list(row.names=FALSE, 
+                                                   align='l'))
+    lemon_print.data.frame(x, options, ...)
+  } else {
+    knitr::knit_print(unclass(x), options, ...)
   }
-  if (length(preexisting) > 0 & safe) look <- look[!preexisting]
-  if (length(look) == 0) return(invisible(NULL))
-  dput(list(preexisting, look, set))
-  invisible(sapply(look, function(n) assign(n, set[[n]], pos=1)))
 }

@@ -149,28 +149,12 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 
 ## Extensions to knitr
 
-We automatically load knitr's `knit_print` for 
-data frames and dplyr tables to provide automatic pretty printing of
-these using `kable`:
+`knitr` allows S3 methods for `knit_print` for specialised printing of objects.
+We provide `lemon_print` for data frames, dplyr tables, and summary objects, 
+that can  be used to render the output, without mucking up the code source.
+An added benefit is that we can use RStudio's inline data frame viewer:
 
-Before loading `lemon` package:
-```{r knit_print_disable,include=FALSE}
-options(knit_print=FALSE)
-```
-```{r}
-data(USArrests)
-head(USArrests)
-```
-
-After loading `lemon`:
-```{r knit_print_enable,include=FALSE}
-options(knit_print=TRUE)
-```
-```{r}
-head(USArrests)
-```
-
-See `knit_print.data.frame`.
+![Viewing data frames in R Notebooks in RStudio](vignettes/lemon_print_capture.png)
 
 
 ## To do:
