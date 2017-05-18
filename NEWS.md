@@ -1,15 +1,17 @@
-# lemon 0.2.0.9000
+# lemon 0.3.0.9000
 
 * **TODO:** Create `grobHeight` on gtables.
+
+* **TODO:** Create CITATION file.
+
+* **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
+
+# lemon 0.3.0
 
 * `knit_print` functions are removed (without deprecating them) and replaced
   by `lemon_print`.
   `lemon_print` has been extended to also work on tables (i.e. a summary), but
   does not work nicely for cross-tabulation tables.
-
-* **TODO:** Create CITATION file.
-
-* **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
 # lemon 0.2.0
 
