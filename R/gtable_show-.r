@@ -68,6 +68,7 @@ gtable_show_grill <- function(x, plot=TRUE) {
   if (is.ggplot(x)) x <- ggplotGrob(x)
 
   gp.gutter <- gpar(colour='grey', lty='dashed')
+  gp.txt <- gpar(colour=grey(0.9), fontsize=8)
   if (is.null(x$vp)) {
     x$vp <- viewport(clip = 'on')
   }
@@ -75,20 +76,20 @@ gtable_show_grill <- function(x, plot=TRUE) {
   x <- gtable_add_cols(x, unit(2, 'line'), 0)
   for (i in 2:nrow(x)) {
     x <- gtable_add_grob(x, t=i, l=1, clip='off', grobs=grobTree(
-      textGrob(sprintf('[%d, ]', i-1)),
+      textGrob(sprintf('[%d, ]', i-1), gp=gp.txt),
       linesGrob(x=unit(c(-100,100), 'npc'), y=1, gp=gp.gutter),
       linesGrob(x=unit(c(-100,100), 'npc'), y=0, gp=gp.gutter)
     ), name='lemon')
-    if (is.small(x$heights[[i]])) x$heights[[i]] <- unit(1.2, 'line')
+    if (is.small(x$heights[[i]])) x$heights[[i]] <- unit(1, 'line')
   }
   x <- gtable_add_rows(x, unit(1, 'line'), 0)
   for (i in 2:ncol(x)) {
     x <- gtable_add_grob(x, t=1, l=i, clip='off', grobs=grobTree(
-      textGrob(sprintf('[ ,%d]', i-1)),
+      textGrob(sprintf('[ ,%d]', i-1), gp=gp.txt),
       linesGrob(x=1, unit(c(-100, 100), 'npc'), gp=gp.gutter),
       linesGrob(x=0, unit(c(-100, 100), 'npc'), gp=gp.gutter)
     ), name='lemon')
-    if (is.small(x$widths[[i]])) x$widths[[i]] <- unit(2, 'line')
+    if (is.small(x$widths[[i]])) x$widths[[i]] <- unit(1.5, 'line')
   }
 
   if (plot) {
