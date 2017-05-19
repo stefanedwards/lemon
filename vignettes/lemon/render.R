@@ -36,7 +36,13 @@ my_render <- function(render=FALSE) {
 ## Updates:
 # Abstract
 # change_width
+# ORCiD
 "
 The bracket functions accepts arguments to change the direction of the end `ticks',
 as well as the length of the bracket and the length of the end `ticks'.
 "
+
+extract_chunks <- function() {
+  require(knitr)
+  purl('edwards.Rmd')
+}
