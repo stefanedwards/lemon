@@ -1,5 +1,5 @@
 ---
-title: \pkg{lemon} --- Freshing up your ggplots
+title: \pkg{lemon} -- Freshing up your ggplots
 author:
   - name: Stefan McKinnon Edwards
     affiliation: The Roslin Insititute, University of Edinburgh
@@ -15,12 +15,12 @@ abstract: >
 preamble: >
   % Any extra latex you need in the preamble
   \usepackage{caption}
-  \newcommand{\gtable}{\code{`gtable'}}
-  \newcommand{\ggplot}{\code{`ggplot'}}
+  \newcommand{\gtable}{\code{'gtable'}}
+  \newcommand{\ggplot}{\code{'ggplot'}}
+  \newcommand{\rr}{\raggedright}  %% for table
 output: 
   rticles::rjournal_article:
     md_extensions: +latex_macros-tex_math_single_backslash
-
 ---
 
 
@@ -31,14 +31,14 @@ library(lemon)
 
 knitr::opts_knit$set(out.format='latex')
 knitr::opts_chunk$set(fig.width=5.5, fig.height=5.5/4*2.5, fig.path='edwards2017-',
-                      cache=FALSE, autodep = TRUE, cache.path = 'cache/')
+                      cache=TRUE, autodep = TRUE, cache.path = 'cache/')
 ```
 
 \section{Introduction}
 
-The \CRANpkg{ggplot2} package \citep{ggplot2009,ggplot2016} which utilises the 'grammar of graphics' to
-describe a plot is hugely popular. 
-Since version 2.0, it has featured an official extension mechanism that has
+The \CRANpkg{ggplot2} package \citep{ggplot2009,ggplot2016} is hugely popular. 
+Since version 2.0, it has featured an official extension mechanism \citep{ggproto} 
+that has 
 spawned a number of packages that extends the capabilities of ggplot2.
 At the time of writing, \url{ggplot2-exts.org} features 29 packages, 
 ranging from themes of popular sources (\CRANpkg{ggthemes}, \citealt{ggthemes}),
@@ -47,53 +47,111 @@ to visualisation of graphs (\CRANpkg{ggraphs}, \citealt{ggraph}).
 We are adding another package to the list.
 
 Our motivation for this package was to provide *plot polishing* functions.
-The package does not supply new geoms or scales, but rather functions 
-for improving the look of the final product. 
-Examples of these functions are the capped axis lines (\code{cord\_capped\_cart}),
-axis brackets (\code{horisontal\_brackets}), or repositioning the guide-box onto 
-the main panels, but in exact terms (\code{reposition\_legend}).
+Polshing the final plot in preparation for submission can often be acheived
+by subtly changing the plot's \code{theme}.
+Sometimes it is however necessary to modify the drawn picture rather than the
+description of the plot. 
+When a \code{ggplot} plot is drawn, it is first converted to a collection
+of \code{'grobs'} (portmanteau for `graphical objects') contained in a 
+\code{'gtable'} object (`grob table' or 
+`graphical table').
+The grobs are known from the \CRANpkg{grid} package \citep{Murrell2005,Murrell2011}
+and the gtable from the \CRANpkg{gtable} package \citep{gtable}.
 
-Most functions in this package work by manipulating the grobs and gtable objects that
-are created when the ggplot plot is to be drawn, so we start this paper by
-given a brief discussion of the gtable objects in context of ggplot2.
-We then give examples of the funcions introduced in this package.
+The \pkg{lemon} package supplies functions that allows us to polish the final plot,
+either by modifying the gtable object 
+(e.g.\ \code{reposition\_legend}, figure \ref{fig:reposition_legend}) 
+or by modifying how the gtable object is created when drawing axes 
+(e.g.\ \code{capped\_horisontal} or \code{brackets\_vertical}, figure \ref{fig:brackets}).
+
+
+This paper therefore gives a brief introduction to grob and gtable objects.
+\citet{Zhou2010} has a more general introduction to grobs, 
+that also includes the \dfn{viewports}.
+Baptiste Augui\'{e}, author of \CRANpkg{gridExtra} \citep{gridExtra},
+has a guide on gtable objects at
+https://github.com/baptiste/gridextra/wiki/gtable.
+We will however focus this introduction on the gtable object that is 
+returned from ggplot.
+
+After the introduction some of the \pkg{lemon} package's functionality is
+demonstrated. A summary of the functions are supplied in table \ref{tab:functions}.
+
+\begin{table}
+  \caption{Summary of functions supplied by \pkg{lemon}.}
+  \label{tab:functions}
+
+  \begin{tabular}{p{4.5cm}p{6cm}p{3.5cm}}  % page width is 14cm
+    \toprule
+      Function  & Description & Returns \\
+    \midrule
+      \code{g\_legend} & \rr Extracts the \samp{guide-box} component from a plot. & \code{'gtable'} \\
+      \code{reposition\_legend} & \rr 
+        Repositions the \samp{guide-box} onto e.g.\ the main graph. 
+        Accepts both \code{'ggplot'} and \code{'gtable'} objects.             & \code{'gtable'} \\
+      \code{grid\_arrange\_shared\_legend} & \rr 
+        Like \code{grid::grid.arrange}, but extracts legend from first argument
+        and re-places it onto a margin.                                       & \code{'gtable'} \\
+    \midrule
+      \code{coord\_flex\_*}, \code{coord\_capped\_*} & \rr 
+        Sets a Cartesian coordinate system for \code{'ggplot'} objects, 
+        but accepts functions for drawing the axes.                           & Object inheriting from \code{'Coord'} class. \\
+      \code{capped\_horisontal}, \code{capped\_horizontal}, \code{capped\_vertical} & \rr 
+        Functions for drawing the axes. Can be supplied to the 
+        \code{coord\_flex\_*} and \code{coord\_capped\_*} functions.        & Function \\
+      \code{brackets\_horisontal}, \code{brackets\_horizontal}, \code{brackets\_vertical} & \rr 
+        As above.                                                             & Function \\
+    \midrule
+      \code{facet\_rep\_grid}, \code{facet\_rep\_wrap} & \rr 
+        As \CRANpkg{ggplot2}'s \code{facet\_grid} and \code{facet\_wrap}, but 
+        draws \emph{all} axes and optionally tick labels.                     & Object inheriting from \code{'Facet'} class. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+
 
 
 
 \section{A brief introduction to gtable}
 
-We assume the reader is familiar with \CRANpkg{ggplot2} \citep{ggplot2}. 
-In short, it differs from R's native plotting functions in that we use it to 
+We assume the reader is familiar with \CRANpkg{ggplot2};
+else see e.g. \citet{ggplot2016}.
+In short, it differs from R's native plotting functions in that it uses 
+a 'grammar of graphics' to
 *describe* the visualisation we want, rather than instructions of which lines
 to draw where.
 
-The majority of the \pkg{lemon} package's functions however works on the 
-graphical objects that describe what is being drawn. 
-These graphic objects of the \CRANpkg{grid} package, 
-or grobs \citep{Murrell2005}, appear after ggplot2 has done 
-its magic on translating the grammar of graphics into instructions of what to draw where.
-
-We will only give a brief introduction to grob objects, but refer to 
-e.g. \citet{Zhou2010} for a more general introduction, that also includes
-the important \dfn{viewports}.
-Other authors, such as Baptiste Augui\'{e} who has made considerable contributions
-to using ggplot2, has a guide on  at
-https://github.com/baptiste/gridextra/wiki/gtable.
-We will however focus this introduction on the gtable object returned from ggplot.
-
-
-
-The \dfn{gtable} object of the \CRANpkg{gtable} package \citep{gtable} 
+The \code{'gtable'} object (\CRANpkg{gtable}, \citealt{gtable})
 has its introduction when a ggplot object is to be drawn on a device. 
-Here, the device may be the screen, a plot window, a file, etc.
-Calling to view a ggplot object, either explicitly through \code{print} or \code{plot},
-or through any other of the multitude of functions, ggplot2 goes through
-the motions of training the object's scales on the data to finally produce a 
-printable object (see function \code{ggplot\_build} in ggplot2 package).
-This object is a grob table -- a gtable object -- that is drawn by the
-'grid' package \citep{Murrell2005,Murrell2011} (but you as a user do not necessarily see this).
+This causes ggplot2 to go through
+the motions of training the object's scales on the data and doing its
+magic on translating the grammar of graphics into instructions of which 
+text, lines, points, and polygons to draw where.
 
-To get us started, we create a simple scatter plot using ggplot2:
+These instructions are described using \code{'grobs'} (\CRANpkg{grid}, \citealt{Murrell2005,Murrell2011}). 
+At their simplests, they describe the coordinates where to draw a line of a point
+together with the descriptions of line style, size, colours, and font.
+The coordinates are usually relative to their frame of reference (i.e.\ the \dfn{viewport}),
+but can also be specified in physical measures such as centimetres and inches
+(see \code{?grid::unit}).
+
+Finally, a grob can itself be a collection of grobs.
+Not only does this allow for organising the grobs in a hierarchical structure,
+but the grobs' viewport may be defined relative to the grobs' parents' viewport.
+The enables the user to create detailed drawings by specifying composites that 
+can be positioned relative to each other, 
+and not just relative to the entire canvas.
+
+The \code{'gtable'} object is also a collection of grobs,
+but with the added attributes of arranging the its collection grobs
+(and grob collections) onto a table-like layout of columns and rows.
+This eases the alignment of different components, such as an axis with the plot.
+
+To get us started, we create a simple scatter plot using ggplot2 and 
+then convert it to a \gtable object:
 
 ```{r}
 library(ggplot2)
@@ -101,11 +159,12 @@ p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + labs(title='A scatter plot')
 g <- ggplotGrob(p)
 ```
 
-The first object, \code{p}, is a ggplot object, and the second object, \code{g}, 
-a gtable object. 
-Calling to print the objects, implicitly by calling the object from the command 
-line of R or directly with \code{print}, we obtain the output given in figure 
-\ref{fig:p_object} for the ggplot object, and below / figure \ref{fig:g_object} for the gtable object:
+The first object, \code{p}, is a \ggplot object, and the second object, \code{g}, 
+a \gtable object. 
+Calling to print the objects, implicitly by calling the object in an interactive session
+\R or directly with \code{print}, we obtain the output given in figure 
+\ref{fig:p_object} for the \ggplot object, and figure \ref{fig:g_object} for the \gtable object.
+To drawn the \gtable object, use \code{grid::grid.draw}.
 
 ```{r p_object}
 print(p)
@@ -119,32 +178,47 @@ print(g)
   \captionof{figure}{Printing the gtable object.}
   \label{fig:g_object}
 
-The gtable object is of a completely different nature than the 
-ggplot object.
-Where the ggplot object describes the mapping between variables, geoms, and 
-scales, the gtable object positions the plot's features in a table-like structure.
-Each feature of the plot, i.e\. the background, an axis, or the actual graph ('panel')
-are each displayed on a row.
+
+
+The \gtable object is of a completely different nature than the 
+\ggplot object.
+The \ggplot object contains the input data and descriptions of the mappings between variables, geoms, and 
+scales,
+the \gtable object contains the instructions for drawing the plot.
+\strong{NB!} Once a \ggplot object has been converted to a \gtable object, 
+it cannot be converted back again, nor is it possible to add new geoms or scales,
+nor change the plot's theme.
+We can however add grobs or modify the instructions of the \gtable object.
+
+
+
 
 \subsection{The gtable object}
 
-A gtable object is a hierarchical collection of grob and gtable objects,
-placing them in a table-like structure. 
-The most important components of each gtable object are 
-the \code{layout} data frame and the \code{grobs} list that position and contain the 
-plot's features,
-in addition to \code{widths} and \code{heights} unit lists that describe the 
+A \gtable is a hierarchical collection of grob and gtable objects
+that arranges plot's features onto a table-like layout of columns and rows.
+The plot's features are the main graph, axes, legend, etc.
+The most important components of a \gtable object are 
+the \samp{layout} data frame and the \samp{grobs} list that positions and contain the 
+plot's features.
+These two are combined in the listing printed in figure \ref{fig:g_object}.
+In addition to these, the \samp{widths} and \samp{heights} unit lists describe the 
 column widths and row heights.
-These are displayed in figure \ref{fig:gtable_show_names}, superimposed on the plot.
+This grid-structure is displayed figure \ref{fig:gtable_show_names}, 
+superimposed on the plot.
 
-```{r gtable_show_names,echo=FALSE,fig.label='fig:gtable_show_names',fig.cap='Overlaying figure \\ref{fig:p_object} with the layout names and grill, by \\code{gtable\\_show\\_names} and \\code{gtable\\_show\\_grill}.'}
+```{r gtable_show_names,echo=FALSE,}
 library(lemon)
 library(gtable)
 library(grid)
 s <- gtable_show_grill(p)
 grid.draw(gtable_show_names(s, plot=FALSE, rect.gp=gpar(fill='white', col='white', alpha=1/4)))
 ```
-
+  \captionof{figure}{
+    Overlaying plot in figure \ref{fig:p_object} with the layout names and grill of the \gtable object.
+    Figure produced by \code{gtable\_show\_names} and \code{gtable\_show\_grill}.}
+  \label{fig:gtable_show_names}
+  
 The main feature of interest is \code{panel}, which contains the actual graph.
 A seen on figure \ref{fig:g_object}, \code{panel} occurs in the 
 `r scales::ordinal(which(g$layout$name == 'panel'))` row, 
