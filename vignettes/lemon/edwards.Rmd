@@ -603,5 +603,5 @@ functions for \CRANpkg{ggplot2} and \CRANpkg{grid} for which without,
 this package could not have been possible.
 
 
-\bibliography{edwards2017}
+\bibliography{edwards}
 
