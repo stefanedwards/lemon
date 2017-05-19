@@ -20,12 +20,11 @@ i.e. less than 1 cm, 1 line, 10 pt, or 0.4 in.
 Based on arbitraily chosen definitions of 'small', this function can return
 \code{TRUE} or \code{FALSE} if a unit is 'small'.
 
-So far, less than 1 cm, 1 line, 10 pt, or 0.4 inches is defined as being 
+So far, less than 1 cm, 1 line, 10 pt, or 0.4 inches is defined as being
 'small'.
-Unresolved sizes, suchs as 'grobheight', 'grobwidth', or 'null' are not 
-small. 
-Units based on arithmetic, such as sum of multiple units, 
+Unresolved sizes, suchs as 'grobheight', 'grobwidth', or 'null' are not
+small.
+Units based on arithmetic, such as sum of multiple units,
 are also \emph{not} small.
 \code{NA}s are returned for undecided sizes.
 }
-

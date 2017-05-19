@@ -66,7 +66,7 @@ p + coord_capped_cart(left='top')
 # Specifying 'bottom' caps the axis with at most the length of 'gap'
 p + coord_capped_cart(left='top', bottom='none')
 
-# We can specify a ridiculus large 'gap', but the lines will always 
+# We can specify a ridiculus large 'gap', but the lines will always
 # protrude to the outer most ticks.
 p + coord_capped_cart(left='top', bottom='none', gap=2)
 
@@ -79,7 +79,7 @@ p + coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('left'))
 
 # Also works with secondary axes:
 p + scale_y_continuous(sec.axis=sec_axis(~5*., name='wt times 5')) +
-  coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'), 
+  coord_flex_cart(left=brackets_vertical(), bottom=capped_horisontal('right'),
   right=capped_vertical('both', gap=0.02))
 
 

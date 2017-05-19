@@ -56,4 +56,3 @@ potentially overwriting previous funtions with same name.
 .rawdata('rawfile.csv')
 .results('myresults.txt')
 }
-

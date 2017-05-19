@@ -54,7 +54,7 @@ is.small <- function(x) {
 #'             object on a new page.
 #' @return Modified gtable object, invisibly.
 #' @rdname gtable_show
-#' @import ggplot2 gtable grid
+#' @import ggplot2 gtable grid grDevices
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -68,7 +68,7 @@ gtable_show_grill <- function(x, plot=TRUE) {
   if (is.ggplot(x)) x <- ggplotGrob(x)
 
   gp.gutter <- gpar(colour='grey', lty='dashed')
-  gp.txt <- gpar(colour=grey(0.9), fontsize=8)
+  gp.txt <- gpar(colour=grDevices::grey(0.9), fontsize=8)
   if (is.null(x$vp)) {
     x$vp <- viewport(clip = 'on')
   }

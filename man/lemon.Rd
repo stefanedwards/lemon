@@ -4,6 +4,7 @@
 \name{lemon}
 \alias{lemon}
 \alias{lemon-package}
+\alias{lemon-package}
 \title{Lemon - Freshing up your ggplots}
 \source{
 \url{https://github.com/stefanedwards/lemon}
@@ -49,6 +50,8 @@ data frames and dplyr tables to provide automatic pretty printing of
 data frame using \code{\link[knitr]{kable}}.
 
 See \code{\link{lemon_print}} or \code{vignette('lemon_print', 'lemon')}.
+
+Relative paths safe from hanging directory: \code{\link{.dot}}.
 }
 
 \seealso{
@@ -58,7 +61,6 @@ Useful links:
   \item Report bugs at \url{https://github.com/stefanedwards/lemon/issues}
 }
 
-Relative paths safe from hanging directory: \code{\link{.dot}}.
 }
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
@@ -69,4 +71,3 @@ Contributions from \href{http://baptiste.github.io/}{Baptiste Auguié} on
 Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
 \code{\link{grid_arrange_shared_legend}}.
 }
-

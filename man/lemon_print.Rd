@@ -78,7 +78,7 @@ data.frame
 ```
 }
 }
+
 \seealso{
 \code{\link[knitr]{knit_print}}, \code{\link[knitr]{kable}}
 }
-
