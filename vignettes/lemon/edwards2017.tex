@@ -1,0 +1,606 @@
+% !TeX root = RJwrapper.tex
+\title{\pkg{lemon} -- Freshing up your ggplots}
+\author{by Stefan McKinnon Edwards}
+
+\maketitle
+
+\abstract{%
+  The ggplot2 package is highly popular for creat plots and offers many
+  options for customising the final product.
+  There are however limitations using only `core' ggplot2 functions,
+  why users might have to modify the gtable object, which is returned when
+  the plot is built for rendering.
+  Where the ggplot2 plot describes how the data is visualised, the gtable
+  contains the instructions for which lines, points, and labels to draw.
+  This paper contains a brief introduction to the gtables that returned when
+  the plot is built, while demonstrating some approaches for modifying the 
+  gtable object.
+  The paper also demonstrates some functions of the `lemon' package that are
+  usefull for polishing the final product.
+}
+
+\section{Introduction}
+
+The \CRANpkg{ggplot2} package \citep{ggplot2009,ggplot2016} is hugely
+popular package for plotting in \R, and has seen a large number of
+extensions. At the time of writing, \url{ggplot2-exts.org} features 29
+packages, ranging from themes of popular sources (\CRANpkg{ggthemes},
+\citealt{ggthemes}), to visualisation of graphs (\CRANpkg{ggraphs},
+\citealt{ggraph}). Since version 2.0, it has featured an official
+extension mechanism \citep{ggproto} that will see even more extensions
+to \CRANpkg{ggplot2}.
+
+\pkg{lemon} is just one of these packages with extensions.
+
+The motivation for this package was to provide \emph{plot polishing}
+functions. Polshing the final plot in preparation for submission can
+often be acheived by subtly changing the plot's theme. Sometimes it is
+however necessary to modify the drawn picture rather than the
+description of the plot. When a \dfn{ggplot} plot is drawn, it is first
+converted to a collection of graphical objects (\dfn{grobs}) contained
+in a grob table (\dfn{gtable}). The grobs are known from the \pkg{grid}
+package \citep{Murrell1999,Murrell2005,Murrell2011} and the gtables from
+the \CRANpkg{gtable} package \citep{gtable}.
+
+The \pkg{lemon} package supplies functions that allows us to polish the
+final plot, either by modifying the gtable object
+(e.g.~\code{reposition\_legend}, figure \ref{fig:reposition_legend}) or
+by modifying how the gtable object is created when drawing axes
+(e.g.~\code{capped\_horisontal} or \code{brackets\_vertical}, figure
+\ref{fig:brackets}). This paper therefore gives a brief introduction to
+\code{'grob'} and gtable objects.
+
+After the introduction some of the \pkg{lemon} package's functionality
+is demonstrated. A summary of the functions are supplied in table
+\ref{tab:functions}.
+
+\begin{table}[h!]
+  \caption{Summary of functions supplied by \pkg{lemon}.}
+  \label{tab:functions}
+
+  \begin{tabular}{p{4.5cm}p{6.5cm}p{3cm}}  % page width is 14cm
+    \toprule
+      Function  & Description & Returns \\
+    \midrule
+      \code{g\_legend} & \rr Extracts the \samp{guide-box} component from a plot. & gtable \\
+      \code{reposition\_legend} & \rr 
+        Repositions the \samp{guide-box} onto e.g.\ the main graph. 
+        Accepts both ggplot and gtable objects.             & gtable \\
+      \code{grid\_arrange\_shared\_legend} & \rr 
+        Like \code{gridExtra::grid.arrange}, but extracts legend from first argument
+        and re-places it onto a margin.                                       & gtable \\
+    \midrule
+      \code{coord\_flex\_*}, \code{coord\_capped\_*} & \rr 
+        Sets a Cartesian coordinate system for ggplot objects, 
+        but accepts functions for drawing the axes.                           & Object inheriting from \code{'Coord'} class. \\
+      \code{capped\_horisontal}, \code{capped\_horizontal}, \code{capped\_vertical} & \rr 
+        Functions for drawing the axes. Can be supplied to the 
+        \code{coord\_flex\_*} and \code{coord\_capped\_*} functions.        & Function \\
+      \code{brackets\_horisontal}, \code{brackets\_horizontal}, \code{brackets\_vertical} & \rr 
+        As above.                                                             & Function \\
+    \midrule
+      \code{facet\_rep\_grid}, \code{facet\_rep\_wrap} & \rr 
+        As \CRANpkg{ggplot2}'s \code{facet\_grid} and \code{facet\_wrap}, but 
+        draws \emph{all} axes and optionally tick labels.                     & Object inheriting from \code{'Facet'} class. \\
+    \midrule
+      \code{gtable\_show\_grill}, \code{gtable\_show\_names} & \rr
+        As \CRANpkg{gtable}'s \code{gtable\_show\_layout} that visualises the
+        structure.                                                            & gtable \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{A brief introduction to gtable}
+
+We assume the reader is familiar with \CRANpkg{ggplot2}; else see e.g.
+\citet{ggplot2016}. In short, it differs from R's native plotting
+functions in that it uses a `grammar of graphics' to \emph{describe} the
+visualisation we want, rather than instructions of which lines to draw
+where.
+
+This introduction gives a brief overview of the grobs and gtables.
+\citet{Zhou2010} has a more general introduction to grobs, that also
+includes \dfn{viewports}. Baptiste Augui\'{e}, author of
+\CRANpkg{gridExtra} \citep{gridExtra}, has a guide on gtable objects at
+\url{https://github.com/baptiste/gridextra/wiki/gtable}. We will however
+focus this introduction on the gtable object that is returned from
+ggplot.
+
+The gtable has its introduction when a ggplot object is to be drawn on a
+device. This causes ggplot2 to go through the motions of training the
+object's scales on the data and doing its magic on translating the
+grammar of graphics into instructions of which text, lines, points, and
+polygons to draw where.
+
+These instructions are described using grobs by the \pkg{grid} package.
+At their simplests, they describe the coordinates where to draw a line
+or a point together with the descriptions of line style, size, colours,
+and font. The coordinates are usually relative to their frame of
+reference (i.e.~the \dfn{viewport}), but can also be specified in
+physical measures such as centimetres and inches (see
+\code{?grid::unit}).
+
+Additionally, a grob can itself be a collection of grobs. Not only does
+this allow for organising the grobs in a hierarchical structure, but the
+grobs' viewport may be defined relative to the grobs' parents' viewport.
+The enables the user to create detailed drawings by specifying
+composites that can be positioned relative to each other, and not just
+relative to the entire canvas.
+
+The gtable is also a collection of grobs, but with the added attributes
+of arranging its collection of grobs (and grob collections) onto a
+table-like layout of columns and rows. This eases the alignment of
+different components, such as an axis with the plot.
+
+To get us started, we create a simple scatter plot using
+\CRANpkg{ggplot2} and then convert it to a gtable object:
+
+
+\begin{Sinput}
+library(ggplot2)
+p <- ggplot(mtcars, aes(wt, mpg)) + geom_point() + labs(title='A scatter plot')
+g <- ggplotGrob(p)
+\end{Sinput}
+
+
+The first object, \code{p}, is a ggplot object, and the second object,
+\code{g}, a gtable object. Calling to print the objects, implicitly by
+calling the object in an interactive session \{\R\} or directly with
+\code{print}, we obtain the output given in figure \ref{fig:p_object}
+for the ggplot object, and figure \ref{fig:g_object} for the gtable
+object. To draw the gtable object, use \code{grid::grid.draw}.
+
+\begin{figure}[h!]
+
+\begin{Sinput}
+print(p)
+\end{Sinput}
+
+\includegraphics{edwards2017-p_object-1} 
+\caption{Printing the ggplot object.}
+\label{fig:p_object}
+\end{figure}
+
+\begin{figure}[h!]
+
+\begin{Sinput}
+print(g)
+\end{Sinput}
+\begin{Soutput}
+#> TableGrob (10 x 7) "layout": 17 grobs
+#>     z         cells       name                                  grob
+#> 1   0 ( 1-10, 1- 7) background        rect[plot.background..rect.44]
+#> 2   5 ( 5- 5, 3- 3)     spacer                        zeroGrob[NULL]
+#> 3   7 ( 6- 6, 3- 3)     axis-l    absoluteGrob[GRID.absoluteGrob.37]
+#> 4   3 ( 7- 7, 3- 3)     spacer                        zeroGrob[NULL]
+#> 5   6 ( 5- 5, 4- 4)     axis-t                        zeroGrob[NULL]
+#> 6   1 ( 6- 6, 4- 4)      panel               gTree[panel-1.gTree.17]
+#> 7   9 ( 7- 7, 4- 4)     axis-b    absoluteGrob[GRID.absoluteGrob.30]
+#> 8   4 ( 5- 5, 5- 5)     spacer                        zeroGrob[NULL]
+#> 9   8 ( 6- 6, 5- 5)     axis-r                        zeroGrob[NULL]
+#> 10  2 ( 7- 7, 5- 5)     spacer                        zeroGrob[NULL]
+#> 11 10 ( 4- 4, 4- 4)     xlab-t                        zeroGrob[NULL]
+#> 12 11 ( 8- 8, 4- 4)     xlab-b titleGrob[axis.title.x..titleGrob.20]
+#> 13 12 ( 6- 6, 2- 2)     ylab-l titleGrob[axis.title.y..titleGrob.23]
+#> 14 13 ( 6- 6, 6- 6)     ylab-r                        zeroGrob[NULL]
+#> 15 14 ( 3- 3, 4- 4)   subtitle  zeroGrob[plot.subtitle..zeroGrob.41]
+#> 16 15 ( 2- 2, 4- 4)      title   titleGrob[plot.title..titleGrob.40]
+#> 17 16 ( 9- 9, 4- 4)    caption   zeroGrob[plot.caption..zeroGrob.42]
+\end{Soutput}
+
+  \caption{Printing the gtable object.}
+  \label{fig:g_object}
+\end{figure}
+
+The gtable object is of a completely different nature than the ggplot
+object. The ggplot object contains the input data and descriptions of
+the mappings between variables, geoms, and scales, and the gtable object
+contains the instructions for drawing the lines, points, and text of the
+plot. \strong{NB!} Once a ggplot object has been converted to a gtable
+object, it cannot be converted back again, nor is it possible to add new
+geoms or scales, or change the plot's theme. We can however add grobs or
+modify the instructions of the gtable object.
+
+\subsection{The gtable object}
+
+A gtable is a hierarchical collection of grob and gtable objects that
+arranges the plot's features onto a table-like layout of columns and
+rows. The plot's features are the main graph, axes, legend, etc. The
+most important components of a gtable object are the \samp{layout} data
+frame and the \samp{grobs} list that positions and contains the plot's
+features. These two are combined in the listing printed in figure
+\ref{fig:g_object}. In addition to these, the \samp{widths} and
+\samp{heights} unit lists describe the column widths and row heights.
+This grid-structure is displayed figure \ref{fig:gtable_show_names},
+superimposed on the plot.
+
+\begin{figure}[h!]
+
+
+\includegraphics{edwards2017-gtable_show_names-1} 
+  \caption{
+    Overlaying plot in figure \ref{fig:p_object} with the layout names and grill of the gtable object.
+    Figure produced by \code{gtable\_show\_names} and \code{gtable\_show\_grill}.}
+  \label{fig:gtable_show_names}
+\end{figure}
+
+The descriptors in column \samp{grob} are composites of each grob's
+class and name. For \samp{background}, the grob is a primitive class
+(\code{'rect'}). Other features are collections of grobs, such as the
+panel and axes (\code{'absoluteGrob'} and \code{'titleGrob'},
+respectively), and are both specialised classes of \pkg{grid}'s
+\code{'gTree'}). Finally, the many rows with \code{'zeroGrob'} are
+features that are not drawn. In other words, a \code{'zeroGrob'} is
+simply a blank placeholder.
+
+A feature can be drawn spanning multiple rows and/or columns.
+\samp{background} shows this by spanning the entire plot in figure
+\ref{fig:gtable_show_names}. In figure \ref{fig:g_object} we see this in
+the row of the column \samp{cells} corresponding to \samp{background}
+(i.e.~the top row). As multiple features can occupy the same cells
+(e.g.~\samp{background} and \samp{panel}), the z-index (column \samp{z})
+dictates the order in which they are stacked. Features with lowest
+z-index are drawn first.
+
+Although the order of the layout data frame and grobs list are
+intrinsically linked, it is not enforced. The layout data frame can be
+accessed via \code{g\$layout} and the grobs list via \code{g\$grobs},
+and they can be manipulated separately as you normally would data frames
+and lists, respectively.
+
+\subsection{Widths and heights}
+
+The gtable is also described by the heights and widths of rows and
+columns. These two components are each a \code{'unit.list'} with a
+component for each row or column. A quick glance at the widths of
+\code{g} tells us a lot:
+
+
+\begin{Sinput}
+g$widths
+\end{Sinput}
+\begin{Soutput}
+#> [1] 5.5pt                   1grobwidth              sum(1grobwidth, 2.75pt)
+#> [4] 1null                   0cm                     0cm                    
+#> [7] 5.5pt
+\end{Soutput}
+
+
+These can be compared to the columns of figure \ref{fig:gtable_show_names};
+the first and last are the plot's margins, as given by \code{theme(plot.margin)}.
+The second width, \code{1grobwidth}, refers to the actual width of the grob
+containing the y-axis title 'mpg'.
+The third width, \code{sum(1grobwidth, 2.75pt)}, 
+is literally the width of the y-axis labels \emph{plus}
+2.75\,pt, with this unit being the length of tick marks, as set by \code{theme(axis.tick.length)}.
+We will in general see \samp{grobwidth} and \samp{grobheight} for text elements,
+with the width and heigth giving the horisontal and vertical length of a box 
+encompassing the text, taken into account if the text is rotated.
+The fourth width, \code{1null}, simply expands into the available space and is here 
+used to maximise the width of the actual graphing area.
+The two remaining widths of 0 cm are those for columns for a right-hand side axis.
+The columns are shown in figure \ref{fig:gtable_show_names} as they have been
+expanded for us to see.
+
+The number of columns and rows in the gtable object are not fixed to those shown here.
+Adding e.g.\ a legend or using facetting will affect how many columns and rows are 
+used in the gtable object. See example of figure \ref{fig:change_width} for 
+assessing which row or column to use.
+
+
+\subsection{Manipulating the gtable object}
+
+The \CRANpkg{gtable} package supplies a number of functions for manipulating
+a gtable, such as adding rows and columns (\code{gtable\_add\_rows},
+\code{gtable\_add\_cols}), combining several gtables as if 
+they were matrices (\code{cbind}, \code{rbind}),
+or adding new features to the gtable object (\code{gtable\_add\_grob}).
+These functions are usually sufficient for manipulating the gtable object.
+Knowing the components of the gtable object however allows us to manipulate 
+it in an alternative and direct fashion.
+
+\subsubsection{Adding or replacing features}
+
+For adding a feature in the form of a grob, \CRANpkg{gtable} comes with the function 
+\code{gtable\_add\_grob}.
+This appends a new row to the \samp{layout} data frame with the coordinates of the
+spanning cells, a \samp{name} for the grob, 
+and appends the added grob to the \samp{grobs} list.
+
+\emph{Replacing a grob} is however more tricky. 
+To do so, we have to work out which index in the \code{grobs} list corresponds 
+to the feature that is to be replaced. 
+The example in figure \ref{fig:replace_grob} demonstrates this for replacing the grob containing the 
+x-axis labels, with  a pink box.
+
+\begin{figure}[h!]
+
+\begin{Sinput}
+g <- ggplot2::ggplotGrob(p)
+i <- which(g$layout$name == 'xlab-b')
+g$grobs[[i]] <- grid::roundrectGrob(r=unit(0.5, 'snpc'), 
+                                    gp=gpar(fill='pink', col='black'))
+grid::grid.draw(g)
+\end{Sinput}
+
+\includegraphics{edwards2017-replace_grob-1} 
+
+\caption{Replacing the x-axis label grob with a pink square.}
+  \label{fig:replace_grob}
+
+\end{figure}
+
+One could naturally just have added the grob with
+\code{gtable\_add\_grob}, placing it on top of the x-axis labels. But if
+the grob was not filled with a solid colour, the labels could still
+appear behind it. The example however also illustrates how to
+\emph{extract} a grob, if this needed altering.
+
+\subsubsection{Changing sizes}
+
+\emph{Row heights} and \emph{column widths} can be directly altered by
+changing the corresponding element of the \samp{heights} or
+\samp{widths} \code{'unit.list'} lists. Although these are specified to
+fit the plot's features while maximising the size of the panels, we can
+change them.
+
+To change the width of the panel we must change the width of the column
+it resides in.
+
+In the example of figure \ref{fig:change_width}, the width of the panel
+is resized. To do so, the row in the \samp{layout} data frame
+corresponding to the panel is located, which gives the row and column of
+the top-left cell that the panel is drawn in. This is is in turn used
+set a new width for the column.
+
+\begin{figure}[h!] 
+\begin{Sinput}
+g <- ggplot2::ggplotGrob(p)
+layout <- subset(g$layout, name == 'panel')
+g$widths[[layout$l]] <- unit(5, 'cm')
+grid::grid.draw(g)
+\end{Sinput}
+
+\includegraphics{edwards2017-change_width-1}
+
+\caption{The scatter plot with the width of the panel set to 5\,cm.}
+  \label{fig:change_width} \end{figure}
+
+As \code{g\$widths} is a \code{'unit.list'} object, it requires using
+double square brackets for replacing an element. This also implies
+changing the widths must be done one by one, or by building a new
+\code{`unit.list'} object entirely.
+
+\section{Demonstration}
+
+The main topics for the \pkg{lemon} package was to provide functions for
+working with the legend and axis lines, and are thus demonstrated in the
+following. To have the axis lines repeated on all panels of facets, the
+package provides functions that extends \CRANpkg{ggplot2}'s standard
+facets, which is also demonstrated below.
+
+\subsection{Legends}
+
+The primary contribution here is the function \code{reposition\_legend}.
+The default behaviour for \CRANpkg{ggplot2} is to place the legend in
+one of the four margins of the plot. Repositioning the legend to occur
+within the panel can be done by supplying a two-element numeric vector
+to \code{theme(legend.position)}, specifying the position
+\emph{relative to the entire plot}. This has the unfortunate effect that
+the legend may not be positioned correctly after changing any size of
+the plot (e.g.~resizing the plot's size or changing the font sizes).
+
+The function \code{reposition\_legend} allows us to position the legend
+in relative terms to any cell of the gtable. In order to do so, it
+forces the plot into a gtable object, which is always returned
+invisibly. The function is demonstrated in figure
+\ref{fig:reposition_legend}.
+
+\begin{figure}[hb!]
+
+\begin{Sinput}
+reposition_legend(p %+% aes(color=cyl), position = 'top right')
+\end{Sinput}
+
+\includegraphics{edwards2017-reposition_legend-1} 
+  \caption{Repositioning the legend on to the main panel.}
+  \label{fig:reposition_legend}
+\end{figure}
+
+The appearences of the legend is not modified in any way, thus modifying
+it is done by the usual methods of \CRANpkg{ggplot2}. These could be
+\code{theme(legend.direction)} or \code{guide\_legend(...)}.
+
+We also highlight \code{theme(legend.box.background)} when having
+multiple legends as the component \code{theme(legend.background)} only
+affects the background of each singular legend, not the area spanning
+all legends. Whilest on the topic of multiple legend, we also
+demonstrate how \code{reposition\_legend} function can be used to add
+multiple legends to different locations, as demonstrated in figure
+\ref{fig:multiple_legends}.
+
+\begin{figure}[h!]
+
+\begin{Sinput}
+x <- p %+% aes(color=cyl, size=qsec)
+g <- g_legend(x)
+x <- reposition_legend(x, position='bottom left', legend=g$grobs[[2]], plot=FALSE)
+x <- reposition_legend(x, position='top right', legend=g$grobs[[1]], plot=FALSE)
+grid.draw(x)
+\end{Sinput}
+
+\includegraphics{edwards2017-multiple_legends-1} 
+  \caption{Repositioning multiple legends to different locations.}
+  \label{fig:multiple_legends}
+\end{figure}
+
+The demonstration also shows the usage of \code{g\_legend} to extract
+the legend from a plot. This functionwas first proposed by Baptiste
+Augui\'{e} as early as June 2012 on \CRANpkg{ggplot2}'s Github
+wiki\footnote{\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs/047381b48b0f0ef51a174286a595817f01a0dfad}}.
+It has since propogated throughout a swarm of Stack Overflow answers.
+For this same reason, Baptiste Augui\'{e} has been added as contributor
+to the \pkg{lemon} package.
+
+Lastly, a modified version of \code{grid.arrange} with a shared legend
+is demonstrated in figure \ref{fig:brackets}. The function
+\code{grid\_arrange\_shared\_legend} supplied in this package is
+modified from Shaun Jackman's
+version\footnote{\url{http://rpubs.com/sjackman/grid\_arrange\_shared\_legend}}
+and Baptiste Augui\'{e}
+version\footnote{\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}},
+thus Shaun Jackman has been added as a contributor too.
+
+\subsection{Axis lines and brackets}
+
+The second domain of functions in \pkg{lemon} is for axis lines and
+brackets. We desired to alter the axis lines to be capped to the tick
+marks or to be replaced by brackets.
+
+In the following example, three functions are demonstrated: brackets,
+capped axis lines, and multiple plots sharing the same legend.
+
+
+\begin{Sinput}
+p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +
+  geom_point(position=position_jitter(width=0.3)) +
+  theme_bw()
+
+# Demonstrate brackets, left plot
+p1 <- p + coord_flex_cart(bottom=brackets_horisontal(length=unit(0.08, 'npc'))) +
+  theme(panel.border = element_blank(), axis.line = element_line(),
+        panel.grid.major.x = element_blank())
+
+p <- ggplot(mpg, aes(displ, hwy, colour=class)) + geom_point() +
+  theme_bw()
+
+# Demonstrate capped axis lines, right plot
+p2 <- p + coord_capped_cart(bottom='right', left='none', gap = 0.03) +
+  theme(panel.border = element_blank(), axis.line = element_line(),
+        panel.grid.major.x = element_blank())
+
+# Demonstrate shared legend
+grid_arrange_shared_legend(p1, p2, position='bottom')
+\end{Sinput}
+
+
+\begin{figure}[h!]
+
+
+\includegraphics{edwards2017-brackets-1} 
+\caption{
+  \emph{Left:} Displaying brackets on an axis to indicate categorical values.
+  \emph{Right:} Capped axis lines, with x-axis capped at right-most tick, and
+               y-axis capped by a small proportion.
+  For displaying the axis lines, the theme's \samp{axis.lines} are enabled
+  while \samp{panel.border} is disabled, as the latter is drawn on top of the former.
+}
+\label{fig:brackets}
+\end{figure}
+
+The \code{coord\_flex\_*} and \code{coord\_capped\_*} functions are
+analogous to \CRANpkg{ggplot2}'s Cartesian Coordinate functions
+(\code{coord\_cartesian}, \code{coord\_flip}, and \code{coord\_fixed}).
+The \code{coord\_capped\_*} functions are wrappers for
+\code{coord\_flex\_*}, which in turn returns classes inheriting from the
+relevant Cartesian Coordinate classes (\code{'CoordCartesian'},
+\code{'CoordFixed'}, and \code{'CoordFlip'}). The difference between the
+\code{coord\_flex\_*} functions and their super classes is that these
+accepts user defined functions for drawing the axes. The Coordinate
+classes also have other responsibilities, e.g.~adjusting the position of
+overlapping geoms, but with the \CRANpkg{ggplot2} v.2.0.0 extension
+mechanisms, we can create subclasses and only alter the behaviour of the
+\samp{render\_axis\_h} and \samp{render\_axis\_v} methods.
+
+The custom axis drawing functions supplied to \code{coord\_flex\_*} and
+\code{coord\_capped\_*} are called when the ggplot object is converted
+to a gtable object for drawing. \CRANpkg{ggplot2} default function for
+drawing axes is the non-exported \code{render\_axis}. Functions for our
+customised axes can be created by calling e.g.~\code{capped\_horisontal}
+or \code{brackets\_vertical}.
+
+The appearences of the customised axis lines are taken from their
+corresponding components of \code{theme}, so modifing their apparences
+is consistent with \CRANpkg{ggplot2}. 
+The bracket functions accepts arguments to change the direction of the end `ticks',
+as well as the length of the bracket and the length of the end `ticks'.
+
+The use of axis lines to be more informative of the displayed data has
+been shown in \citet[p.\,130]{Tufte2001} with \dfn{range-frames}, where
+axis lines are limited to the range of the displayed data. This has been
+implemented in \CRANpkg{ggthemes} \citep{ggthemes} with
+\code{geom\_rangeframe}.
+
+The capped axis lines differs from these by intending to display the
+valid range the values may take. E.g.~correlations where the value
+cannot exceed \(\pm 1\). The capped axis lines may also simply be used
+to disconnect the axis lines at the corner, as seen in figure
+\ref{fig:brackets}, right.
+
+\subsection{Facets with repeated axis lines}
+
+\CRANpkg{ggplot2}'s facets avoid displaying redundant axis lines and
+labels, when the scale is identical along a row or column. This is
+mostly a good idea, but as demonstrated, some effort has been put into
+how the axis lines are drawn and as such, there is motivation to have
+them displayed on all facet panels.
+
+The function \code{facet\_rep\_grid} is demonstrated in figure
+\ref{fig:facet_rep}. As with the \code{coord\_flex\_\*} functions, the
+facets with repeated axis lines are analogous to \CRANpkg{ggplot2}'s
+facet functions (\code{facet\_grid} and \code{facet\_wrap}), and are
+implemented by subclassing \samp{FacetGrid} and \samp{FacetWrap}. They
+accept the same arguments as their \CRANpkg{ggplot2} counterparts, in
+addition to the argument \code{repeat.tick.labels}. The facets are
+demonstrated in figure \ref{fig:facet_rep}.
+
+\begin{figure}[h!]
+
+\begin{Sinput}
+d <- ggplot(diamonds, aes(carat, price)) +
+  geom_point(aes(colour = clarity)) + 
+  coord_capped_cart(bottom='none', left='bottom') +
+  facet_grid(.~cut) + theme_bw() + 
+  theme(panel.border = element_blank(), axis.line = element_line(size = 0.25),
+        legend.position='bottom')
+d + facet_rep_grid(.~cut)
+\end{Sinput}
+
+\includegraphics{edwards2017-facet_rep-1} 
+  \caption{Faceting with axis lines repeated across all panels.}
+  \label{fig:facet_rep}
+\end{figure}
+
+\section{Availability}
+
+The \pkg{lemon} package is currently available on GitHub and can be
+installed as
+
+\begin{verbatim}
+devtools::install_github("stefanedwards/lemon")
+\end{verbatim}
+
+The package is being prepared for submission to CRAN.
+
+\subsection{Acknowledgements}
+
+This article was initiated with the \texttt{rticles} package
+\citep{rticles}.
+
+The author, SME, was funded by the MRC (FARSPhase: a Flexible, widely
+Applicable, Robust, and Scalable phasing algorithm for human genetics,
+grant no. MR/M000370/1), while working on this software.
+
+\href{https://baptiste.github.io/}{Baptiste Augui\'{e}} for his work on
+many functions for \CRANpkg{ggplot2} and \CRANpkg{grid} for which
+without, this package could not have been possible.
+
+\bibliography{edwards2017}
+
+\address{%
+Stefan McKinnon Edwards\\
+The Roslin Insititute, University of Edinburgh\\
+Easter Bush\\ Midlothian\\ EH25 9RG\\ Scotland, UK\\ true\\
+}
+\href{mailto:sme@iysik.com}{\nolinkurl{sme@iysik.com}}
+
