@@ -4,10 +4,16 @@
 ^lib/$
 ^lib\$
 .Rprofile
+^README\.md$
 ^README\.Rmd$
 ^README\*.png$
+^NEWS.md$
+^README\\*$
+^cache$
 ^lib$
 ^cache/$
 ^cache\$
 ^cran-comments.md$
 ^.*.lnk$
+^LICENSE$
+^vignettes/lemon/.*$
