@@ -1,4 +1,4 @@
-#' Lemon - Freshing up your ggplots
+#' Freshing up your ggplots
 #'
 #' Collection of misc. functions for changing subtle aspects of ggplots.
 #' Works mostly on gtables produced prior to printing.
@@ -45,6 +45,6 @@
 #' 
 #' Contributions from \href{http://rpubs.com/sjackman}{Shaun Jackman} on
 #' \code{\link{grid_arrange_shared_legend}}.
-#' @import ggplot2
+#' @import ggplot2 lattice
 #' @source \url{https://github.com/stefanedwards/lemon}
 "_PACKAGE"
