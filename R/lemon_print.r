@@ -79,6 +79,7 @@ lemon_print.data.frame = function(x, options, ...) {
   opts <- options[c('format','digits','row.names','col.names','caption','align','format.args','escape')]
   if (is.null(kable.opts)) kable.opts <- list()
   opts <- RCurl::merge.list(kable.opts, opts)
+  opts <- opts[!sapply(opts, is.null)]
   opts$x <- x
   res = paste(c("","", do.call(knitr::kable, opts)), collapse="\n")
   asis_output(res)

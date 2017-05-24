@@ -270,6 +270,8 @@ reposition_legend <- function(aplot,
   
   legend$vp <- viewport(x=x, y=y, just=just,  width=sum(legend$widths), height=sum(legend$heights))
   legend$name <- name
+  .z <- z
+  .clip <- clip
   
   if (is.character(panel)) {
     pn <- which(aplot$layout$name %in% panel)
@@ -282,6 +284,8 @@ reposition_legend <- function(aplot,
                                   l = min(l), 
                                   r = max(r), 
                                   b = max(b),
+                                  z = .z,
+                                  clip = .clip,
                                   name = legend$name
                                   ))
   } else if ((is.numeric(panel) | is.integer(panel)) & length(panel) %in% c(2,4)) {
@@ -292,6 +296,8 @@ reposition_legend <- function(aplot,
                              l = panel[2], 
                              b = panel[3], 
                              r = panel[4], 
+                             z = .z,
+                             clip = .clip,
                              name = legend$name
                              )
   }

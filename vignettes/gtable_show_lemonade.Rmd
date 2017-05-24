@@ -1,12 +1,12 @@
 ---
-title: "gtable show lemonade"
+title: "Show gtable names and grill"
 author: "Stefan McKinnon Edwards <sme@iysik.com>"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Capping axis lines}
+  %\VignetteIndexEntry{Show gtable names and grill}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

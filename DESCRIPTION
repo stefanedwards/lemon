@@ -1,6 +1,6 @@
 Package: lemon
 Type: Package
-Title: Lemon - Freshing up your ggplots
+Title: Freshing Up your 'ggplot2' Plots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
 Version: 0.3.0
@@ -17,8 +17,8 @@ Authors@R: c(
     person("Winston", "Chang", , "winston@rstudio.com", "ctb",
     comment='ggplot2 functions')
     )
-Description: Functions for working with ggplot's legends and axis lines,
-    with some extended facets, and knitr extensions.
+Description: Functions for working with legends and axis lines of 'ggplot2',
+    facets that repeat axis lines on all panels, and some 'knitr' extensions.
 Depends:
     R (>= 3.1.0)
 Imports:
@@ -27,8 +27,9 @@ Imports:
     gridExtra,
     gtable,
     RCurl,
-    knitr (>= 1.12)
-License: GPL-3 + file LICENSE
+    knitr (>= 1.12),
+    lattice
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
