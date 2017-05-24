@@ -145,7 +145,3 @@ We can then load our data file using the created `.data` function, even though t
 dat <- read.table(.data('mydata.tab'))
 ```
 
-To do:
-------
-
--   Add `.dot` functions to knitr.

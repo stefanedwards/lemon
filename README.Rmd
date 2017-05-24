@@ -185,8 +185,3 @@ even though the chunk is executed from TMPDIR.
 ```r
 dat <- read.table(.data('mydata.tab'))
 ```
-
-## To do:
-
-* Add `.dot` functions to knitr.
-
