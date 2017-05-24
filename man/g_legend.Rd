@@ -64,10 +64,11 @@ grid.arrange(d  + theme(legend.position='hidden'),
 
 
 }
+\author{
+\href{http://baptiste.github.io/}{Baptiste Auguié}
+}
 \seealso{
 \code{\link{grid_arrange_shared_legend}}, \code{\link{reposition_legend}},
          \code{\link[gtable]{gtable_filter}}
 }
-\author{
-\href{http://baptiste.github.io/}{Baptiste Auguié}
-}
+

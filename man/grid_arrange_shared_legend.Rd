@@ -38,9 +38,6 @@ p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 }
-\seealso{
-\code{\link{g_legend}}, \code{\link{reposition_legend}}
-}
 \author{
 Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}),
@@ -48,3 +45,7 @@ Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
   \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}.
   Stefan McKinnon Edwards added left and top margins.
 }
+\seealso{
+\code{\link{g_legend}}, \code{\link{reposition_legend}}
+}
+

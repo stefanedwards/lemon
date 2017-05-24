@@ -75,9 +75,10 @@ reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.
 # For using with facets:
 reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-3-1')
 }
-\seealso{
-\code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
-}
 \author{
 Stefan McKinnon Edwards <sme@iysik.com>
 }
+\seealso{
+\code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
+}
+
