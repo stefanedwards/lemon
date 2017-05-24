@@ -7,7 +7,7 @@ output:
     fig_caption: yes
     toc: true # table of content true
 vignette: >
-  %\VignetteIndexEntry{Capping axis lines}
+  %\VignetteIndexEntry{Working with legends}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
