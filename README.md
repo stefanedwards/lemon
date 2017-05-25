@@ -1,7 +1,10 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 Lemon --- Freshing up your ggplots
 ==================================
+
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/lemon)](https://cran.r-project.org/package=lemon)
+![downloads](http://cranlogs.r-pkg.org/badges/grand-total/lemon)
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
