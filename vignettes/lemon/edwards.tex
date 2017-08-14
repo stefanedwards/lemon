@@ -5,9 +5,10 @@
 \maketitle
 
 \abstract{%
-  The ggplot2 package is highly popular for creat plots and offers many
-  options for customising the final product.
-  There are however limitations using only `core' ggplot2 functions,
+The ggplot2 package is highly popular for creat plots and offers many
+options for customising the final product. There are however limitations
+using only
+  `core' ggplot2 functions,
   why users might have to modify the gtable object, which is returned when
   the plot is built for rendering.
   Where the ggplot2 plot describes how the data is visualised, the gtable
@@ -54,7 +55,7 @@ After the introduction some of the \pkg{lemon} package's functionality
 is demonstrated. A summary of the functions are supplied in table
 \ref{tab:functions}.
 
-\begin{table}[h!]
+\begin{table}
   \caption{Summary of functions supplied by \pkg{lemon}.}
   \label{tab:functions}
 
@@ -168,24 +169,24 @@ print(g)
 \end{Sinput}
 \begin{Soutput}
 #> TableGrob (10 x 7) "layout": 17 grobs
-#>     z         cells       name                                  grob
-#> 1   0 ( 1-10, 1- 7) background        rect[plot.background..rect.44]
-#> 2   5 ( 5- 5, 3- 3)     spacer                        zeroGrob[NULL]
-#> 3   7 ( 6- 6, 3- 3)     axis-l    absoluteGrob[GRID.absoluteGrob.37]
-#> 4   3 ( 7- 7, 3- 3)     spacer                        zeroGrob[NULL]
-#> 5   6 ( 5- 5, 4- 4)     axis-t                        zeroGrob[NULL]
-#> 6   1 ( 6- 6, 4- 4)      panel               gTree[panel-1.gTree.17]
-#> 7   9 ( 7- 7, 4- 4)     axis-b    absoluteGrob[GRID.absoluteGrob.30]
-#> 8   4 ( 5- 5, 5- 5)     spacer                        zeroGrob[NULL]
-#> 9   8 ( 6- 6, 5- 5)     axis-r                        zeroGrob[NULL]
-#> 10  2 ( 7- 7, 5- 5)     spacer                        zeroGrob[NULL]
-#> 11 10 ( 4- 4, 4- 4)     xlab-t                        zeroGrob[NULL]
-#> 12 11 ( 8- 8, 4- 4)     xlab-b titleGrob[axis.title.x..titleGrob.20]
-#> 13 12 ( 6- 6, 2- 2)     ylab-l titleGrob[axis.title.y..titleGrob.23]
-#> 14 13 ( 6- 6, 6- 6)     ylab-r                        zeroGrob[NULL]
-#> 15 14 ( 3- 3, 4- 4)   subtitle  zeroGrob[plot.subtitle..zeroGrob.41]
-#> 16 15 ( 2- 2, 4- 4)      title   titleGrob[plot.title..titleGrob.40]
-#> 17 16 ( 9- 9, 4- 4)    caption   zeroGrob[plot.caption..zeroGrob.42]
+#>     z         cells       name                                   grob
+#> 1   0 ( 1-10, 1- 7) background        rect[plot.background..rect.864]
+#> 2   5 ( 5- 5, 3- 3)     spacer                         zeroGrob[NULL]
+#> 3   7 ( 6- 6, 3- 3)     axis-l    absoluteGrob[GRID.absoluteGrob.851]
+#> 4   3 ( 7- 7, 3- 3)     spacer                         zeroGrob[NULL]
+#> 5   6 ( 5- 5, 4- 4)     axis-t                         zeroGrob[NULL]
+#> 6   1 ( 6- 6, 4- 4)      panel               gTree[panel-1.gTree.837]
+#> 7   9 ( 7- 7, 4- 4)     axis-b    absoluteGrob[GRID.absoluteGrob.844]
+#> 8   4 ( 5- 5, 5- 5)     spacer                         zeroGrob[NULL]
+#> 9   8 ( 6- 6, 5- 5)     axis-r                         zeroGrob[NULL]
+#> 10  2 ( 7- 7, 5- 5)     spacer                         zeroGrob[NULL]
+#> 11 10 ( 4- 4, 4- 4)     xlab-t                         zeroGrob[NULL]
+#> 12 11 ( 8- 8, 4- 4)     xlab-b titleGrob[axis.title.x..titleGrob.854]
+#> 13 12 ( 6- 6, 2- 2)     ylab-l titleGrob[axis.title.y..titleGrob.857]
+#> 14 13 ( 6- 6, 6- 6)     ylab-r                         zeroGrob[NULL]
+#> 15 14 ( 3- 3, 4- 4)   subtitle  zeroGrob[plot.subtitle..zeroGrob.861]
+#> 16 15 ( 2- 2, 4- 4)      title   titleGrob[plot.title..titleGrob.860]
+#> 17 16 ( 9- 9, 4- 4)    caption   zeroGrob[plot.caption..zeroGrob.862]
 \end{Soutput}
 
   \caption{Printing the gtable object.}
@@ -354,7 +355,7 @@ the top-left cell that the panel is drawn in. This is is in turn used
 set a new width for the column.
 
 \begin{figure}[h!] 
-\begin{Sinput}
+\begin{Sinput} 
 g <- ggplot2::ggplotGrob(p)
 layout <- subset(g$layout, name == 'panel')
 g$widths[[layout$l]] <- unit(5, 'cm')
@@ -521,9 +522,9 @@ or \code{brackets\_vertical}.
 
 The appearences of the customised axis lines are taken from their
 corresponding components of \code{theme}, so modifing their apparences
-is consistent with \CRANpkg{ggplot2}. 
-The bracket functions accepts arguments to change the direction of the end `ticks',
-as well as the length of the bracket and the length of the end `ticks'.
+is consistent with \CRANpkg{ggplot2}. The bracket functions accepts
+arguments to change the direction of the end
+\texttt{ticks\textquotesingle{},\ as\ well\ as\ the\ length\ of\ the\ bracket\ and\ the\ length\ of\ the\ end}ticks'.
 
 The use of axis lines to be more informative of the displayed data has
 been shown in \citet[p.\,130]{Tufte2001} with \dfn{range-frames}, where
@@ -557,11 +558,12 @@ demonstrated in figure \ref{fig:facet_rep}.
 \begin{figure}[h!]
 
 \begin{Sinput}
-d <- ggplot(diamonds, aes(carat, price)) +
+df <- diamonds[sample.int(nrow(diamonds), 2000),]
+d <- ggplot(df, aes(carat, price)) +
   geom_point(aes(colour = clarity)) + 
   coord_capped_cart(bottom='none', left='bottom') +
   facet_grid(.~cut) + theme_bw() + 
-  theme(panel.border = element_blank(), axis.line = element_line(size = 0.25),
+  theme(panel.border = element_blank(), axis.line = element_line(size = 0.4),
         legend.position='bottom')
 d + facet_rep_grid(.~cut)
 \end{Sinput}
@@ -573,14 +575,7 @@ d + facet_rep_grid(.~cut)
 
 \section{Availability}
 
-The \pkg{lemon} package is currently available on GitHub and can be
-installed as
-
-\begin{verbatim}
-devtools::install_github("stefanedwards/lemon")
-\end{verbatim}
-
-The package is being prepared for submission to CRAN.
+The \pkg{lemon} package is currently available on CRAN.
 
 \subsection{Acknowledgements}
 
@@ -600,7 +595,7 @@ without, this package could not have been possible.
 \address{%
 Stefan McKinnon Edwards\\
 The Roslin Insititute, University of Edinburgh\\
-Easter Bush\\ Midlothian\\ EH25 9RG\\ Scotland, UK\\  ORCiD: 0000-0002-4628-8148 \\
+Easter Bush\\ Midlothian\\ EH25 9RG\\ Scotland, UK\\ true\\
 }
 \href{mailto:sme@iysik.com}{\nolinkurl{sme@iysik.com}}
 

@@ -99,7 +99,8 @@ p2 <- p + coord_capped_cart(bottom='right', left='none', gap = 0.03) +
 grid_arrange_shared_legend(p1, p2, position='bottom')
 
 ## ----facet_rep-----------------------------------------------------------
-d <- ggplot(diamonds, aes(carat, price)) +
+df <- diamonds[sample.int(nrow(diamonds), 2000),]
+d <- ggplot(df, aes(carat, price)) +
   geom_point(aes(colour = clarity)) + 
   coord_capped_cart(bottom='none', left='bottom') +
   facet_grid(.~cut) + theme_bw() + 

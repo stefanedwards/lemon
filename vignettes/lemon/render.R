@@ -2,12 +2,12 @@ library(render)
 
 
 my_render <- function(render=FALSE) {
-  if (render) stat <- render('edwards2017.rmd')
+  if (render) stat <- render('edwards.rmd')
   
   #correct tex
   
-  file.copy('edwards2017.tex', 'edwards2017.bak', overwrite=TRUE)
-  tex <- paste(readLines('edwards2017.tex'), collapse='\n')
+  file.copy('edwards.tex', 'edwards.bak', overwrite=TRUE)
+  tex <- paste(readLines('edwards.tex'), collapse='\n')
   tex <- gsub('\\textbackslash{}begin\\{Schunk\\}', '\\begin{Schunk}', tex, fixed=TRUE)
   tex <- gsub('\\textbackslash{}end\\{Schunk\\}', '\\end{Schunk}', tex, fixed=TRUE)
   tex <- gsub('\\textbackslash{}begin\\{Sinput\\}', '\\begin{Sinput}', tex, fixed=TRUE)
@@ -28,9 +28,9 @@ my_render <- function(render=FALSE) {
   #if (m[1] != -1) {
   #  
   #}
-  writeLines(tex, 'edwards2017.tex')
+  writeLines(tex, 'edwards.tex')
   
-  tools::texi2pdf('RJwrapper')
+  tools::texi2pdf('RJwrapper.tex')
 }
 
 ## Updates:
