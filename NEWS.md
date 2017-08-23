@@ -6,6 +6,11 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+# lemon 0.3.1
+
+* `reposition_legend` now places legend *under* axis lines, 
+  and further accepts x and y arguments for nudging.
+
 # lemon 0.3.0
 
 * Added `.dot` functions for supplying `setwd()` safe relative file paths.

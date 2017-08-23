@@ -161,8 +161,21 @@ arrangeGrob <- gridExtra::arrangeGrob
 #'
 #' To modify the look of the legend, use themes and the natural ggplot functions
 #' found in \code{\link[ggplot2]{guide_legend}}.
+#' 
+#' \emph{Positioning} is done by argument \code{position} which places the panel
+#' relative in \code{panel} (see below).
+#' \code{position} resolves to three variables, \code{x}, \code{y}, and \code{just}.
+#' \code{x} and \code{y} is the coordinate in \code{panel}, where the anchorpoint of
+#' the legend (set via \code{just}) is placed.
+#' In other words, \code{just='bottom right'} places the bottom right corner of 
+#' the legend at coordinates \code{(x,y)}.
+#' 
+#' The positioning can be set by argument \code{position} alone, which can be 
+#' further nudged by setting \code{position}, \code{x}, and \code{y}. 
+#' Alternatively, manually positioning can be obtained by setting arguments.
+#' \code{x}, \code{y}, and \code{just}.
 #'
-#' Panel name is by default \code{panel}, but when using facets it typically 
+#' \emph{Panel} name is by default \code{panel}, but when using facets it typically 
 #' takes the form \code{panel-{col}-{row}}, but not for wrapped facets.
 #' Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
 #' \code{\link{gtable_show_names}} to display all the names of the gtable 
@@ -176,7 +189,7 @@ arrangeGrob <- gridExtra::arrangeGrob
 #'
 #' @param aplot a ggplot2 or gtable object.
 #' @param position Where to place the legend in the panel.
-#'                 Overrules \code{x}, \code{y}, and \code{just} arguments.
+#'                 Overrules  \code{just} argument.
 #' @param legend The legend to place, if \code{NULL} (default),
 #'               it is extracted from \code{aplot} if
 #'               this is a ggplot2 object.
@@ -238,8 +251,8 @@ reposition_legend <- function(aplot,
       'right' = c(x=1, y=0.5),
       'center' = c(x=0.5, y=0.5)
     )
-    x = unit(just[1], 'npc')
-    y = unit(just[2], 'npc')
+    if (is.null(x)) x = unit(just[1], 'npc')
+    if (is.null(y)) y = unit(just[2], 'npc')
   }
   if (is.null(x) | is.null(y) | is.null(just)) {
     stop('Please supply either `position`, or `x`, `y`, and `just` arguments.')
@@ -270,7 +283,14 @@ reposition_legend <- function(aplot,
   
   legend$vp <- viewport(x=x, y=y, just=just,  width=sum(legend$widths), height=sum(legend$heights))
   legend$name <- name
-  .z <- z
+  
+  # Place legend *under* the lowest axis-line, if z is Inf
+  if (is.infinite(z)) {
+    axes <- grepl('axis', aplot$layout$name)
+    .z <- min(aplot$layout$z[axes]) - 1
+  } else {
+    .z <- z
+  }
   .clip <- clip
   
   if (is.character(panel)) {
