@@ -84,7 +84,7 @@ You've seen them above.
 The following table summarises the connection between ggplot2's coord functions
 and those of lemon.
 
- ggplot2          | splot's flexible   | splot's short hand
+ ggplot2          | lemon's flexible   | lemon's short hand
 ------------------|--------------------|--------------------
 `coord_cartesian` | `coord_flex_cart`  | `coord_capped_cart`
 `coord_flip`      | `coord_flex_flip`  | `coord_capped_flip`
