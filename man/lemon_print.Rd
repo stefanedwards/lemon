@@ -65,6 +65,9 @@ To enable as default printing method for \emph{all chunks}, include
 \preformatted{
   knit_print.data.frame <- lemon_print
   knit_print.table <- lemon_print
+  knit_print.grouped_df <- lemon_print # enableds dplyr results
+  knit_print.tibble <- lemon_print
+  knit_print.tbl <- lemon_print
 }
 
 \strong{Note:} We are \emph{not} calling the function, 
