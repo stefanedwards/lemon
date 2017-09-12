@@ -281,7 +281,7 @@ is possible.
 
 ## Plot for ggplot2-extensions
 
-```{r fig.height=300,fig.width=350}
+```{r fig.height=300/72,fig.width=350/72}
 p <- ggplot(dsamp, aes(x=cut, y=price, colour=clarity)) + geom_point(position=position_jitter(width=0.2)) +
   coord_flex_cart(bottom=brackets_horizontal(), left=capped_vertical('none')) +
   theme_bw() + theme(panel.border=element_blank(), axis.line = element_line(),

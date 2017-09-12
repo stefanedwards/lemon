@@ -22,7 +22,7 @@ Installation
 # install.packages("devtools")
 
 # Install release from GitHub:
-devtools::install_github("stefanedwards/lemon", ref='v0.3')
+devtools::install_github("stefanedwards/lemon", ref='v0.3.1')
 
 # Or get the lastest development version from GitHub:
 devtools::install_github("stefanedwards/lemon")
