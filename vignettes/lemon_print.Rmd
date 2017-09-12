@@ -11,7 +11,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette demonstrates how load the `splot` package automatically
+This vignette demonstrates how load the `lemon` package automatically
 enables pretty printing of data frames with knitr's `kable`.
 
 The beauty of defining the function `knit_print.data.frame` is that when

@@ -23,8 +23,8 @@ knitr::opts_template$set(smallfigure = list(fig.height=2, fig.width=3))
 ## Legend functions
 
 * Extract legend: `g_legend`
-* Combine multiple plots, but use only _one_ legend: `grid_arrange_shared_legend`
 * Reposition legend onto the actual plot: `reposition_legend`
+* Combine multiple plots, but use only _one_ legend: `grid_arrange_shared_legend`
 
 ## Reposition legend onto plotting panel
 
@@ -97,6 +97,29 @@ d2 <- d + aes(shape=cut) +
 reposition_legend(d2, 'left')
 ```
 
+### Legends are placed *under* axis lines
+
+The guidebox uses a solid background (subject to the chosen theme), 
+and prior to lemon version 0.3.1, the entire legend was placed as the *top most*
+element. 
+In the examples above, this was not an issue.
+With axis lines drawn, this effectively overpainted some of the axis 
+(same applies to the panel border).
+
+The guidebox is therefore placed *under* the lowest axis line,
+*if and only if* `z = Inf`. 
+To place as top most, specify a large z-index. 
+
+```{r fig.cap='Legend is drawn *under* axis lines.'}
+reposition_legend(d + theme_classic(), 'top left')
+```
+
+To adjust the guidebox so it does not overpaint the panel border, use arguments
+`x` and `y`:
+
+```{r fig.cap='Legend has to be nudged to not overpaint panel border.'}
+reposition_legend(d + theme_bw(), 'top left', x=0.002, y=1-0.002)
+```
 
 ### Warning regarding extracting legend
 
