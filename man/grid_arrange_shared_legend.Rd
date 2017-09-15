@@ -8,8 +8,12 @@ grid_arrange_shared_legend(..., ncol = length(list(...)), nrow = 1,
   position = c("bottom", "right", "top", "left"), plot = TRUE)
 }
 \arguments{
-\item{...}{ggplot2 objects. Their legends are automatically hidden.
-The legend is taken from the first argument.}
+\item{...}{Objects to plot. First argument should be a ggplot2 object, 
+as the legend is extracted from this.
+Other arguments are passed on to 
+\code{\link[gridExtra]{arrangeGrob}}, 
+including named arguments that are not defined for \code{grid_arrange_shared_legend}.
+ggplot2 objects have their legends hidden.}
 
 \item{ncol}{Integer, number of columns to arrange plots in.}
 
@@ -25,7 +29,8 @@ gtable of combined plot, invisibly.
   Draw  gtable object using \code{\link[grid]{grid.draw}}.
 }
 \description{
-Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}},
+Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} / 
+\code{\link[gridExtra]{grid.arrange}},
 and places legend in a margin.
 }
 \examples{
@@ -37,6 +42,14 @@ p3 <- qplot(color, price, data = dsamp, colour = clarity)
 p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
+
+# Passing on plots in a grob are not touched
+grid_arrange_shared_legend(p1, arrangeGrob(p2, p3, p4, ncol=3), ncol=1, nrow=2)
+
+# We can also pass on named arguments to arrangeGrob:
+title <- textGrob('This is grob', gp=gpar(fontsize=14, fontface='bold'))
+nt <- theme(legend.position='none')
+grid_arrange_shared_legend(p1, arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2, top=title)
 }
 \seealso{
 \code{\link{g_legend}}, \code{\link{reposition_legend}}

@@ -71,13 +71,18 @@ g_legend<-function(a.gplot){
 
 #' Share a legend between multiple plots
 #'
-#' Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}},
+#' Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} / 
+#' \code{\link[gridExtra]{grid.arrange}},
 #' and places legend in a margin.
 #'
 #' 
 #'
-#' @param ... ggplot2 objects. Their legends are automatically hidden.
-#'            The legend is taken from the first argument.
+#' @param ... Objects to plot. First argument should be a ggplot2 object, 
+#'            as the legend is extracted from this.
+#'            Other arguments are passed on to 
+#'            \code{\link[gridExtra]{arrangeGrob}}, 
+#'            including named arguments that are not defined for \code{grid_arrange_shared_legend}.
+#'            ggplot2 objects have their legends hidden.
 #' @param ncol Integer, number of columns to arrange plots in.
 #' @param nrow Integer, number of rows to arrange plots in.
 #' @param position 'bottom' or 'right' for positioning legend.
@@ -103,6 +108,14 @@ g_legend<-function(a.gplot){
 #' p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 #' grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 #' grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
+#' 
+#' # Passing on plots in a grob are not touched
+#' grid_arrange_shared_legend(p1, arrangeGrob(p2, p3, p4, ncol=3), ncol=1, nrow=2)
+#' 
+#' # We can also pass on named arguments to arrangeGrob:
+#' title <- textGrob('This is grob', gp=gpar(fontsize=14, fontface='bold'))
+#' nt <- theme(legend.position='none')
+#' grid_arrange_shared_legend(p1, arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2, top=title)
 grid_arrange_shared_legend <- function(...,
                                        ncol = length(list(...)),
                                        nrow = 1,
@@ -112,8 +125,9 @@ grid_arrange_shared_legend <- function(...,
 
   plots <- list(...)
   position <- match.arg(position)
-  g <- ggplotGrob(plots[[1]] + theme(legend.position = position))$grobs
-  legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+  #g <- ggplotGrob(plots[[1]] + theme(legend.position = position))$grobs
+  #legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+  legend <- g_legend(plots[[1]] + theme(legend.position = position)) 
   lheight <- sum(legend$height)
   lwidth <- sum(legend$width)
   gl <- lapply(plots, function(x) {
