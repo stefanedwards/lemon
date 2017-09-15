@@ -116,7 +116,8 @@ grid_arrange_shared_legend <- function(...,
   legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
   lheight <- sum(legend$height)
   lwidth <- sum(legend$width)
-  gl <- lapply(plots, function(x) x + theme(legend.position="none"))
+  gl <- lapply(plots, function(x) {
+    if (is.ggplot(x)) { x + theme(legend.position="none") } else { x }})
   gl <- c(gl, ncol = ncol, nrow = nrow)
 
   combined <- switch(position,

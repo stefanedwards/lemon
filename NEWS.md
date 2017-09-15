@@ -6,6 +6,12 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+# lemon 0.3.2
+
+* `grid_arrange_shared_legend` can now accept other grobs in the ... arguments.
+  It can therefore make a bit more complex plots, as shown under 'Examples' in
+  the legend-vignette.
+
 # lemon 0.3.1
 
 * `reposition_legend` now places legend *under* axis lines, 

@@ -14,6 +14,7 @@ vignette: >
 
 ```{r setup,include=FALSE}
 library(knitr)
+library(tidyverse)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
                       cache=TRUE, autodep = TRUE, cache.path = 'legend-cache/')
@@ -278,6 +279,40 @@ the margin arguments. We therefore subset to a specific grob[^gridExtra_fix].
 What worse is, if the legend contains multiple guides, the above approach will 
 not work directly. However, defining several `arrangeGrob` within each other
 is possible.
+
+## More examples
+
+### Complex layout with grid_arrange_shared_legend
+
+Asked on: https://stackoverflow.com/questions/46238676/common-legend-for-a-grid-plot
+
+> In this reproducible example grid plot, 3 plots have 3 fill colours, and z displays with the "col" blue, but in the fourth plot there is only 1 "col", so z displays as red.
+> 
+> I want to show only one common legend (which I can do), **but I want z to be blue in all four plots**. Is there a simple way to do that?
+
+Before:
+```{r example_shared_legend_complex_layout_before}
+require(tidyverse)
+require(grid)
+require(gridExtra)
+d0 <- read_csv("x, y, col\na,2,x\nb,2,y\nc,1,z")
+d1 <- read_csv("x, y, col\na,2,x\nb,2,y\nc,1,z")
+d2 <- read_csv("x, y, col\na,2,x\nb,2,y\nc,1,z")
+d3 <- read_csv("x, y, col\na,2,z\nb,2,z\nc,1,z")
+p0 <- ggplot(d0) + geom_col(mapping = aes(x, y, fill = col))
+p1 <- ggplot(d1) + geom_col(mapping = aes(x, y, fill = col))
+p2 <- ggplot(d2) + geom_col(mapping = aes(x, y, fill = col))
+p3 <- ggplot(d3) + geom_col(mapping = aes(x, y, fill = col))
+grid.arrange(p0, arrangeGrob(p1,p2,p3, ncol=3), ncol=1)
+```
+
+```{r example_shared_legend_complex_layout_after}
+nt <- theme(legend.position='hidden')
+grid_arrange_shared_legend(p0, arrangeGrob(p1+nt,p2+nt,p3+nt, ncol=3), ncol=1, nrow=2)
+```
+
+
+
 
 ## Plot for ggplot2-extensions
 
