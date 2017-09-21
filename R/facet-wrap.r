@@ -7,12 +7,12 @@ NULL
 #' @export
 facet_rep_wrap <- function(..., repeat.tick.labels=FALSE) {
   f <- facet_wrap(...)
-  params <- append(f$params, list(repeat.tick.labels=repeat.tick.labels))
+
+  params <- append(f$params, list(repeat.tick.labels=reduce.ticks.labels.settings(repeat.tick.labels)))
   ggplot2::ggproto(NULL, FacetWrapRepeatLabels,
           shrink=f$shrink,
           params=params)
 }
-
 
 #' @rdname lemon-ggproto
 #' @keywords internal
@@ -104,12 +104,11 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
     #  axis_mat_y_left[, -1] <- list(zeroGrob())
     #  axis_mat_y_right[, -ncol] <- list(zeroGrob())
     #}
-    if (!params$repeat.tick.labels) {
-      axis_mat_x_top[-1,] <- lapply(axis_mat_x_top[-1,], remove_labels_from_axis)
-      axis_mat_x_bottom[-nrow,] <- lapply(axis_mat_x_bottom[-nrow,], remove_labels_from_axis)
-      axis_mat_y_left[,-1] <- lapply(axis_mat_y_left[,-1], remove_labels_from_axis)
-      axis_mat_y_right[, -ncol] <- lapply(axis_mat_y_right[, -ncol], remove_labels_from_axis)
-    }
+    if (!'top' %in% params$repeat.tick.labels)  axis_mat_x_top[-1,] <- lapply(axis_mat_x_top[-1,], remove_labels_from_axis)
+    if (!'bottom' %in% params$repeat.tick.labels)  axis_mat_x_bottom[-nrow,] <- lapply(axis_mat_x_bottom[-nrow,], remove_labels_from_axis)
+    if (!'left' %in% params$repeat.tick.labels)  axis_mat_y_left[,-1] <- lapply(axis_mat_y_left[,-1], remove_labels_from_axis)
+    if (!'right' %in% params$repeat.tick.labels)  axis_mat_y_right[, -ncol] <- lapply(axis_mat_y_right[, -ncol], remove_labels_from_axis)
+    
     axis_height_top <- unit(apply(axis_mat_x_top, 1, max_height), "cm")
     axis_height_bottom <- unit(apply(axis_mat_x_bottom, 1, max_height), "cm")
     axis_width_left <- unit(apply(axis_mat_y_left, 2, max_width), "cm")

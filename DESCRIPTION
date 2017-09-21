@@ -3,7 +3,7 @@ Type: Package
 Title: Freshing Up your 'ggplot2' Plots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
-Version: 0.3.2
+Version: 0.3.9000
 Date: 2017-09-12
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
@@ -50,5 +50,6 @@ Suggests:
     rmarkdown,
     stringr,
     dplyr,
-    tidyverse
+    tidyverse,
+    testthat
 VignetteBuilder: knitr

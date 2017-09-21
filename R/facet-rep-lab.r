@@ -6,18 +6,46 @@ NULL
 #' \code{\link[ggplot2]{facet_grid}} and \code{\link[ggplot2]{facet_wrap}}, but
 #' with axis lines and labels preserved on all panels.
 #'
+#' These two functions are extensions to \code{\link[ggplot2]{facet_grid}}
+#' and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and 
+#' optionally tick labels across all panels.
+#' 
+#' Examples are given in the vignette \href{../doc/facet-rep-labels.html}{"Repeat axis lines on facet panels" vignette}.
+#'
 #' @param ... Arguments used for \code{\link[ggplot2]{facet_grid}} or
 #'            \code{\link[ggplot2]{facet_wrap}}.
-#' @param repeat.tick.labels Logical, removes the labels (numbering) on an inner
-#'                           axes when \code{FALSE}.
+#' @param repeat.tick.labels When \code{FALSE} (default), axes on inner panels
+#'                           have their tick labels (i.e. the numbers) removed.
+#'                           Set this to \code{TRUE} to keep all labels,
+#'                           or any combination of top, bottom, left, right to
+#'                           keep only those specified. Also acceps 'x' and 'y'.
 #' @rdname facet_rep
 #' @export
 facet_rep_grid <- function(..., repeat.tick.labels=FALSE) {
   f <- ggplot2::facet_grid(...)
-  params <- append(f$params, list(repeat.tick.labels=repeat.tick.labels))
+  
+  params <- append(f$params, list(repeat.tick.labels=reduce.ticks.labels.settings(repeat.tick.labels)))
   ggplot2::ggproto(NULL, FacetGridRepeatLabels,
           shrink=f$shrink,
           params=params)
+}
+
+#' Reduces the multitude of repeat.tick.labels-settings to 
+#' a a combination of four sides.
+#' Empty vector corresponds to 'none'
+#' 
+#' @noRd
+reduce.ticks.labels.settings <- function(ticks) {
+  if (length(ticks) == 0) return(character(0))
+  if (length(ticks) == 1 && ticks == FALSE) return(character(0))
+  if (length(ticks) == 1 && ticks == TRUE) return(c('top', 'right','bottom','left') )
+  ticks <- tolower(ticks)
+  ticks <- match.arg(tolower(ticks), c('none','all','x','y','left','top','bottom','right'), several.ok=TRUE)
+  if ('none' %in% ticks) return(character(0))
+  if ('all' %in% ticks) return(c('top', 'right','bottom','left'))
+  if ('x' %in% ticks) ticks <- c(ticks[ticks!='x'], 'top','bottom')
+  if ('y' %in% ticks) ticks <- c(ticks[ticks!='y'], 'right', 'left')
+  return(ticks)
 }
 
 #' Removes labels from axis grobs.
@@ -61,12 +89,11 @@ FacetGridRepeatLabels <- ggplot2::ggproto('FacetGridRepeatLabels',
     axis_t <- table$grobs[grepl('axis-t-[[:digit:]]+', table$layout$name)]
     axis_r <- table$grobs[grepl('axis-r-[[:digit:]]+', table$layout$name)]
 
-    if (params$repeat.tick.labels == FALSE) {
-      axis_b <- lapply(axis_b, remove_labels_from_axis)
-      axis_l <- lapply(axis_l, remove_labels_from_axis)
-      axis_t <- lapply(axis_t, remove_labels_from_axis)
-      axis_r <- lapply(axis_r, remove_labels_from_axis)
-    }
+    if (!'bottom' %in% params$repeat.tick.labels) axis_b <- lapply(axis_b, remove_labels_from_axis)
+    if (!'left' %in% params$repeat.tick.labels) axis_l <- lapply(axis_l, remove_labels_from_axis)
+    if (!'top' %in% params$repeat.tick.labels) axis_t <- lapply(axis_t, remove_labels_from_axis)
+    if (!'right' %in% params$repeat.tick.labels) axis_r <- lapply(axis_r, remove_labels_from_axis)
+
 
     panel_range <- find_panel(table)
     panel_range[,c('col','row')] <- c(max(panels$col), max(panels$row))

@@ -6,6 +6,9 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* Extended `facet_rep_grid` and `facet_rep_wrap` to allow user to specify which
+  sided tick labels should be kept. Can still use logicals for `repeat.tick.labels`.
+
 # lemon 0.3.2
 
 * `grid_arrange_shared_legend` can now accept other grobs in the ... arguments.

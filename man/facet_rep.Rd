@@ -13,10 +13,20 @@ facet_rep_wrap(..., repeat.tick.labels = FALSE)
 \item{...}{Arguments used for \code{\link[ggplot2]{facet_grid}} or
 \code{\link[ggplot2]{facet_wrap}}.}
 
-\item{repeat.tick.labels}{Logical, removes the labels (numbering) on an inner
-axes when \code{FALSE}.}
+\item{repeat.tick.labels}{When \code{FALSE} (default), axes on inner panels
+have their tick labels (i.e. the numbers) removed.
+Set this to \code{TRUE} to keep all labels,
+or any combination of top, bottom, left, right to
+keep only those specified. Also acceps 'x' and 'y'.}
 }
 \description{
 \code{\link[ggplot2]{facet_grid}} and \code{\link[ggplot2]{facet_wrap}}, but
 with axis lines and labels preserved on all panels.
+}
+\details{
+These two functions are extensions to \code{\link[ggplot2]{facet_grid}}
+and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and 
+optionally tick labels across all panels.
+
+Examples are given in the vignette \href{../doc/facet-rep-labels.html}{"Repeat axis lines on facet panels" vignette}.
 }
