@@ -7,6 +7,7 @@ Version: 0.3.1
 Date: 2017-09-12
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
+    comment=c(ORCID='0000-0002-4628-8148'),
     role=c('aut','ctb','cre')),
     person('Baptiste','Auguie', role='ctb',
     comment='For g_legend and grid_arrange_shared_legend'),
