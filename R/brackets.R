@@ -15,6 +15,9 @@ NULL
 #'
 #' It does not re-calculate tick marks, but lets \code{scale_x_*} and \code{scale_y_*}
 #' calculate and draw ticks and labels, and then modifies the ticks with brackets.
+#' 
+#' Both \code{length} and \code{tick.length} accepts a numeric scalar instead of
+#' a \code{\link[grid]{unit}} object that is interpreted as an \code{"npc"} unit.
 #'
 #' @export
 #' @rdname brackets
@@ -23,7 +26,7 @@ NULL
 #' @param length Length of the unit, parallel with axis line.
 #' @param tick.length Height (width) of x-axis (y-axis) bracket.
 #'   If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link{theme}}.
-#'
+#' @seealso \code{\link[grid]{unit}}
 #' @examples
 #' library(ggplot2)
 #' p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +
@@ -43,9 +46,15 @@ NULL
 #' @import ggplot2
 #' @import gtable
 brackets_horisontal <- function(direction = c('up','down'),
-                                length = unit(0.05, 'native'),
+                                length = unit(0.05, 'npc'),
                                 tick.length = waiver()) {
 
+  if (!is.unit(length))
+    length <- unit(as.numeric(length), 'npc')
+  
+  if (!is.waive(tick.length) && !is.unit(tick.length))
+    tick.length <- unit(as.numeric(tick.length), 'npc')
+  
   direction=match.arg(direction)
 
   # Returns a function
@@ -107,8 +116,15 @@ brackets_horizontal <- brackets_horisontal
 #' @rdname brackets
 #' @inheritParams brackets_horisontal
 brackets_vertical <- function(direction = c('left','right'),
-                              length = unit(0.05, 'native'),
+                              length = unit(0.05, 'npc'),
                               tick.length = waiver()) {
+  
+  if (!is.unit(length))
+    length <- unit(as.numeric(length), 'npc')
+  
+  if (!is.waive(tick.length) && !is.unit(tick.length))
+    tick.length <- unit(as.numeric(tick.length), 'npc')
+  
   direction=match.arg(direction)
   function(scale_details, axis, scale, position, theme) {
     agrob <- render_axis(scale_details, axis, "y", position, theme)

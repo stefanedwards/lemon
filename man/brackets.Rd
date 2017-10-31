@@ -6,14 +6,14 @@
 \alias{brackets_vertical}
 \title{Axis brackets instead of axis ticks and lines}
 \usage{
-brackets_horisontal(direction = c("up", "down"), length = unit(0.05,
-  "native"), tick.length = waiver())
+brackets_horisontal(direction = c("up", "down"), length = unit(0.05, "npc"),
+  tick.length = waiver())
 
-brackets_horizontal(direction = c("up", "down"), length = unit(0.05,
-  "native"), tick.length = waiver())
+brackets_horizontal(direction = c("up", "down"), length = unit(0.05, "npc"),
+  tick.length = waiver())
 
 brackets_vertical(direction = c("left", "right"), length = unit(0.05,
-  "native"), tick.length = waiver())
+  "npc"), tick.length = waiver())
 }
 \arguments{
 \item{direction}{Which way should the opening side of the brackets point?
@@ -35,6 +35,9 @@ The looks of the brackets are taken from \code{theme(axis.ticks)}, or
 
 It does not re-calculate tick marks, but lets \code{scale_x_*} and \code{scale_y_*}
 calculate and draw ticks and labels, and then modifies the ticks with brackets.
+
+Both \code{length} and \code{tick.length} accepts a numeric scalar instead of
+a \code{\link[grid]{unit}} object that is interpreted as an \code{"npc"} unit.
 }
 \examples{
 library(ggplot2)
@@ -51,4 +54,7 @@ p
 
 # A further adjustment,
 p + theme(panel.grid.major.x = element_blank())
+}
+\seealso{
+\code{\link[grid]{unit}}
 }

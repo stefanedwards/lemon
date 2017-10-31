@@ -6,6 +6,9 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* `brackets_horisontal` and `brackets_vertical` now uses 'npc' as default
+  unit, as well as defaults to this unit if given a numeric.
+
 * Extended `facet_rep_grid` and `facet_rep_wrap` to allow user to specify which
   sided tick labels should be kept. Can still use logicals for `repeat.tick.labels`.
 

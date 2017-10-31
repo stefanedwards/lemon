@@ -47,7 +47,9 @@ Modify the theme so the `panel.border` is not drawn (it will be on top of the ax
 and have the axis lines drawn:
 
 ```{r theme}
-my.theme <- my.theme + theme(panel.border=element_blank(), axis.line = element_line())
+my.theme <- my.theme + theme(panel.border=element_blank(), 
+                             axis.line = element_line(), 
+                             axis.ticks = element_line(colour='black'))
 p <- p + my.theme
 ```
 
@@ -197,7 +199,7 @@ use the argument `tick.length`:
 ```{r}
 p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   geom_point(position=position_jitter(width=0.3)) +
-  coord_flex_cart(bottom=brackets_horisontal(tick.length=unit(0, 'cm')), 
+  coord_flex_cart(bottom=brackets_horisontal(tick.length=0), 
                   left=brackets_vertical(tick.length = unit(1, 'cm'))) +
   my.theme
 p
