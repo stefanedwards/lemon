@@ -44,12 +44,14 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 
 # Passing on plots in a grob are not touched
-grid_arrange_shared_legend(p1, arrangeGrob(p2, p3, p4, ncol=3), ncol=1, nrow=2)
+grid_arrange_shared_legend(p1, gridExtra::arrangeGrob(p2, p3, p4, ncol=3), ncol=1, nrow=2)
 
 # We can also pass on named arguments to arrangeGrob:
-title <- textGrob('This is grob', gp=gpar(fontsize=14, fontface='bold'))
+title <- grid::textGrob('This is grob', gp=grid::gpar(fontsize=14, fontface='bold'))
 nt <- theme(legend.position='none')
-grid_arrange_shared_legend(p1, arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2, top=title)
+grid_arrange_shared_legend(p1, 
+   gridExtra::arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2, 
+   top=title)
 }
 \seealso{
 \code{\link{g_legend}}, \code{\link{reposition_legend}}
