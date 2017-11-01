@@ -3,6 +3,18 @@ library(lemon)
 
 expect_ggplot <- function(object, class='ggplot', ...) expect_s3_class(object, class=class, ...)
 
+my.theme <- theme_light() +
+    theme(panel.border=element_blank(), 
+          axis.line = element_line(), 
+          axis.ticks = element_line(colour='black'))
+
+dat1 <- data.frame(
+  gp = factor(rep(letters[1:3], each = 10)),
+  y = rnorm(30),
+  cl = sample.int(3, 30, replace=TRUE),
+  cl2 = sample(c('a','b','c'), 30, replace=TRUE)
+)
+
 test_that('Brackets do not produce errors when theme(axis.ticks = element_blank()).', {
 
   p <- ggplot(dat1, aes(gp, y)) + 

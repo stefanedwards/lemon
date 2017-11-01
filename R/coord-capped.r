@@ -31,6 +31,7 @@ NULL
 #'   the limits to ensure that data and axes don't overlap. If \code{FALSE},
 #'   limits are taken exactly from the data or \code{xlim}/\code{ylim}.
 #' @rdname coord_capped
+#' @include coord-flex.r
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -69,6 +70,9 @@ coord_capped_cart <- function(xlim = NULL,
   if (is.character(bottom)) bottom <- capped_horisontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
+
+  test_orientation(top, right, bottom, left)
+  
   ggproto(NULL, CoordFlexCartesian,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -95,6 +99,9 @@ coord_capped_flip <- function(xlim = NULL,
   if (is.character(bottom)) bottom <- capped_horisontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
+  
+  test_orientation(top, right, bottom, left)
+  
   ggproto(NULL, CoordFlexFlipped,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -121,7 +128,7 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
   # scale: "x" or "y"
   # position: top or bottom / left or right
   # theme:
-  function(scale_details, axis, scale, position, theme) {
+  fn <- function(scale_details, axis, scale, position, theme) {
     agrob <- render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
@@ -138,6 +145,8 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
     )
     agrob
   }
+  attr(fn, 'orientation') <- 'horisontal'
+  fn
 }
 
 #' @inheritParams capped_horisontal
@@ -152,7 +161,7 @@ capped_vertical <- function(capped = c('top','bottom','both','none'),
   # scale: "x" or "y"
   # position: top or bottom / left or right
   # theme:
-  function(scale_details, axis, scale, position, theme) {
+  fn <- function(scale_details, axis, scale, position, theme) {
     agrob <- render_axis(scale_details, axis, "y", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
@@ -169,5 +178,7 @@ capped_vertical <- function(capped = c('top','bottom','both','none'),
     )
     agrob
   }
+  attr(fn, 'orientation') <- 'vertical'
+  fn
 }
 

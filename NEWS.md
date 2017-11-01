@@ -14,6 +14,9 @@
 
 * Extended `facet_rep_grid` and `facet_rep_wrap` to allow user to specify which
   sided tick labels should be kept. Can still use logicals for `repeat.tick.labels`.
+  
+* `coord_capped_*` and `coord_flex_*` now checks if the provided `brackets_*`
+  and `capped_*` functions corresponds to the correct orientation.
 
 # lemon 0.3.2
 

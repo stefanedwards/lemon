@@ -82,6 +82,9 @@ coord_flex_cart <- function(xlim = NULL,
                             left = waiver(),
                             bottom = waiver(),
                             right = waiver()) {
+  
+  test_orientation(top, right, bottom, left)
+  
   ggproto(NULL, CoordFlexCartesian,
     limits = list(x = xlim, y = ylim),
     expand = expand,
@@ -103,6 +106,9 @@ coord_flex_flip <- function(xlim = NULL,
                             left = waiver(),
                             bottom = waiver(),
                             right = waiver()) {
+  
+  test_orientation(top, right, bottom, left)
+  
   ggproto(NULL, CoordFlexFlipped,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -125,6 +131,9 @@ coord_flex_fixed <- function(ratio = 1,
                              left = waiver(),
                              bottom = waiver(),
                              right = waiver()) {
+  
+  test_orientation(top, right, bottom, left)
+  
   ggproto(NULL, CoordFlexFixed,
           limits = list(x = xlim, y = ylim),
           ratio = ratio,
@@ -163,6 +172,28 @@ flex_render_axis_v <- function(self, scale_details, theme) {
     right = right(scale_details, arrange[2], 'y', 'right', theme)
   )
 }
+
+# Checks that the provided axis function corresponds to the orientation of the
+# axis it is used upon.
+test_orientation <- function(top, right, bottom, left) {
+  if (!is.waive(top) && 
+      !is.null(attr(top, 'orientation', exact=TRUE)) &&
+      attr(top, 'orientation', exact=TRUE) == 'vertical') 
+    stop('`top` has been supplied a vertical axis function; this will not work.')
+  if (!is.waive(bottom) && 
+      !is.null(attr(bottom, 'orientation', exact=TRUE)) &&
+      attr(bottom, 'orientation', exact=TRUE) == 'vertical') 
+    stop('`bottom` has been supplied a vertical axis function; this will not work.')
+  if (!is.waive(left) && 
+      !is.null(attr(left, 'orientation', exact=TRUE)) &&
+      attr(left, 'orientation', exact=TRUE) == 'horisontal') 
+    stop('`left` has been supplied a horisontal axis function; this will not work.')
+  if (!is.waive(right) && 
+      !is.null(attr(right, 'orientation', exact=TRUE)) &&
+      attr(right, 'orientation', exact=TRUE) == 'horisontal') 
+    stop('`right` has been supplied a horisontal axis function; this will not work.')
+}
+  
 
 # ggproto objects -------------------------------------------------------------
 

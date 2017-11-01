@@ -58,7 +58,7 @@ brackets_horisontal <- function(direction = c('up','down'),
   direction=match.arg(direction)
 
   # Returns a function
-  function(scale_details, axis, scale, position, theme) {
+  fn <- function(scale_details, axis, scale, position, theme) {
     agrob <- render_axis(scale_details, axis, "x", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
@@ -115,6 +115,8 @@ brackets_horisontal <- function(direction = c('up','down'),
       vp = justvp
     )
   }
+  attr(fn, 'orientation') <- 'horisontal'
+  fn
 }
 
 #' @export
@@ -136,7 +138,7 @@ brackets_vertical <- function(direction = c('left','right'),
     tick.length <- unit(as.numeric(tick.length), 'npc')
   
   direction=match.arg(direction)
-  function(scale_details, axis, scale, position, theme) {
+  fn <- function(scale_details, axis, scale, position, theme) {
     agrob <- render_axis(scale_details, axis, "y", position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
@@ -192,4 +194,6 @@ brackets_vertical <- function(direction = c('left','right'),
       vp = justvp
     )
   }
+  attr(fn, 'orientation') <- 'vertical'
+  fn
 }
