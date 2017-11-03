@@ -41,6 +41,7 @@ Collate:
     'dot.r'
     'facet-rep-lab.r'
     'facet-wrap.r'
+    'geom_pointline.r'
     'gtable_show-.r'
     'guides-axis.r'
     'legends.r'
