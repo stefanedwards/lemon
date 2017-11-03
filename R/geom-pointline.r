@@ -9,6 +9,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                       lineend = "butt",
                       linejoin = "round",
                       linemitre = 1,
+                      linesize = 0.5,
                       arrow = NULL,
                       ...) {
   layer(
@@ -25,6 +26,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
+      linesize = 0.5,
       arrow = arrow,      
       ...
     )
@@ -49,7 +51,7 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
   ),
                                   
   draw_panel = function(data, panel_params, coord, na.rm = FALSE,
-                        distance = unit(6, 'pt'),
+                        distance = unit(6, 'pt'), linesize = 0.5,
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
@@ -169,7 +171,7 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
       gp = gpar(
         col = alpha(munched$colour, munched$alpha)[!end],
         fill = alpha(munched$colour, munched$alpha)[!end],
-        lwd = munched$size[!end] * .pt,
+        lwd = linesize * .pt,
         lty = munched$linetype[!end],
         lineend = lineend,
         linejoin = linejoin,
