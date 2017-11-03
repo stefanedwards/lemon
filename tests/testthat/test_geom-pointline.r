@@ -17,5 +17,8 @@ test_that('geom_pointline works', {
   p + geom_pointline(aes(colour=as.factor(cyl)))
   
   
-  p + geom_pointline(aes(colour=as.factor(cyl)), position=position_jitter(width=0.7, height=0.7))
+  p + geom_pointline(aes(colour=as.factor(cyl), size=drat), position=position_jitter(width=0.2, height=0.2))
+  
+  
+  p + geom_pointline(aes(size=drat), distance=unit(-3, 'pt'))
 })

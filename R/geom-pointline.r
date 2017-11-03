@@ -5,7 +5,7 @@ NULL
 geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                       position = "identity", na.rm = FALSE,
                       show.legend = NA, inherit.aes = TRUE, 
-                      distance = unit(6, 'pt'), 
+                      distance = unit(3, 'pt'), 
                       lineend = "butt",
                       linejoin = "round",
                       linemitre = 1,
@@ -51,7 +51,7 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
   ),
                                   
   draw_panel = function(data, panel_params, coord, na.rm = FALSE,
-                        distance = unit(6, 'pt'), linesize = 0.5,
+                        distance = unit(3, 'pt'), linesize = 0.5,
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
@@ -110,43 +110,37 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
     start <- c(TRUE, group_diff)
     end <-   c(group_diff, TRUE)
 
-    if (!constant) {
-      gr_lines <- segmentsGrob(
-        munched$x[!end], munched$y[!end], munched$x[!start], munched$y[!start],
-        default.units = "native", arrow = arrow,
-        gp = gpar(
-          col = alpha(munched$colour, munched$alpha)[!end],
-          fill = alpha(munched$colour, munched$alpha)[!end],
-          lwd = munched$size[!end] * .pt,
-          lty = munched$linetype[!end],
-          lineend = lineend,
-          linejoin = linejoin,
-          linemitre = linemitre
-        )
-      )
-    } else {
-      id <- match(munched$group, unique(munched$group))
-      gr_lines <- polylineGrob(
-        munched$x, munched$y, id = id,
-        default.units = "native", arrow = arrow,
-        gp = gpar(
-          col = alpha(munched$colour, munched$alpha)[start],
-          fill = alpha(munched$colour, munched$alpha)[start],
-          lwd = munched$size[start] * .pt,
-          lty = munched$linetype[start],
-          lineend = lineend,
-          linejoin = linejoin,
-          linemitre = linemitre
-        )
-      )
-    }
+    # if (!constant) {
+    #   gr_lines <- segmentsGrob(
+    #     munched$x[!end], munched$y[!end], munched$x[!start], munched$y[!start],
+    #     default.units = "native", arrow = arrow,
+    #     gp = gpar(
+    #       col = alpha(munched$colour, munched$alpha)[!end],
+    #       fill = alpha(munched$colour, munched$alpha)[!end],
+    #       lwd = munched$size[!end] * .pt,
+    #       lty = munched$linetype[!end],
+    #       lineend = lineend,
+    #       linejoin = linejoin,
+    #       linemitre = linemitre
+    #     )
+    #   )
+    # } else {
+    #   id <- match(munched$group, unique(munched$group))
+    #   gr_lines <- polylineGrob(
+    #     munched$x, munched$y, id = id,
+    #     default.units = "native", arrow = arrow,
+    #     gp = gpar(
+    #       col = alpha(munched$colour, munched$alpha)[start],
+    #       fill = alpha(munched$colour, munched$alpha)[start],
+    #       lwd = munched$size[start] * .pt,
+    #       lty = munched$linetype[start],
+    #       lineend = lineend,
+    #       linejoin = linejoin,
+    #       linemitre = linemitre
+    #     )
+    #   )
+    # }
     #  gr_lines <- GeomPath$draw_panel(data, panel_params, coord0, arrow, lineend, linejoin, linemitre, na.rm)
-    # 
-    # 
-    # gr_lines$gp$col <- 'blue'
-    
-    gr_lines$gp$lwd <- 2.0
-    
     
     # Make df with x0,y0,x1,y1
     munched$x1 <- c(munched$x[-1], NA)
@@ -159,10 +153,12 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
       xn = x;
       yn = y;
       theta = atan2(y1-y, x1-x);
-      x = unit(x, 'native') + distance*cos(theta);
-      x1 = unit(x1, 'native') - distance*cos(theta);
-      y = unit(y, 'native') + distance*sin(theta);
-      y1 = unit(y1, 'native') - distance*sin(theta)
+      size = unit(size, 'pt');
+
+      x = unit(x, 'native') + size*cos(theta) + distance*cos(theta);
+      x1 = unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
+      y = unit(y, 'native') + size*sin(theta) + distance*sin(theta);
+      y1 = unit(y1, 'native') - size*sin(theta) - distance*sin(theta)
     })
     
     gr_tmp <- segmentsGrob(
