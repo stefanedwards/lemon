@@ -6,7 +6,7 @@
 \usage{
 reposition_legend(aplot, position = NULL, legend = NULL, panel = "panel",
   x = NULL, y = NULL, just = NULL, name = "guide-box", clip = "on",
-  z = Inf, plot = TRUE)
+  offset = c(0, 0), z = Inf, plot = TRUE)
 }
 \arguments{
 \item{aplot}{a ggplot2 or gtable object.}
@@ -29,6 +29,10 @@ placed at the \code{x} and \code{y} coordinates.}
 
 \item{name, clip, z}{Parameters forwarded to 
 \code{\link[gtable]{gtable_add_grob}}.}
+
+\item{offset}{Numeric vector, sets distance from edge of panel.
+First element for horisontal distance, second for vertical.
+Not used by arguments \code{x} and \code{y}.}
 
 \item{plot}{Logical, when \code{TRUE} (default), draws plot with legend
 repositioned on a new page.}

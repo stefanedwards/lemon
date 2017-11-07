@@ -215,6 +215,9 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' @param y vertical coordiante of legend, with 0 at bottom.
 #' @param just 'Anchor point' of legend; it is this point of the legend that is
 #'             placed at the \code{x} and \code{y} coordinates.
+#' @param offset Numeric vector, sets distance from edge of panel.
+#'               First element for horisontal distance, second for vertical.
+#'               Not used by arguments \code{x} and \code{y}.
 #' @param name,clip,z Parameters forwarded to 
 #'             \code{\link[gtable]{gtable_add_grob}}.
 #' @param plot Logical, when \code{TRUE} (default), draws plot with legend
@@ -251,26 +254,39 @@ reposition_legend <- function(aplot,
                              just=NULL,
                              name='guide-box',
                              clip='on',
+                             offset=c(0,0),
                              z=Inf,
                              plot=TRUE) {
 
   # Work out positioning
   if (!is.null(position)) {
-    position <- match.arg(position, c('bottom right','bottom','bottom left','left','top left','top','top right','right','center'))
+    if (length(offset) == 1) offset <- offset[c(1,1)]
+    if (!grid::is.unit(offset)) offset <- grid::unit(offset, 'npc')
+
+    position <- match.arg(position, c('bottom right','right bottom','bottom','bottom left','left bottom','left','top left','top','top right','left top','right top','right','center'))
     just <- switch(position,
       'bottom right' = c(x=1, y=0),
+      'right bottom' = c(x=1, y=0),
       'bottom' = c(x=0.5, y=0),
       'bottom left' = c(x=0, y=0),
+      'left bottom' = c(x=0, y=0),
       'left' = c(x=0, y=0.5),
       'top left' = c(x=0, y=1),
+      'left top' = c(x=0, y=1),
       'top' = c(x=0.5, y=1),
       'top right' = c(x=1, y=1),
+      'right top' = c(x=1, y=1),
       'right' = c(x=1, y=0.5),
       'center' = c(x=0.5, y=0.5)
     )
-    if (is.null(x)) x = unit(just[1], 'npc')
-    if (is.null(y)) y = unit(just[2], 'npc')
+    if (is.null(x)) x = unit(just[1], 'npc') + offset[1] * 
+      ifelse(grepl('right', position), -1, ifelse(grepl('left', position), 1, 0))
+    if (is.null(y)) y = unit(just[2], 'npc') + offset[2] *
+      ifelse(grepl('top', position), -1, ifelse(grepl('bottom', position), 1, 0))
   }
+  if (!is.null(x) && !grid::is.unit(x)) x <- unit(x, 'npc')
+  if (!is.null(y) && !grid::is.unit(y)) y <- unit(y, 'npc')
+
   if (is.null(x) | is.null(y) | is.null(just)) {
     stop('Please supply either `position`, or `x`, `y`, and `just` arguments.')
   }

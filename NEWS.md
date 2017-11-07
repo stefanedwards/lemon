@@ -6,6 +6,8 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* Added argument `offset` to `reposition_legend` to better nudge legend into place.
+
 * `brackets_horisontal` and `brackets_vertical` now uses 'npc' as default
   unit, as well as defaults to this unit if given a numeric.
 

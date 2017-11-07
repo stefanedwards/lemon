@@ -115,10 +115,16 @@ reposition_legend(d + theme_classic(), 'top left')
 ```
 
 To adjust the guidebox so it does not overpaint the panel border, use arguments
-`x` and `y`:
+`x` and `y`,
 
 ```{r fig.cap='Legend has to be nudged to not overpaint panel border.'}
 reposition_legend(d + theme_bw(), 'top left', x=0.002, y=1-0.002)
+```
+
+...  or use the argument `offset`:
+
+```{r fig.cap='Legend has to be nudged to not overpaint panel border, this time by `offset`.'}
+reposition_legend(d + theme_bw(), 'top left', offset=0.002)
 ```
 
 ### Warning regarding extracting legend
@@ -294,10 +300,10 @@ Before:
 require(tidyverse)
 require(grid)
 require(gridExtra)
-d0 <- read_csv("x, y, col\na,2,x\nb,2,y\nc,1,z")
-d1 <- read_csv("x, y, col\na,2,x\nb,2,y\nc,1,z")
-d2 <- read_csv("x, y, col\na,2,x\nb,2,y\nc,1,z")
-d3 <- read_csv("x, y, col\na,2,z\nb,2,z\nc,1,z")
+d0 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
+d1 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
+d2 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
+d3 <- read.csv(text="x, y, col\na,2,z\nb,2,z\nc,1,z")
 p0 <- ggplot(d0) + geom_col(mapping = aes(x, y, fill = col))
 p1 <- ggplot(d1) + geom_col(mapping = aes(x, y, fill = col))
 p2 <- ggplot(d2) + geom_col(mapping = aes(x, y, fill = col))
