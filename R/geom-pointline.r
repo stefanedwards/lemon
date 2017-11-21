@@ -1,8 +1,65 @@
 #' @include ggplot2.r
 NULL
 
+#' Connected points
+#' 
+#' \code{geom_pointpath} combined \code{\link[ggplot2]{geom_point}} and 
+#' \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
+#' both lines and points stay connected, and b) provides a visual effect
+#' by adding a small gap between the point and the end of line.
+#' \code{geom_pointline} combines \code{\link[ggplot2]{geom_point}} and
+#' \code{\link[ggplot2]{geom_line}}.
+#' 
+#' \code{geom_pointpath} connects the observations in the same order in which
+#' they appear in the data.
+#' \code{geom_pointline} connects them in order of the variable on the x-axis.
+#' 
+#' @section Aesthetics:
+#' \code{geom_pointline} and \code{geom_pointpath} understands the following 
+#' aesthetics (required aesthetics are in bold):
+#' \itemize{
+#'   \item \strong{x}
+#'   \item \strong{y}
+#'   \item alpha
+#'   \item colour -- sets colour of point. Only affects line if \code{linecol=waiver()}. 
+#'   \item stroke
+#'   \item shape
+#'   \item stroke
+#'   \item group
+#'   \item linetype
+#'   \item size -- only affects point size. Width of line is set with 
+#'         \code{linesize} and cannot be linked to an aesthetic.
+#' }
+#' @param mapping Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
+#'   or \code{\link[ggpot2]{aes_}}.
+#' @param data The data to be displayed in this layer.
+#' @param stat The statistical transformation to use on the data for this layer, 
+#'   as a string.
+#' @param position Position adjustment, either as a string, or the result of a 
+#'   call to a position adjustment function
+#'   (e.g. \code{\link[ggplot2]{position_jitter}}).
+#'   Both lines and points gets the same adjustment 
+#'   (\emph{this} is where the function excels over \code{geom_point() + geom_line()}).
+#' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}.
+#' @param lineend Line end style (round, butt, square).
+#' @param linejoin Line join style (round, mintre, bevel).
+#' @param linemitre Line mitre limit (number greater than 1).
+#' @param arraow Arrow specification, as created by \code{\link[grid]{arrow}}.
+#' @param na.rm If \code{FALSE} (default), missing values are removed with a warning.
+#'   If \code{TRUE}, missing values are silently removed.
+#' @param show.legend Logical. Should this layer be included in the legends?
+#'   \code{NA} (default), includes if any aesthetics are mapped.
+#'   \code{FALSE} never includes, and \code{TRUE} always includes.
+#' @param inherit.aes If \code{FALSE}, overrides the default aesthetic, rather
+#'   than combining with them. This is most useful for helper functions that
+#'   define both data and aesthetics and shouldn't inherit behaviour from the 
+#'   default plot specification, e.g. \code{\link[ggplot2]{border}}.
+#' @param linesize Width of of line.
+#' @param distance Gap size between point and end of lines;
+#'   use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
+#' 
 #' @export
-geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
+geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       position = "identity", na.rm = FALSE,
                       show.legend = NA, inherit.aes = TRUE, 
                       distance = unit(3, 'pt'), 
@@ -16,7 +73,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
     data = data,
     mapping = mapping,
     stat = stat,
-    geom = GeomPointLine,
+    geom = GeomPointPath,
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
@@ -40,7 +97,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @export
 #' @import ggplot2
 #' @import gtable
-GeomPointLine <- ggplot2::ggproto('GeomPointLine',
+GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                                   `_inherit`=ggplot2::GeomPoint,
   required_aes = c("x", "y"),
   non_missing_aes = c("size", "shape", "colour"),
@@ -55,10 +112,13 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
+    if (!is.unit(distance) && is.numeric(distance)) 
+      distance <- grid::unit(distance, 'pt')
+    
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
     coords_p <- coords
-    gr_points <- ggname("geom_point",
+    gr_points <- ggplot2:::ggname("geom_point",
            grid::pointsGrob(
              coords$x, coords$y,
              pch = coords$shape,
@@ -161,7 +221,7 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
       y1 = unit(y1, 'native') - size*sin(theta) - distance*sin(theta)
     })
     
-    gr_tmp <- segmentsGrob(
+    gr_lines <- segmentsGrob(
       x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
       arrow = arrow,
       gp = gpar(
@@ -175,9 +235,61 @@ GeomPointLine <- ggplot2::ggproto('GeomPointLine',
       )
     )
     
-    save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, gr_tmp, munched,  file='tmp.Rdata')
+    #save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, munched,  file='tmp.Rdata')
      
     #gr_points
-    grid::gList(gr_points, gr_tmp)
+    grid::gList(gr_points, gr_lines)
+  },
+  
+  draw_key = function(data, params, size) {
+    grid::grobTree(ggplot2::draw_key_path(data, params, size),
+                ggplot2::draw_key_point(data, params, size)
+    )
   }
+)
+
+
+#' @export
+geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
+                           position = "identity", na.rm = FALSE,
+                           show.legend = NA, inherit.aes = TRUE, 
+                           distance = unit(3, 'pt'), 
+                           lineend = "butt",
+                           linejoin = "round",
+                           linemitre = 1,
+                           linesize = 0.5,
+                           arrow = NULL,
+                           ...) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomPointLine,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      distance = distance,
+      lineend = lineend,
+      linejoin = linejoin,
+      linemitre = linemitre,
+      linesize = 0.5,
+      arrow = arrow,      
+      ...
+    )
+  )
+}
+
+#' @rdname lemon-ggproto
+#' @keywords internal
+#' @format NULL
+#' @usage NULL
+#' @export
+#' @import ggplot2
+#' @import gtable
+GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
+    setup_data = function(data, params) {
+      data[order(data$PANEL, data$group, data$x), ]
+    }
 )
