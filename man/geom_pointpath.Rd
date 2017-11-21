@@ -7,7 +7,8 @@
 geom_pointpath(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
-  linejoin = "round", linemitre = 1, linesize = 0.5, arrow = NULL, ...)
+  linejoin = "round", linemitre = 1, linesize = 0.5,
+  linecolour = waiver(), linecolor = waiver(), arrow = NULL, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
@@ -47,6 +48,10 @@ use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.}
 
 \item{linesize}{Width of of line.}
 
+\item{linecolour, linecolor}{Draws line with this colour.
+\strong{May or may not} interfere with grouping. Not quite sure yet.
+TODO!}
+
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}.}
 
 \item{arraow}{Arrow specification, as created by \code{\link[grid]{arrow}}.}
@@ -63,6 +68,11 @@ by adding a small gap between the point and the end of line.
 \code{geom_pointpath} connects the observations in the same order in which
 they appear in the data.
 \code{geom_pointline} connects them in order of the variable on the x-axis.
+
+Both \code{geom_pointpath} and \code{geom_pointline} will only 
+connect observations within the same group! However,
+if \code{linecolour} is \emph{not} \code{waiver()}, connections
+will be made between groups, but possible in an incorrect order.
 }
 \section{Aesthetics}{
 
@@ -72,7 +82,7 @@ aesthetics (required aesthetics are in bold):
   \item \strong{x}
   \item \strong{y}
   \item alpha
-  \item colour -- sets colour of point. Only affects line if \code{linecol=waiver()}. 
+  \item colour -- sets colour of point. Only affects line if \code{linecolour=waiver()}. 
   \item stroke
   \item shape
   \item stroke
@@ -83,3 +93,70 @@ aesthetics (required aesthetics are in bold):
 }
 }
 
+\examples{
+# geom_point examples
+
+p <- ggplot(mtcars, aes(wt, mpg))
+p + geom_point() + geom_line()
+p + geom_pointline()
+p + geom_pointline(linecolour='brown')
+p + geom_pointline(colour='green')
+
+# Add aesthetic mappings
+p + geom_point(aes(colour = factor(cyl)))
+p + geom_pointline(aes(colour = factor(cyl)))
+p + geom_pointline(aes(colour = factor(cyl)), linecolour='brown')  # wrong group and ordering...
+
+
+p + geom_point(aes(shape = factor(cyl)))
+p + geom_pointline(aes(shape = factor(cyl)))
+p + geom_point(aes(size = qsec))
+p + geom_pointline(aes(size=qsec))
+
+# Change scales
+p + geom_point(aes(colour = cyl)) + scale_colour_gradient(low = "blue")
+p + geom_pointline(aes(colour = cyl)) + scale_colour_gradient(low = "blue")
+p + geom_pointline(aes(colour = cyl), linecolour='black') + scale_colour_gradient(low = "blue")
+p + geom_point(aes(shape = factor(cyl))) + scale_shape(solid = FALSE)
+p + geom_pointline(aes(shape = factor(cyl))) + scale_shape(solid = FALSE)
+
+
+# Set aesthetics to fixed value
+ggplot(mtcars, aes(wt, mpg)) + geom_point(colour = "red", size = 3)
+
+
+# Varying alpha is useful for large datasets
+d <- ggplot(diamonds, aes(carat, price))
+d + geom_point(alpha = 1/10)
+d + geom_point(alpha = 1/20)
+d + geom_point(alpha = 1/100)
+
+
+# For shapes that have a border (like 21), you can colour the inside and
+# outside separately. Use the stroke aesthetic to modify the width of the
+# border
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(shape = 21, colour = "black", fill = "white", size = 5, stroke = 5)
+
+
+# You can create interesting shapes by layering multiple points of
+# different sizes
+p <- ggplot(mtcars, aes(mpg, wt, shape = factor(cyl)))
+p + geom_point(aes(colour = factor(cyl)), size = 4) +
+  geom_point(colour = "grey90", size = 1.5)
+p + geom_point(colour = "black", size = 4.5) +
+  geom_point(colour = "pink", size = 4) +
+  geom_point(aes(shape = factor(cyl)))
+
+# These extra layers don't usually appear in the legend, but we can
+# force their inclusion
+p + geom_point(colour = "black", size = 4.5, show.legend = TRUE) +
+  geom_point(colour = "pink", size = 4, show.legend = TRUE) +
+  geom_point(aes(shape = factor(cyl)))
+
+# geom_point warns when missing values have been dropped from the data set
+# and not plotted, you can turn this off by setting na.rm = TRUE
+mtcars2 <- transform(mtcars, mpg = ifelse(runif(32) < 0.2, NA, mpg))
+ggplot(mtcars2, aes(wt, mpg)) + geom_point()
+ggplot(mtcars2, aes(wt, mpg)) + geom_point(na.rm = TRUE)
+}

@@ -14,6 +14,11 @@ NULL
 #' they appear in the data.
 #' \code{geom_pointline} connects them in order of the variable on the x-axis.
 #' 
+#' Both \code{geom_pointpath} and \code{geom_pointline} will only 
+#' connect observations within the same group! However,
+#' if \code{linecolour} is \emph{not} \code{waiver()}, connections
+#' will be made between groups, but possible in an incorrect order.
+#' 
 #' @section Aesthetics:
 #' \code{geom_pointline} and \code{geom_pointpath} understands the following 
 #' aesthetics (required aesthetics are in bold):
@@ -177,13 +182,15 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
     # Work out grouping variables for grobs
     n <- nrow(munched)
-    #if (!is.waive(linecolour)) {
-    #  end <- logical(n)
-    #} else {
+    if (!is.waive(linecolour)) {
+      end <- logical(n)
+      munched$linecolour <- linecolour
+    } else {
       #start <- c(TRUE, group_diff)
       group_diff <- munched$group[-1] != munched$group[-n]
       end <-   c(group_diff, TRUE)
-    #}
+      munched$linecolour <- munched$colour
+    }
 
     # if (!constant) {
     #   gr_lines <- segmentsGrob(
@@ -240,8 +247,8 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
       arrow = arrow,
       gp = grid::gpar(
-        col = ggplot2::alpha(munched$colour, munched$alpha)[!end],
-        fill = ggplot2::alpha(munched$colour, munched$alpha)[!end],
+        col = ggplot2::alpha(munched$linecolour, munched$alpha)[!end],
+        fill = ggplot2::alpha(munched$linecolour, munched$alpha)[!end],
         lwd = linesize * .pt,
         lty = munched$linetype[!end],
         lineend = lineend,
@@ -249,7 +256,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         linemitre = linemitre
       )
     )
-    if (!is.waive(linecolour)) gr_tmp$gp$col <- linecolour
+    #if (!is.waive(linecolour)) gr_tmp$gp$col <- linecolour
     
     #save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, munched,  file='tmp.Rdata')
      
@@ -257,11 +264,12 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     grid::gList(gr_points, gr_lines)
   },
   
-  draw_key = function(data, params, size) {
-    grid::grobTree(ggplot2::draw_key_path(data, params, size),
-                ggplot2::draw_key_point(data, params, size)
-    )
-  }
+  draw_key = ggplot2::draw_key_point
+  # function(data, params, size) {
+  #   grid::grobTree(ggplot2::draw_key_path(data, params, size),
+  #               ggplot2::draw_key_point(data, params, size)
+  #   )
+  # }
 )
 
 
@@ -274,6 +282,8 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linejoin = "round",
                            linemitre = 1,
                            linesize = 0.5,
+                           linecolour = wavier(),
+                           linecolor = waiver(),
                            arrow = NULL,
                            ...) {
   
@@ -294,7 +304,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       linejoin = linejoin,
       linemitre = linemitre,
       linesize = 0.5,
-      linecolour = waiver(),
+      linecolour = linecolour,
       arrow = arrow,      
       ...
     )
