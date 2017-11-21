@@ -21,7 +21,7 @@ NULL
 #'   \item \strong{x}
 #'   \item \strong{y}
 #'   \item alpha
-#'   \item colour -- sets colour of point. Only affects line if \code{linecol=waiver()}. 
+#'   \item colour -- sets colour of point. Only affects line if \code{linecolour=waiver()}. 
 #'   \item stroke
 #'   \item shape
 #'   \item stroke
@@ -57,7 +57,11 @@ NULL
 #' @param linesize Width of of line.
 #' @param distance Gap size between point and end of lines;
 #'   use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
+#' @param linecolour,linecolor Draws line with this colour.
+#'   \strong{May or may not} interfere with grouping. Not quite sure yet.
+#'   TODO!
 #' 
+#' @example inst/examples/geom-pointline-ex.r
 #' @export
 geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       position = "identity", na.rm = FALSE,
@@ -67,8 +71,12 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       linejoin = "round",
                       linemitre = 1,
                       linesize = 0.5,
+                      linecolour = waiver(),
+                      linecolor = waiver(),
                       arrow = NULL,
                       ...) {
+  if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
+  
   layer(
     data = data,
     mapping = mapping,
@@ -83,7 +91,8 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
-      linesize = 0.5,
+      linesize = linesize,
+      linecolour = linecolour,
       arrow = arrow,      
       ...
     )
@@ -97,6 +106,7 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @export
 #' @import ggplot2
 #' @import gtable
+#' @import grid
 GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                                   `_inherit`=ggplot2::GeomPoint,
   required_aes = c("x", "y"),
@@ -106,9 +116,10 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     alpha = NA, stroke = 0.5,
     linetype = 1
   ),
-                                  
+  
   draw_panel = function(data, panel_params, coord, na.rm = FALSE,
-                        distance = unit(3, 'pt'), linesize = 0.5,
+                        distance = grid::unit(3, 'pt'), linesize = 0.5,
+                        linecolour = waiver(),
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
@@ -122,7 +133,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
            grid::pointsGrob(
              coords$x, coords$y,
              pch = coords$shape,
-             gp = gpar(
+             gp = grid::gpar(
                col = alpha(coords$colour, coords$alpha),
                fill = alpha(coords$fill, coords$alpha),
                # Stroke is added around the outside of the point
@@ -141,7 +152,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
     # must be sorted on group
     data <- data[order(data$group), , drop = FALSE]
-    munched <- coord_munch(coord, data, panel_params)
+    munched <- ggplot2::coord_munch(coord, data, panel_params)
 
     # Silently drop lines with less than two points, preserving order
     rows <- stats::ave(seq_len(nrow(munched)), munched$group, FUN = length)
@@ -166,9 +177,13 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
     # Work out grouping variables for grobs
     n <- nrow(munched)
-    group_diff <- munched$group[-1] != munched$group[-n]
-    start <- c(TRUE, group_diff)
-    end <-   c(group_diff, TRUE)
+    #if (!is.waive(linecolour)) {
+    #  end <- logical(n)
+    #} else {
+      #start <- c(TRUE, group_diff)
+      group_diff <- munched$group[-1] != munched$group[-n]
+      end <-   c(group_diff, TRUE)
+    #}
 
     # if (!constant) {
     #   gr_lines <- segmentsGrob(
@@ -205,7 +220,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     # Make df with x0,y0,x1,y1
     munched$x1 <- c(munched$x[-1], NA)
     munched$y1 <- c(munched$y[-1], NA)
-    munched$start <- start
+    #munched$start <- start
     munched$end <- end
     
     # Calculate angle between each pair of points:
@@ -213,20 +228,20 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       xn = x;
       yn = y;
       theta = atan2(y1-y, x1-x);
-      size = unit(size, 'pt');
+      size = grid::unit(size, 'pt');
 
-      x = unit(x, 'native') + size*cos(theta) + distance*cos(theta);
-      x1 = unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
-      y = unit(y, 'native') + size*sin(theta) + distance*sin(theta);
-      y1 = unit(y1, 'native') - size*sin(theta) - distance*sin(theta)
+      x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
+      x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
+      y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
+      y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta)
     })
     
-    gr_lines <- segmentsGrob(
+    gr_lines <- grid::segmentsGrob(
       x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
       arrow = arrow,
-      gp = gpar(
-        col = alpha(munched$colour, munched$alpha)[!end],
-        fill = alpha(munched$colour, munched$alpha)[!end],
+      gp = grid::gpar(
+        col = ggplot2::alpha(munched$colour, munched$alpha)[!end],
+        fill = ggplot2::alpha(munched$colour, munched$alpha)[!end],
         lwd = linesize * .pt,
         lty = munched$linetype[!end],
         lineend = lineend,
@@ -234,6 +249,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         linemitre = linemitre
       )
     )
+    if (!is.waive(linecolour)) gr_tmp$gp$col <- linecolour
     
     #save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, munched,  file='tmp.Rdata')
      
@@ -260,6 +276,9 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linesize = 0.5,
                            arrow = NULL,
                            ...) {
+  
+  if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
+  
   layer(
     data = data,
     mapping = mapping,
@@ -275,6 +294,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       linejoin = linejoin,
       linemitre = linemitre,
       linesize = 0.5,
+      linecolour = waiver(),
       arrow = arrow,      
       ...
     )

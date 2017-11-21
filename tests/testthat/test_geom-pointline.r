@@ -28,12 +28,14 @@ test_that('geom_pointpath works', {
 
 test_that('geom_pointline works', {
   p <- ggplot(mtcars, aes(wt, mpg))
-  expect_ggplot(p + geom_point())
-  
+  expect_ggplot(p + geom_point() + geom_line())
+
   #expect_ggplot(
     p + geom_pointline()
   #  )
   
+    # Jitter
+  p + geom_point(position=position_jitter(0.2, 0.2)) + geom_line(position=position_jitter(0.2, 0.2))  
   p + geom_pointline(position=position_jitter(width=0.7, height=0.7))
   
   p + geom_pointline(aes(colour=as.factor(cyl)))
