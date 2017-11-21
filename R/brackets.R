@@ -35,7 +35,7 @@ NULL
 #'   theme(panel.border = element_blank(), axis.line = element_line())
 #' p
 #'
-#' p <- p + coord_flex_cart(bottom=brackets_horisontal(length=unit(0.08, 'npc')))
+#' p <- p + coord_flex_cart(bottom=brackets_horizontal(length=unit(0.08, 'npc')))
 #' p
 #' # However getting the correct width is a matter of tweaking either length or
 #' # position_jitter...
@@ -45,7 +45,7 @@ NULL
 #' @import grid
 #' @import ggplot2
 #' @import gtable
-brackets_horisontal <- function(direction = c('up','down'),
+brackets_horizontal <- function(direction = c('up','down'),
                                 length = unit(0.05, 'npc'),
                                 tick.length = waiver()) {
 
@@ -119,10 +119,11 @@ brackets_horisontal <- function(direction = c('up','down'),
   fn
 }
 
+## Turns out, there is no British spelling horizontal with an s...
 #' @export
 #' @rdname brackets
-#' @inheritParams brackets_horisontal
-brackets_horizontal <- brackets_horisontal
+#' @inheritParams brackets_horizontal
+brackets_horisontal <- brackets_horizontal
 
 #' @export
 #' @rdname brackets
