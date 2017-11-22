@@ -5,9 +5,9 @@ expect_ggplot <- function(object, class='ggplot', ...) expect_s3_class(object, c
 
 test_that('Capped axes returns functions and have attributes', {
   for (g in c('both','left','right','none')) {
-    ch <- capped_horisontal(g)
+    ch <- capped_horizontal(g)
     expect_is(ch, 'function', info=paste('capped is', g))
-    expect_equal(attr(ch, 'orientation', exact=TRUE), 'horisontal')
+    expect_equal(attr(ch, 'orientation', exact=TRUE), 'horizontal')
   }
   
   for (g in c('both','top','bottom','none')) {
@@ -23,7 +23,7 @@ test_that('Capped axes do not work with incorrect capping argument', {
   }
   
   for (g in c('top','bottom')) {
-    expect_error(capped_horisontal(g), "'arg' should be one of", info=paste('capped is', g))
+    expect_error(capped_horizontal(g), "'arg' should be one of", info=paste('capped is', g))
   }
 })
 

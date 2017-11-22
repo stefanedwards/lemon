@@ -9,9 +9,6 @@
 brackets_horizontal(direction = c("up", "down"), length = unit(0.05, "npc"),
   tick.length = waiver())
 
-brackets_horisontal(direction = c("up", "down"), length = unit(0.05, "npc"),
-  tick.length = waiver())
-
 brackets_vertical(direction = c("left", "right"), length = unit(0.05,
   "npc"), tick.length = waiver())
 }

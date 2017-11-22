@@ -6,11 +6,14 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
-* `brackets_horisontal` and `brackets_vertical` now uses 'npc' as default
+* `brackets_horizontal` and `brackets_vertical` now uses 'npc' as default
   unit, as well as defaults to this unit if given a numeric.
 
-* `brackets_horisontal` and `brackets_vertical` skips changing ticks to brackets
+* `brackets_horizontal` and `brackets_vertical` skips changing ticks to brackets
   if theme(axis.ticks = element_blank()) and thus not created at all.
+
+* 'horisontal' is not an English word. Has been thoroughly replaced by 'horizontal'.
+  Functions with not-English word in names are still available, but not advertised.
 
 * Extended `facet_rep_grid` and `facet_rep_wrap` to allow user to specify which
   sided tick labels should be kept. Can still use logicals for `repeat.tick.labels`.

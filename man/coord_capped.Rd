@@ -2,8 +2,9 @@
 % Please edit documentation in R/coord-capped.r
 \name{coord_capped_cart}
 \alias{coord_capped_cart}
-\alias{coord_capped_flip}
 \alias{capped_horisontal}
+\alias{coord_capped_flip}
+\alias{capped_horizontal}
 \alias{capped_vertical}
 \title{Cartesian coordinates with capped axis lines.}
 \usage{
@@ -15,7 +16,7 @@ coord_capped_flip(xlim = NULL, ylim = NULL, expand = TRUE,
   top = waiver(), left = waiver(), bottom = waiver(), right = waiver(),
   gap = 0.01)
 
-capped_horisontal(capped = c("both", "left", "right", "none"), gap = 0.01)
+capped_horizontal(capped = c("both", "left", "right", "none"), gap = 0.01)
 
 capped_vertical(capped = c("top", "bottom", "both", "none"), gap = 0.01)
 }
@@ -27,9 +28,9 @@ the limits to ensure that data and axes don't overlap. If \code{FALSE},
 limits are taken exactly from the data or \code{xlim}/\code{ylim}.}
 
 \item{top, left, bottom, right}{Either a function returned from
-\code{\link{capped_horisontal}} or \code{\link{brackets_horisontal}}.
+\code{\link{capped_horizontal}} or \code{\link{brackets_horizontal}}.
 If string, it is assumed to be shorthand for
-\code{capped_horisontal(capped)} or similar for vertical.}
+\code{capped_horizontal(capped)} or similar for vertical.}
 
 \item{gap}{Both ends are \emph{always} capped by this proportion.
 Usually a value between 0 and 1.}
@@ -75,6 +76,6 @@ p + coord_capped_flip(bottom='both')
 p +
   scale_y_continuous(sec.axis = sec_axis(~.*100)) +
   scale_x_continuous(sec.axis = sec_axis(~1/., name='Madness scale')) +
-  coord_capped_cart(bottom='none', left='none', right='both', top=brackets_horisontal())
+  coord_capped_cart(bottom='none', left='none', right='both', top=brackets_horizontal())
 # Although we cannot recommend the above madness.
 }

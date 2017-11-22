@@ -18,9 +18,9 @@ Works mostly on gtables produced prior to printing.
 
 See \code{\link{coord_capped_cart}} and \code{\link{coord_flex_cart}}.
 The latter is a shorthand version of the former.
-It automatically uses \code{\link{capped_horisontal}} and
+It automatically uses \code{\link{capped_horizontal}} and
 \code{\link{capped_vertical}}, but both accepts these as well as
-\code{\link{brackets_horisontal}} and \code{\link{brackets_vertical}}.
+\code{\link{brackets_horizontal}} and \code{\link{brackets_vertical}}.
 }
 
 \section{Legends}{
