@@ -71,9 +71,9 @@ p + coord_capped_cart(bottom='right', left='none')
 To avoid overplotting, we can apply a jitter. 
 To emphasise that the x-axis is categorical, we can place brackets.
 We finally polish the plot by removing the redundant vertical grid lines.
-```{r fig.cap='Placing brackets brackets instead of ticks emphasises that the x-scale is categorical and not nominal.'}
+```{r fig.cap='Placing brackets instead of ticks emphasises that the x-scale is categorical and not nominal.'}
 ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height=0)) +
-  coord_capped_cart(left='none', bottom=brackets_horisontal()) +
+  coord_capped_cart(left='none', bottom=brackets_horizontal()) +
   my.theme + theme(panel.grid.major.x = element_blank())
 ```
 
@@ -96,11 +96,11 @@ The short hand functions in the table's right column simply are almost identical
 to those in the middle column.
 If one of the side arguments are specified with a character value, the 
 relevant axis drawing function is used. You can however choose to use e.g.
-`brackets_horisontal` in place.
+`brackets_horizontal` in place.
 
 ### The axis drawing functions
 
-The functions `capped_horisontal` or `brackets_vertical` returns a function
+The functions `capped_horizontal` or `brackets_vertical` returns a function
 that is called when ggplot2 prints the plot. 
 In this package, we use ggplot2 to build the axes, then modify in place the
 return grobs.
@@ -171,8 +171,8 @@ second argument would resolve to the labels of the x-axis.
 ### Brackets
 
 The brackets comes in two orientations: 
-`brackets_horisontal` and `brackets_vertical`. 
-If you attempt to use a vertical bracket on a horisontal axis, it will fail with
+`brackets_horizontal` and `brackets_vertical`. 
+If you attempt to use a vertical bracket on a horizontal axis, it will fail with
 a undescriptive error.
 
 The bracket functions accept a `direction` argument, which can be used to control
@@ -183,8 +183,8 @@ p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   geom_point(position=position_jitter(width=0.3)) +
   scale_x_continuous(breaks=c(4,5,6,8), sec.axis=dup_axis()) + 
   scale_y_continuous(sec.axis=dup_axis()) +
-  coord_flex_cart(bottom=brackets_horisontal(), 
-                  top=brackets_horisontal(direction='down'),
+  coord_flex_cart(bottom=brackets_horizontal(), 
+                  top=brackets_horizontal(direction='down'),
                   left=brackets_vertical(), 
                   right=brackets_vertical(direction='right')) +
   my.theme
@@ -199,7 +199,7 @@ use the argument `tick.length`:
 ```{r}
 p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   geom_point(position=position_jitter(width=0.3)) +
-  coord_flex_cart(bottom=brackets_horisontal(tick.length=0), 
+  coord_flex_cart(bottom=brackets_horizontal(tick.length=0), 
                   left=brackets_vertical(tick.length = unit(1, 'cm'))) +
   my.theme
 p

@@ -24,26 +24,26 @@ test_that('Brackets do not produce errors when theme(axis.ticks = element_blank(
   expect_ggplot(p)
   
   expect_ggplot(
-    p + coord_capped_cart(bottom=brackets_horisontal()) +
+    p + coord_capped_cart(bottom=brackets_horizontal()) +
       theme(axis.ticks = element_blank())
   )
   
   expect_ggplot(
-    p + coord_capped_cart(bottom=brackets_horisontal()) +
+    p + coord_capped_cart(bottom=brackets_horizontal()) +
       theme(axis.ticks.x = element_blank())
   )
   
   expect_ggplot(
-    p + coord_capped_cart(bottom=brackets_horisontal()) +
+    p + coord_capped_cart(bottom=brackets_horizontal()) +
       theme(axis.ticks.y = element_blank())
   )
   
   expect_ggplot(
-    p + coord_capped_cart(bottom=brackets_horisontal(length=0))
+    p + coord_capped_cart(bottom=brackets_horizontal(length=0))
   )
   
   expect_ggplot(
-    p + coord_capped_cart(bottom=brackets_horisontal(length=0)) +
+    p + coord_capped_cart(bottom=brackets_horizontal(length=0)) +
       theme(axis.ticks = element_blank())
   )
     #p + coord_capped_cart(bottom=brackets_vertical()) +

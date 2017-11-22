@@ -20,9 +20,9 @@ NULL
 #' \code{theme(panel.border=element_blank(), axis.lines=element_line())}.
 #'
 #' @param top,left,bottom,right Either a function returned from
-#'   \code{\link{capped_horisontal}} or \code{\link{brackets_horisontal}}.
+#'   \code{\link{capped_horizontal}} or \code{\link{brackets_horizontal}}.
 #'   If string, it is assumed to be shorthand for
-#'   \code{capped_horisontal(capped)} or similar for vertical.
+#'   \code{capped_horizontal(capped)} or similar for vertical.
 #' @param gap Both ends are \emph{always} capped by this proportion.
 #'   Usually a value between 0 and 1.
 #  @inheritParams coord_cartesian
@@ -31,6 +31,7 @@ NULL
 #'   the limits to ensure that data and axes don't overlap. If \code{FALSE},
 #'   limits are taken exactly from the data or \code{xlim}/\code{ylim}.
 #' @rdname coord_capped
+#' @aliases capped_horisontal
 #' @include coord-flex.r
 #' @export
 #' @examples
@@ -56,7 +57,7 @@ NULL
 #' p +
 #'   scale_y_continuous(sec.axis = sec_axis(~.*100)) +
 #'   scale_x_continuous(sec.axis = sec_axis(~1/., name='Madness scale')) +
-#'   coord_capped_cart(bottom='none', left='none', right='both', top=brackets_horisontal())
+#'   coord_capped_cart(bottom='none', left='none', right='both', top=brackets_horizontal())
 #' # Although we cannot recommend the above madness.
 coord_capped_cart <- function(xlim = NULL,
                               ylim = NULL,
@@ -66,8 +67,8 @@ coord_capped_cart <- function(xlim = NULL,
                               bottom = waiver(),
                               right = waiver(),
                               gap = 0.01) {
-  if (is.character(top)) top <- capped_horisontal(top, gap=gap)
-  if (is.character(bottom)) bottom <- capped_horisontal(bottom, gap=gap)
+  if (is.character(top)) top <- capped_horizontal(top, gap=gap)
+  if (is.character(bottom)) bottom <- capped_horizontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
 
@@ -95,8 +96,8 @@ coord_capped_flip <- function(xlim = NULL,
                               bottom = waiver(),
                               right = waiver(),
                               gap = 0.01) {
-  if (is.character(top)) top <- capped_horisontal(top, gap=gap)
-  if (is.character(bottom)) bottom <- capped_horisontal(bottom, gap=gap)
+  if (is.character(top)) top <- capped_horizontal(top, gap=gap)
+  if (is.character(bottom)) bottom <- capped_horizontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
   
@@ -120,7 +121,7 @@ coord_capped_flip <- function(xlim = NULL,
 #' @rdname coord_capped
 #' @export
 #' @import grid
-capped_horisontal <- function(capped = c('both','left','right','none'),
+capped_horizontal <- function(capped = c('both','left','right','none'),
                               gap = 0.01) {
   capped <- match.arg(capped)
   # scale_details: aka. panel_params
@@ -145,11 +146,16 @@ capped_horisontal <- function(capped = c('both','left','right','none'),
     )
     agrob
   }
-  attr(fn, 'orientation') <- 'horisontal'
+  attr(fn, 'orientation') <- 'horizontal'
   fn
 }
 
-#' @inheritParams capped_horisontal
+#' @inheritParams capped_horizontal
+#' @keywords internal
+#' @export
+capped_horisontal <- capped_horizontal
+
+#' @inheritParams capped_horizontal
 #' @rdname coord_capped
 #' @export
 #' @import grid

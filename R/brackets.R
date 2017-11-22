@@ -27,6 +27,7 @@ NULL
 #' @param tick.length Height (width) of x-axis (y-axis) bracket.
 #'   If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link{theme}}.
 #' @seealso \code{\link[grid]{unit}}
+#' @aliases brackets_horisontal
 #' @examples
 #' library(ggplot2)
 #' p <- ggplot(mpg, aes(as.factor(cyl), hwy, colour=class)) +
@@ -35,7 +36,7 @@ NULL
 #'   theme(panel.border = element_blank(), axis.line = element_line())
 #' p
 #'
-#' p <- p + coord_flex_cart(bottom=brackets_horisontal(length=unit(0.08, 'npc')))
+#' p <- p + coord_flex_cart(bottom=brackets_horizontal(length=unit(0.08, 'npc')))
 #' p
 #' # However getting the correct width is a matter of tweaking either length or
 #' # position_jitter...
@@ -45,7 +46,7 @@ NULL
 #' @import grid
 #' @import ggplot2
 #' @import gtable
-brackets_horisontal <- function(direction = c('up','down'),
+brackets_horizontal <- function(direction = c('up','down'),
                                 length = unit(0.05, 'npc'),
                                 tick.length = waiver()) {
 
@@ -115,18 +116,19 @@ brackets_horisontal <- function(direction = c('up','down'),
       vp = justvp
     )
   }
-  attr(fn, 'orientation') <- 'horisontal'
+  attr(fn, 'orientation') <- 'horizontal'
   fn
 }
 
+## Turns out, there is no British spelling horizontal with an s...
 #' @export
-#' @rdname brackets
-#' @inheritParams brackets_horisontal
-brackets_horizontal <- brackets_horisontal
+#' @keywords internal
+#' @inheritParams brackets_horizontal
+brackets_horisontal <- brackets_horizontal
 
 #' @export
 #' @rdname brackets
-#' @inheritParams brackets_horisontal
+#' @inheritParams brackets_horizontal
 brackets_vertical <- function(direction = c('left','right'),
                               length = unit(0.05, 'npc'),
                               tick.length = waiver()) {

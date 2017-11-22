@@ -28,7 +28,7 @@ test_that('coord_flex_ and coord_capped_ does not issue errors on ordinary axes'
 
 test_that('coord_flex_ and coord_capped_ issues errors on wrong orientation', {
   verticals <- c('capped_vertical', 'brackets_vertical')
-  horisontals <- c('capped_horisontal', 'brackets_horisontal')
+  horizontals <- c('capped_horizontal', 'brackets_horizontal')
   
   v_sides <- c('left','right')
   h_sides <- c('top','bottom')
@@ -46,7 +46,7 @@ test_that('coord_flex_ and coord_capped_ issues errors on wrong orientation', {
        expect_error(p + eval(parse(text=f)), 'this will not work', label=f)
       }
     }
-    for (ax in horisontals) {
+    for (ax in horizontals) {
       for (s in h_sides) {
         f <- sprintf('%s(%s=%s())', coo, s, ax)
         expect_ggplot(p + eval(parse(text=f)))
