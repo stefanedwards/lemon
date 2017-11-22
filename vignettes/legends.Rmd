@@ -279,7 +279,7 @@ grid.arrange(p1+theme(legend.position='hidden'), p2+theme(legend.position='hidde
 
 There is however currently a shortcoming in `grid.arrange` and `arrangeGrob`
 that prevents it from using the full gtable object returned from `g_legend` in
-the margin arguments. We therefore subset to a specific grob[^gridExtra_fix].
+the margin arguments. We therefore subset to a specific grob.
 
 What worse is, if the legend contains multiple guides, the above approach will 
 not work directly. However, defining several `arrangeGrob` within each other
@@ -338,10 +338,12 @@ g <- reposition_legend(p, 'top left', plot=TRUE)
 It has since propogated throughout 
 [Stack Overflow](http://www.stackoverflow.com) answers.
 
-`grid_arrange_shared_legend` was originally proposed by 
-[Shaun Jackman](http://rpubs.com/sjackman) [original code](http://rpubs.com/sjackman/grid_arrange_shared_legend)
-which was further refined by `baptiste` at 
-[ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
+Originally brought to you by
+  (Baptiste Auguié)[http://baptiste.github.io/]
+  (<https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs>)
+  and 
+  (Shaun Jackman)[http://rpubs.com/sjackman]
+  (<http://rpubs.com/sjackman/grid_arrange_shared_legend>).
 It has been further modified here.
 
 `reposition_legend` was coded by [Stefan McKinnon Edwards](http://www.iysik.com/)/
@@ -356,7 +358,3 @@ d <- ggplot(dsamp, aes(carat, price)) +
 reposition_legend(d + theme_gray(base_size=26), 'top left')
 ```
 
-
-[^gridExtra_fix]: We have submitted a solution to gridExtra that should allow
-the use of the entire gtable in the margin arguments:
-https://github.com/baptiste/gridextra/issues/39
