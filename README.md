@@ -1,19 +1,20 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 Lemon --- Freshing up your ggplots
 ==================================
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/lemon)](https://cran.r-project.org/package=lemon)
-![downloads](http://cranlogs.r-pkg.org/badges/grand-total/lemon)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/lemon)](https://cran.r-project.org/package=lemon) ![downloads](http://cranlogs.r-pkg.org/badges/grand-total/lemon)
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and [knitr](https://yihui.name/knitr/) extension package.
 
 This package contains functions primarily in these domains of ggplot2:
 
--   ![Axis lines miniature](README/domain_axis_lines-1.png) Axis lines
+-   ![Axis lines miniature](README/domain_axis_lines-1.png) Axis lines.
 -   ![Facets miniature](README/domain_facets-1.png) Repeated axis lines on facets.
+-   ![geom\_pointline](README/domain_pointline-1.png) `geom_pointpath` and `geom_pointline`.
 -   Legends
--   knitr
+
+As well as some functions in knitr.
 
 Installation
 ------------
@@ -77,6 +78,15 @@ p + facet_rep_wrap(~gear, ncol=2, label=label_both)
 
 They work just like the normal ones; look up `facet_rep_grid` and `facet_rep_wrap`.
 
+`geom_pointline`
+----------------
+
+A geom that combines both points and lines. While possible by using both `geom_point` and `geom_line`, position adjustments are not preserved between the two layers. `geom_pointline` and `geom_pointpath` combines `geom_point` with `geom_line` and `geom_path`, respectively, while preserving position adjustments.
+
+![](README/geom_pointline_demo-1.png) Left: `geom_point` and `geom_line` as two separate geoms. Right: The two geoms combined into `geom_pointline`. Both produced with `ggplot(mtcars, aes(wt, mpg, colour=factor(cyl))) + geom_point(col='grey')`, where the grey points indicate the true location of the datapoint.
+
+An added visual effect is seen as the lines do not touch the points, leaving a small gap (set by argument `distance`).
+
 Legends
 -------
 
@@ -89,7 +99,7 @@ d <- ggplot(dsamp, aes(carat, price)) +
 reposition_legend(d, 'top left')
 ```
 
-![The legend repositioned onto the top left corner of the panel.](README/reposition_legend-1.png)
+![](README/reposition_legend-1.png) The legend repositioned onto the top left corner of the panel.
 
 Scavenging the Internet, we have found some functions that help work with legends.
 
@@ -102,9 +112,9 @@ grid.newpage()
 grid.draw(legend)
 ```
 
-![The legend grob, by itself.](README/g_legend-1.png)
+![](README/g_legend-1.png) The legend grob, by itself.
 
-[Shaun Jackman](http://rpubs.com/sjackman) [originally](%5Bhttp://rpubs.com/sjackman/grid_arrange_shared_legend) brought us the `grid_arrange_shared_legend`, which was furhter refined by `baptiste` ([original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)). We put it in a package.
+Originally brought to you by (Baptiste Auguié)\[<http://baptiste.github.io/>\] (<https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs>) and (Shaun Jackman)\[<http://rpubs.com/sjackman>\] (<http://rpubs.com/sjackman/grid_arrange_shared_legend>). We put it in a package.
 
 ``` r
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
@@ -115,7 +125,7 @@ p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 ```
 
-![Four plots that share the same legend.](README/grid_arrange_shared_legend-1.png)
+![](README/grid_arrange_shared_legend-1.png) Four plots that share the same legend.
 
 Extensions to knitr
 -------------------
@@ -147,4 +157,3 @@ We can then load our data file using the created `.data` function, even though t
 ``` r
 dat <- read.table(.data('mydata.tab'))
 ```
-

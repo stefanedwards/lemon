@@ -48,11 +48,22 @@ ggplot(mtcars, aes(x=cyl, y=mpg)) +
         axis.ticks.length = unit(0, 'npc'), panel.spacing=unit(1, 'mm'),
         strip.background=element_blank(), strip.text=element_blank())
 ```
+```{r domain_pointline,include=FALSE,fig.height=0.5,fig.width=0.5}
+ggplot(data.frame(x=1:3, y=c(1,2.4,3.5)), aes(x, y)) +
+  geom_pointline(size=0.5) +
+  coord_capped_cart(xlim=c(0,4), bottom='both', left='both') +
+  theme_light() + 
+  theme(panel.border=element_blank(), axis.line = element_line(),
+        axis.title=element_blank(), axis.text=element_blank(),
+        panel.grid=element_blank(), axis.ticks.x = element_line(colour='black'))
+```
 
-* ![Axis lines miniature](README/domain_axis_lines-1.png) Axis lines
-* ![Facets miniature](README/domain_facets-1.png) Repeated axis lines on facets.
-* Legends
-* knitr
+-   ![Axis lines miniature](README/domain_axis_lines-1.png) Axis lines.
+-   ![Facets miniature](README/domain_facets-1.png) Repeated axis lines on facets.
+-   ![geom_pointline](README/domain_pointline-1.png) `geom_pointpath` and `geom_pointline`.
+-   Legends
+
+As well as some functions in knitr.
 
 ## Installation
 
@@ -111,36 +122,75 @@ p + facet_rep_wrap(~gear, ncol=2, label=label_both)
 
 They work just like the normal ones; look up `facet_rep_grid` and `facet_rep_wrap`.
 
+## `geom_pointline`
+
+A geom that combines both points and lines. 
+While possible by using both `geom_point` and `geom_line`, position adjustments
+are not preserved between the two layers.
+`geom_pointline` and `geom_pointpath` combines `geom_point` with 
+`geom_line` and `geom_path`, respectively, while preserving position adjustments.
+
+
+```{r geom_pointline_demo,echo=FALSE}
+library(grid)
+library(gtable)
+
+p <- ggplot(mtcars, aes(wt, mpg, colour=factor(cyl))) + 
+  geom_point(col='grey') +
+  theme_light() + theme(panel.border=element_blank(), axis.line = element_line()) +
+  theme(legend.position='hidden', plot.title = element_text(size=rel(0.8)))
+
+p1 <- p + geom_point(position=position_jitter(0.1, 0.1)) + geom_line(position=position_jitter(0.1, 0.1)) +
+  labs(title='geom_point(position=position_jitter(0.1, 0.1)) + \ngeom_line(position=position_jitter(0.1, 0.1))')
+p2 <- p + geom_pointline(position=position_jitter(0.1, 0.1)) +
+  labs(title='geom_pointline(position=position_jitter(0.1, 0.1))')
+
+g1 <- ggplotGrob(p1)
+g2 <- ggplotGrob(p2)
+grid.newpage()
+grid.draw(cbind(g1, g2, size = 'first'))
+```
+Left: `geom_point` and `geom_line` as two separate geoms. 
+Right: The two geoms combined into `geom_pointline`. 
+Both produced with `ggplot(mtcars, aes(wt, mpg, colour=factor(cyl))) + geom_point(col='grey')`, where the grey points indicate the true location of the datapoint.
+
+An added visual effect is seen as the lines do not touch the points, leaving a 
+small gap (set by argument `distance`).
+
 ## Legends
 
 Reposition the legend onto the plot. Exactly where you want it:
-```{r reposition_legend,fig.cap='The legend repositioned onto the top left corner of the panel.'}
+```{r reposition_legend}
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 d <- ggplot(dsamp, aes(carat, price)) +
   geom_point(aes(colour = clarity))
 reposition_legend(d, 'top left')
 ```
+The legend repositioned onto the top left corner of the panel.
 
 Scavenging the Internet, we have found some functions that help work with 
 legends.
 
 Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring 
 you `g_legend`:
-```{r g_legend,fig.height=3,fig.width=2,fig.cap='The legend grob, by itself.'}
+```{r g_legend,fig.height=3,fig.width=2}
 library(grid)
 legend <- g_legend(d)
 grid.newpage()
 grid.draw(legend)
 ```
+The legend grob, by itself.
 
-[Shaun Jackman](http://rpubs.com/sjackman) 
-[originally]([http://rpubs.com/sjackman/grid_arrange_shared_legend)
-brought us the
-`grid_arrange_shared_legend`, which was furhter refined by `baptiste` 
-([original](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs)).
+
+Originally brought to you by
+  (Baptiste Auguié)[http://baptiste.github.io/]
+  (<https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs>)
+  and 
+  (Shaun Jackman)[http://rpubs.com/sjackman]
+  (<http://rpubs.com/sjackman/grid_arrange_shared_legend>).
 We put it in a package.
 
-```{r grid_arrange_shared_legend,fig.cap='Four plots that share the same legend.'}
+```{r grid_arrange_shared_legend}
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)
@@ -148,7 +198,7 @@ p3 <- qplot(color, price, data = dsamp, colour = clarity)
 p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
 ```
-
+Four plots that share the same legend.
 
 ## Extensions to knitr
 
