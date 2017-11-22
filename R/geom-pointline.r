@@ -182,15 +182,15 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
     # Work out grouping variables for grobs
     n <- nrow(munched)
-    if (!is.waive(linecolour)) {
-      end <- logical(n)
-      munched$linecolour <- linecolour
-    } else {
+    #if (!is.waive(linecolour)) {
+    #  end <- logical(n)
+    #  munched$linecolour <- linecolour
+    #} else {
       #start <- c(TRUE, group_diff)
       group_diff <- munched$group[-1] != munched$group[-n]
       end <-   c(group_diff, TRUE)
-      munched$linecolour <- munched$colour
-    }
+    #  munched$linecolour <- munched$colour
+    #}
 
     # if (!constant) {
     #   gr_lines <- segmentsGrob(
@@ -247,8 +247,8 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
       arrow = arrow,
       gp = grid::gpar(
-        col = ggplot2::alpha(munched$linecolour, munched$alpha)[!end],
-        fill = ggplot2::alpha(munched$linecolour, munched$alpha)[!end],
+        col = ggplot2::alpha(munched$colour, munched$alpha)[!end],
+        fill = ggplot2::alpha(munched$colour, munched$alpha)[!end],
         lwd = linesize * .pt,
         lty = munched$linetype[!end],
         lineend = lineend,
@@ -256,7 +256,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         linemitre = linemitre
       )
     )
-    #if (!is.waive(linecolour)) gr_tmp$gp$col <- linecolour
+    if (!is.waive(linecolour)) gr_lines$gp$col <- linecolour
     
     #save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, munched,  file='tmp.Rdata')
      
@@ -282,7 +282,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linejoin = "round",
                            linemitre = 1,
                            linesize = 0.5,
-                           linecolour = wavier(),
+                           linecolour = waiver(),
                            linecolor = waiver(),
                            arrow = NULL,
                            ...) {
