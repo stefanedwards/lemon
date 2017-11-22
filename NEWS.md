@@ -20,6 +20,12 @@
 * `coord_capped_*` and `coord_flex_*` now checks if the provided `brackets_*`
   and `capped_*` functions corresponds to the correct orientation.
 
+* **New feature** `geom_pointpath` and `geom_pointline` that combines
+  `geom_point` with `geom_path` and `geom_line`, respectively.
+  These geoms apply any position adjustments (e.g.\ `position_jitter`) to 
+  *both* points and lines.
+  Also adds a gap between point and end of lines that grows with pointsize.
+
 # lemon 0.3.2
 
 * `grid_arrange_shared_legend` can now accept other grobs in the ... arguments.

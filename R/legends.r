@@ -91,10 +91,12 @@ g_legend<-function(a.gplot){
 #' @return gtable of combined plot, invisibly. 
 #'   Draw  gtable object using \code{\link[grid]{grid.draw}}.
 #' @author
-#'   Originally brought to you by \href{http://rpubs.com/sjackman}{Shaun Jackman}
-#'   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}),
-#'   and further improved by \href{http://baptiste.github.io/}{Baptiste Auguié}  at
-#'   \url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs}.
+#'   Originally brought to you by
+#'   \href{http://baptiste.github.io/}{Baptiste Auguié} 
+#'   (\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs})
+#'   and 
+#'   \href{http://rpubs.com/sjackman}{Shaun Jackman}
+#'   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}).   
 #'   Stefan McKinnon Edwards added left and top margins.
 #' @import ggplot2 gridExtra grid
 #' @export
