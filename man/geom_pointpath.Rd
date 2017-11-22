@@ -2,9 +2,16 @@
 % Please edit documentation in R/geom-pointline.r
 \name{geom_pointpath}
 \alias{geom_pointpath}
+\alias{geom_pointline}
 \title{Connected points}
 \usage{
 geom_pointpath(mapping = NULL, data = NULL, stat = "identity",
+  position = "identity", na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
+  linejoin = "round", linemitre = 1, linesize = 0.5,
+  linecolour = waiver(), linecolor = waiver(), arrow = NULL, ...)
+
+geom_pointline(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
   linejoin = "round", linemitre = 1, linesize = 0.5,
@@ -48,16 +55,15 @@ use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.}
 
 \item{linesize}{Width of of line.}
 
-\item{linecolour, linecolor}{Draws line with this colour.
-\strong{May or may not} interfere with grouping. Not quite sure yet.
-TODO!}
+\item{linecolour, linecolor}{When not \code{waiver()}, the line is drawn with 
+this colour instead of that set by aesthetic \code{colour}.}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}.}
 
 \item{arraow}{Arrow specification, as created by \code{\link[grid]{arrow}}.}
 }
 \description{
-\code{geom_pointpath} combined \code{\link[ggplot2]{geom_point}} and 
+\code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and 
 \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
 both lines and points stay connected, and b) provides a visual effect
 by adding a small gap between the point and the end of line.
@@ -107,6 +113,9 @@ p + geom_pointline(aes(colour = factor(cyl)))
 # Using linecolour preserved groups.
 p + geom_pointline(aes(colour = factor(cyl)), linecolour='brown') 
 
+## If you want to combine the pretty lines of pointline that do *not* respect
+## grouping (or order), combine several layers with geom_point on top:
+p + geom_pointline() + geom_point(aes(colour=factor(cyl)))
 
 p + geom_point(aes(shape = factor(cyl)))
 p + geom_pointline(aes(shape = factor(cyl)))

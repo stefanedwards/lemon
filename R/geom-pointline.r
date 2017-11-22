@@ -3,7 +3,7 @@ NULL
 
 #' Connected points
 #' 
-#' \code{geom_pointpath} combined \code{\link[ggplot2]{geom_point}} and 
+#' \code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and 
 #' \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
 #' both lines and points stay connected, and b) provides a visual effect
 #' by adding a small gap between the point and the end of line.
@@ -62,9 +62,8 @@ NULL
 #' @param linesize Width of of line.
 #' @param distance Gap size between point and end of lines;
 #'   use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
-#' @param linecolour,linecolor Draws line with this colour.
-#'   \strong{May or may not} interfere with grouping. Not quite sure yet.
-#'   TODO!
+#' @param linecolour,linecolor When not \code{waiver()}, the line is drawn with 
+#'   this colour instead of that set by aesthetic \code{colour}.
 #' 
 #' @example inst/examples/geom-pointline-ex.r
 #' @export
@@ -182,47 +181,10 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
     # Work out grouping variables for grobs
     n <- nrow(munched)
-    #if (!is.waive(linecolour)) {
-    #  end <- logical(n)
-    #  munched$linecolour <- linecolour
-    #} else {
-      #start <- c(TRUE, group_diff)
-      group_diff <- munched$group[-1] != munched$group[-n]
-      end <-   c(group_diff, TRUE)
-    #  munched$linecolour <- munched$colour
-    #}
+    #start <- c(TRUE, group_diff)
+    group_diff <- munched$group[-1] != munched$group[-n]
+    end <-   c(group_diff, TRUE)
 
-    # if (!constant) {
-    #   gr_lines <- segmentsGrob(
-    #     munched$x[!end], munched$y[!end], munched$x[!start], munched$y[!start],
-    #     default.units = "native", arrow = arrow,
-    #     gp = gpar(
-    #       col = alpha(munched$colour, munched$alpha)[!end],
-    #       fill = alpha(munched$colour, munched$alpha)[!end],
-    #       lwd = munched$size[!end] * .pt,
-    #       lty = munched$linetype[!end],
-    #       lineend = lineend,
-    #       linejoin = linejoin,
-    #       linemitre = linemitre
-    #     )
-    #   )
-    # } else {
-    #   id <- match(munched$group, unique(munched$group))
-    #   gr_lines <- polylineGrob(
-    #     munched$x, munched$y, id = id,
-    #     default.units = "native", arrow = arrow,
-    #     gp = gpar(
-    #       col = alpha(munched$colour, munched$alpha)[start],
-    #       fill = alpha(munched$colour, munched$alpha)[start],
-    #       lwd = munched$size[start] * .pt,
-    #       lty = munched$linetype[start],
-    #       lineend = lineend,
-    #       linejoin = linejoin,
-    #       linemitre = linemitre
-    #     )
-    #   )
-    # }
-    #  gr_lines <- GeomPath$draw_panel(data, panel_params, coord0, arrow, lineend, linejoin, linemitre, na.rm)
     
     # Make df with x0,y0,x1,y1
     munched$x1 <- c(munched$x[-1], NA)
@@ -274,6 +236,8 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
 
 #' @export
+#' @inheritParams geom_pointpath
+#' @rdname geom_pointpath
 geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            position = "identity", na.rm = FALSE,
                            show.legend = NA, inherit.aes = TRUE, 

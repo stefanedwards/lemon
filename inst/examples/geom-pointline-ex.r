@@ -11,6 +11,9 @@ p + geom_pointline(aes(colour = factor(cyl)))
 # Using linecolour preserved groups.
 p + geom_pointline(aes(colour = factor(cyl)), linecolour='brown') 
 
+## If you want to combine the pretty lines of pointline that do *not* respect
+## grouping (or order), combine several layers with geom_point on top:
+p + geom_pointline() + geom_point(aes(colour=factor(cyl)))
 
 p + geom_point(aes(shape = factor(cyl)))
 p + geom_pointline(aes(shape = factor(cyl)))
