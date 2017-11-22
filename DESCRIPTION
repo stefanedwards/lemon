@@ -26,7 +26,6 @@ Imports:
     grid,
     gridExtra,
     gtable,
-    RCurl,
     knitr (>= 1.12),
     lattice
 License: GPL-3

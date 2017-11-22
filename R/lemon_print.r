@@ -76,12 +76,11 @@ lemon_print <- function(x, options, ...) {
 #' @inheritParams lemon_print
 #' @export
 #' @rdname lemon_print
-#' @import RCurl
 lemon_print.data.frame = function(x, options, ...) {
   kable.opts <- options$`kable.opts`
   opts <- options[c('format','digits','row.names','col.names','caption','align','format.args','escape')]
   if (is.null(kable.opts)) kable.opts <- list()
-  opts <- RCurl::merge.list(kable.opts, opts)
+  opts <- merge.list(kable.opts, opts)
   opts <- opts[!sapply(opts, is.null)]
   opts$x <- x
   res = paste(c("","", do.call(knitr::kable, opts)), collapse="\n")
@@ -102,11 +101,25 @@ lemon_print.table <- function(x, options, ...) {
     l <- grepl("NA's[ ]+:[[:digit:]]+", x)
     x[l] <- gsub("NA's", "`NA`s", x[l], fixed=TRUE)
     x[is.na(x)] <- ' '
-    options$`kable.opts` <- RCurl::merge.list(options$`kable.opts`, 
+    options$`kable.opts` <- merge.list(options$`kable.opts`, 
                                               list(row.names=FALSE, 
                                                    align='l'))
     lemon_print.data.frame(x, options, ...)
   } else {
     knitr::knit_print(unclass(x), options, ...)
   }
+}
+
+
+# RCurl::merge.list
+merge.list <- function (x, y, ...) {
+  if (length(x) == 0) 
+    return(y)
+  if (length(y) == 0) 
+    return(x)
+  i = match(names(y), names(x))
+  i = is.na(i)
+  if (any(i)) 
+    x[names(y)[which(i)]] = y[which(i)]
+  x
 }
