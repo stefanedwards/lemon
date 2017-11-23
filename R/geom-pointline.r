@@ -132,7 +132,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
-    coords_p <- coords
     gr_points <- ggplot2:::ggname("geom_point",
            grid::pointsGrob(
              coords$x, coords$y,
@@ -146,7 +145,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
              )
            )
     )
-    # gr_points <- GeomPoint$draw_panel(data, panel_params, coord, na.rm)
     
     # Contents of GeomPath$draw_panel in geom-path
     if (!anyDuplicated(data$group)) {
@@ -219,10 +217,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       )
     )
     if (!is.waive(linecolour)) gr_lines$gp$col <- linecolour
-    
-    #save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, munched,  file='tmp.Rdata')
-     
-    #gr_points
+
     grid::gList(gr_points, gr_lines)
   },
   
@@ -287,3 +282,4 @@ GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
       data[order(data$PANEL, data$group, data$x), ]
     }
 )
+
