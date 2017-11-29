@@ -323,3 +323,77 @@ GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
       data[order(data$PANEL, data$group, data$x), ]
     }
 )
+
+
+
+
+#' @export
+#' @inheritParams geom_pointpath
+#' @rdname geom_pointpath
+geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
+                                position = "identity", na.rm = FALSE,
+                                show.legend = NA, inherit.aes = TRUE, 
+                                distance = unit(3, 'pt'), 
+                                lineend = "butt",
+                                linejoin = "round",
+                                linemitre = 1,
+                                linesize = 0.5,
+                                linecolour = waiver(),
+                                linecolor = waiver(),
+                                arrow = NULL,
+                                ...) {
+  
+  if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
+  
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomPointRangeLine,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      distance = distance,
+      lineend = lineend,
+      linejoin = linejoin,
+      linemitre = linemitre,
+      linesize = 0.5,
+      linecolour = linecolour,
+      arrow = arrow,      
+      ...
+    )
+  )
+}
+
+#' @rdname lemon-ggproto
+#' @keywords internal
+#' @format NULL
+#' @usage NULL
+#' @export
+#' @import ggplot2
+#' @import gtable
+GeomPointRangeLine <- ggproto("GeomPointRangeLine", GeomPointLine,
+  required_aes = c("x", "y", "ymin", "ymax"),
+  
+  setup_data = function(data, params) {
+    data[order(data$PANEL, data$group, data$x), ]
+  },
+  draw_panel = function(data, panel_params, coord, na.rm = FALSE,
+                        distance = grid::unit(3, 'pt'), linesize = 0.5,
+                        linecolour = waiver(),
+                        arrow = NULL,
+                        lineend = "butt", linejoin = "round", linemitre = 1
+  ) {
+    data <- transform(data, xend = x, y = ymin, yend = ymax)
+    grid::gList(ggname("geom_linerange", GeomSegment$draw_panel(data, panel_params, coord)),
+                GeomPointLine$draw_panel(data, panel_params, coord,
+                                         na.rm=na.rm, distance=distance,
+                                         linesize=linesize, linecolour=linecolour,
+                                         arrow=arrow, lineend=lineend,
+                                         linejoin=linejoin, linemitre=linemitre)
+    )
+  }
+)
+
