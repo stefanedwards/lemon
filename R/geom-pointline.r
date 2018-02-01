@@ -18,6 +18,9 @@ NULL
 #' connect observations within the same group! However,
 #' if \code{linecolour} is \emph{not} \code{waiver()}, connections
 #' will be made between groups, but possible in an incorrect order.
+#' \strong{Note!} If the x-variable is a factor, the `group' aesthetic will
+#' \emph{also} use this, thus lines between x-values are not grouped.
+#' Use \code{aes(group=...)} to enforce a group across x-values.
 #' 
 #' @section Aesthetics:
 #' \code{geom_pointline} and \code{geom_pointpath} understands the following 
@@ -127,7 +130,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
-    if (!is.unit(distance) && is.numeric(distance)) 
+    if (!grid::is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
     
     # Contents of GeomPoint$draw_panel in geom-point.r
@@ -262,7 +265,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
-      linesize = 0.5,
+      linesize = linesize,
       linecolour = linecolour,
       arrow = arrow,      
       ...

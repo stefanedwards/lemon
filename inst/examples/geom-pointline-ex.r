@@ -15,15 +15,23 @@ p + geom_pointline(aes(colour = factor(cyl)), linecolour='brown')
 ## grouping (or order), combine several layers with geom_point on top:
 p + geom_pointline() + geom_point(aes(colour=factor(cyl)))
 
+# Change scales
+p + geom_pointline(aes(colour = cyl)) + scale_colour_gradient(low = "blue")
+p + geom_pointline(aes(colour = cyl), linecolour='black') + scale_colour_gradient(low = "blue")
+p + geom_pointline(aes(shape = factor(cyl))) + scale_shape(solid = FALSE)
 
-# examples from geom_linerange
-df <- data.frame(
-  trt = factor(c(1, 1, 2, 2)),
-  resp = c(1, 5, 3, 4),
-  group = factor(c(1, 2, 1, 2)),
-  upper = c(1.1, 5.3, 3.3, 4.2),
-  lower = c(0.8, 4.6, 2.4, 3.6)
-)
+# For shapes that have a border (like 21), you can colour the inside and
+# outside separately. Use the stroke aesthetic to modify the width of the
+# border
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_pointline(shape = 21, colour = "black", fill = "white", 
+                 size = 5, stroke = 5, distance = unit(10, 'pt'))
 
-p <- ggplot(df, aes(trt, resp, colour = group))
-p + geom_linerange(aes(ymin = lower, ymax = upper))
+## Another example
+df <- data.frame(x=rep(c('orange','apple','pear'), each=3), b=rep(c('red','green','purple'), times=3), y=runif(9))
+ggplot(df, aes(x=x, y=y, colour=b, group=b)) + geom_pointline(linesize=1, size=2, distance=6) + theme_bw()
+
+# geom_pointline() is suitable for time series
+ggplot(economics, aes(date, unemploy)) + geom_pointline()
+ggplot(economics_long, aes(date, value01, colour = variable)) +
+  geom_pointline()
