@@ -135,6 +135,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
+    saveRDS(coords, 'tmp.rds')
     gr_points <- ggplot2:::ggname("geom_point",
            grid::pointsGrob(
              coords$x, coords$y,

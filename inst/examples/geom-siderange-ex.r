@@ -7,7 +7,10 @@ df <- data.frame(x=x, y=x+rnorm(25, sd=0.2),
 df$y <- with(df, ifelse(y > 1 & a=='horse', 1, y))
 (p <- ggplot(df, aes(x=x, y=y, colour=a)) + geom_point())
 
-p + geom_siderange()
+p + geom_siderange(start=19)
+
+# Capping the sideranges with different symbols:
+p + geom_siderange(start=19, end=22, fill='black', sides='b', size=2) + geom_siderange(sides='tl')
 
 # It also works with facets
 
