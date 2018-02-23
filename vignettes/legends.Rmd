@@ -297,7 +297,7 @@ Asked on: https://stackoverflow.com/questions/46238676/common-legend-for-a-grid-
 
 Before:
 ```{r example_shared_legend_complex_layout_before}
-require(tidyverse)
+require(ggplot2)
 require(grid)
 require(gridExtra)
 d0 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")

@@ -4,24 +4,54 @@ NULL
 
 #' Display range of data in side of plot
 #' 
-#' Projects data onto horisontal or vertical edge of panels.
+#' Projects data onto horizontal or vertical edge of panels.
 #' 
-#' @section Aesthetics:
-#' These geoms are drawn using with \code{\link[ggplot2]{geom_line}} so support the
-#' same aesthetics: \code{alpha}, \code{colour}, \code{linetype} and
-#' \code{size}. 
-#'
+#' The \code{geom_siderange} projects the data displayed in the panel onto the
+#' sides, using the same aesthetics. It has the added capability of potting a
+#' symbol  at either end
+#' of the line, and lines are offset from the edge and each other.
+#' 
+#' To display a symbol, specify an integer for either \code{start} or \code{end}.
+#' See the list for \code{pch} in \code{\link[graphics]{point}} for values to use.
+#' The argumetns \code{start} and \code{end} also accepts a list object with
+#' named entries \code{pch}, \code{alpha}, \code{stroke}, and \code{fill}, which 
+#' correspond to the usual aesthetics, as well as a special named entry, 
+#' \code{sizer} (note the extra 'r').
+#' This last entry is a multiplier for enlarging the symbol relative to the 
+#' linewidth, as the aesthetic \code{size} affects both linewidth and symbol size.
+#' 
+#' The distance between the panel's edge and sideranges are specified by 
+#' the argument \code{distance}. If a symbol is specified, the linewidth is
+#' further expanded to cover the width of the symbol (including \code{sizer}).
+#' 
+#' 
 #' @inheritParams geom_pointpath
+#' @param sides Character including \strong{t}op, \strong{r}ight, \strong{b}ottom, and/or \strong{l}eft,
+#'   indicating which side to project data onto.
 #' @param distance Distance between edge of panel and lines, and distance 
-#'   between lines, in multiples of line widths.
+#'   between lines, in multiples of line widths, see description.
+#' @param start,end Adds a symbol to either end of the siderange. 
+#'   \code{start} corresponds to minimal value, \code{end} to maximal value.
+#' @section Aesthetics:
+#' The geom understands the following aesthetics (required are in bold):
+#' \itemize{
+#'   \item \strong{x}
+#'   \item \strong{y}
+#'   \item alpha
+#'   \item colour
+#'   \item fill (if a symbol is applied with \code{start} or \code{end}
+#'   \item group
+#'   \item linetype
+#'   \item size
+#'   \item stroke
+#' }
+#'  
+#'
 #'   
 #' @seealso \code{\link[ggplot2]{geom_rug}}
 #' @export
 #' 
 #' @example inst/examples/geom-siderange-ex.r
-#' TODO: Put points at the end to indicate open or closed ranges?
-#' Consider `arrow`, but this will only provide arrows, not use of arbitrary (?) points.
-#' For end-points, use start for smallest (bottomest/leftest) values, and end for top-most.
 geom_siderange <- function(mapping = NULL, data = NULL, 
                            stat = "identity", position = "identity",
                            ...,
@@ -81,7 +111,7 @@ GeomSideRange <- ggplot2::ggproto('GeomSideRange',
     data <- coord$transform(data, panel_params)
     save(data, coord, file='tmp.Rdata')
 
-    default_point = list(pch = 19, sizer = 3, alpha = NA, stroke = 0.5, stroke=0.5, fill=NA)
+    default_point = list(pch = 19, sizer = 3, alpha = NA, stroke = 0.5, fill = NA)
     if (!is.list(start) && !is.na(start)) {
       start <- merge.list(list(pch=start), default_point)
     } else if (is.list(start)) {

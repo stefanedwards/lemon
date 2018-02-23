@@ -42,11 +42,12 @@ Collate:
     'facet-rep-lab.r'
     'facet-wrap.r'
     'geom-pointline.r'
+    'lemon_print.r'
+    'geom-siderange.r'
     'gtable_show-.r'
     'guides-axis.r'
     'legends.r'
     'lemon.r'
-    'lemon_print.r'
 Suggests:
     rmarkdown,
     stringr,
