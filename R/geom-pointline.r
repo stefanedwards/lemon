@@ -68,6 +68,11 @@ NULL
 #' @param linecolour,linecolor When not \code{waiver()}, the line is drawn with 
 #'   this colour instead of that set by aesthetic \code{colour}.
 #' 
+#' @section Known bugs:
+#' Issue #7: When points are too close, the line between them might be 
+#' rendered wrongly.
+#' We have no solution to it currently.
+#' 
 #' @example inst/examples/geom-pointline-ex.r
 #' @export
 geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",

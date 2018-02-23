@@ -1,0 +1,49 @@
+---
+title: "Geoms in lemon"
+author: "Stefan McKinnon Edwards <sme@iysik.com>"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Geoms in lemon}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup,include=FALSE}
+library(knitr)
+
+knitr::opts_chunk$set(fig.height=4, fig.width=6,
+                      cache=TRUE, autodep = TRUE, cache.path = 'geoms-cache/')
+```
+
+In this vignette, we will demonstrate the two geoms: 
+**geom_pointline** and **geom_siderange**.
+
+`geom_pointline` simply combines `geom_point` and `geom_line`, while
+`geom_pointpath` combines `geom_point` and `geom_path`.
+The difference is that `geom_line` draws its lines through the data points,
+`geom_pointline` leaves a small aesthetic gap between the symbol and the line:
+
+```{r fig.cap=''}
+library(ggplot2)
+library(lemon)
+library(gridExtra)
+
+data(sunspot.year)
+sunspots <- data.frame(count=as.numeric(sunspot.year), year=seq.int(start(sunspot.year)[1], end(sunspot.year)[1]))
+sunspots <- subset(sunspots, year > 1900)
+
+point <- ggplot(sunspots, aes(x=year, y=count)) + geom_point() + geom_line() + labs(main='geom_point')
+pointline <- ggplot(sunspots, aes(x=year, y=count)) + geom_pointline(distance=unit(3, 'pt')) + labs(main='geom_pointline')
+grid.arrange(point, pointline)
+pointline
+```
+
+
+
+```{r}
+ggplot(sunspots, aes(x=year, y=count)) + geom_pointline(distance=unit(3, 'pt')) + labs(main='geom_pointline')
+
+```
