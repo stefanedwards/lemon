@@ -36,6 +36,7 @@ in relative measures on the entire plot:
 ```{r fig.cap='Imprecise positioning of legend with `theme(legend.position)`.'}
 library(ggplot2)
 library(grid)
+library(gridExtra)
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
   geom_point(aes(colour = clarity)) +
@@ -297,9 +298,9 @@ Asked on: https://stackoverflow.com/questions/46238676/common-legend-for-a-grid-
 
 Before:
 ```{r example_shared_legend_complex_layout_before}
-require(tidyverse)
-require(grid)
-require(gridExtra)
+library(ggplot2)
+library(grid)
+library(gridExtra)
 d0 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
 d1 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
 d2 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
