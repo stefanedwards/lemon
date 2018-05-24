@@ -215,19 +215,9 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     # Make df with x0,y0,x1,y1
     munched$x1 <- c(munched$x[-1], NA)
     munched$y1 <- c(munched$y[-1], NA)
-    #munched$start <- start
     munched$end <- end
     
-    gr_debug <- grid::segmentsGrob(
-      x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
-      arrow = arrow,
-      gp = grid::gpar(col='grey', lty='solid')
-    )
-    
     # Calculate angle between each pair of points:
-    tooshort = sqrt(sum(tweak**2))
-    cat('Short:', tooshort, '\n')
-    cat('Tweak:', tweak, '\n')
     if (TRUE && as.numeric(distance) != 0) {
       munched <- within(munched, {
         end = ifelse(sqrt((x-x1)**2 + (y-y1)**2) < tooshort, TRUE, end);
@@ -245,13 +235,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
           theta = ifelse(adjust & -pi/3*4 < theta & theta <= -pi/4, pmax(pmin(theta, -1.771), -1.371), theta);
           theta = ifelse(adjust & theta < -pi*3/4, pmin(-3.351, theta), theta);
           theta = ifelse(adjust & theta > pi*3/4, pmax(3.351, theta), theta);
-          
-          colour = ifelse(adjust & -pi/4 <= theta & theta <= pi/4, 'red', colour);
-          colour = ifelse(adjust & pi/4 <= theta & theta <= pi*3/4, 'blue', colour);
-          colour = ifelse(adjust & -pi/3*4 <= theta & theta <= -pi/4, 'green', colour);
-          colour = ifelse(adjust & theta < -pi*3/4, 'orange', colour);
-          colour = ifelse(adjust & theta > pi*3/4, 'purple', colour);
-          
         }
 
         size = grid::unit(size, 'pt');
@@ -261,7 +244,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
       })
     }
-    write.csv(munched, '/home/stefan/projects/lemon/lemon/munched.csv')
     
     gr_lines <- grid::segmentsGrob(
       x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
@@ -278,20 +260,10 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     )
     if (!is.waive(linecolour)) gr_lines$gp$col <- linecolour
     
-
-    
-    #save(data, panel_params, coord, coords, coords_p, gr_lines, gr_points, munched,  file='tmp.Rdata')
-     
-    #gr_points
-    grid::gList(gr_points, gr_lines , gr_debug)
+    grid::gList(gr_points, gr_lines)
   },
   
   draw_key = ggplot2::draw_key_point
-  # function(data, params, size) {
-  #   grid::grobTree(ggplot2::draw_key_path(data, params, size),
-  #               ggplot2::draw_key_point(data, params, size)
-  #   )
-  # }
 )
 
 
