@@ -3,8 +3,11 @@
 p <- ggplot(mtcars, aes(wt, mpg))
 p + geom_point() + geom_line()
 p + geom_pointline()
+
 p + geom_pointline(linecolour='brown')
 p + geom_pointline(colour='green')
+
+p + geom_pointpath()
 
 # Add aesthetic mappings
 p + geom_pointline(aes(colour = factor(cyl)))

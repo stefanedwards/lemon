@@ -148,10 +148,13 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       distance=grid::unit(0, 'pt')
     if (!is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
+    
     if (is.null(tweak))
       tweak = c(0.0,0.0)
     if (any(is.na(tweak)))
       tweak[is.na(tweak)] = 0
+    if (length(tweak) == 1)
+      tweak = c(tweak,tweak)
 
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
@@ -230,19 +233,28 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         end = ifelse(sqrt((x-x1)**2 + (y-y1)**2) < tooshort, TRUE, end);
         length = sqrt((x-x1)**2 + (y-y1)**2);
         theta = atan2(y1-y, x1-x);
+        
         #theta = ifelse(abs(y1 - y) < tweak[2], round(theta / pi * 4) * pi / 4, theta);
         # -0.2 corresponds to 12 degrees, about 1/16th of a radian
-        theta = ifelse(abs(y1 - y) < tweak[2], pmax(pmin(theta, 0.2), -0.2), theta);
-        
-        colour = ifelse(abs(y1 - y) < tweak[2], 'red', colour);
-        colour = ifelse(abs(x1 - x) < tweak[1], 'blue', colour);
-        #colour = ifelse(abs(x1 - x) < tweak[1] && abs(y1 - y) < tweak[2], 'green', colour)
-        #colour = ifelse(length < tooshort, 'yellow', colour);
-        #xa = abs(x1 - x) < 0.005
-        #theta = ifelse(xa, pi/2, theta);
-        #theta = ifelse(abs(y1 - y) < 0.04, 0, theta);
+        # 1.371 = pi/2 - 0.2; 1.771 = pi/2 + 0.2
+        deltay = y1 - y;
+        adjust = abs(y1 - y) < tweak[2];
+        if (any(adjust, na.rm=TRUE)) {
+          theta = ifelse(adjust & -pi/4 <= theta & theta <= pi/4, pmax(pmin(theta, 0.2), -0.2), theta);
+          theta = ifelse(adjust & pi/4 <= theta & theta <= pi*3/4, pmax(pmin(theta, 1.771), 1.371), theta);
+          theta = ifelse(adjust & -pi/3*4 <= theta & theta <= -pi/4, pmax(pmin(theta, -1.771), -1.371), theta);
+          theta = ifelse(adjust & theta < -pi*3/4, pmin(-3.351, theta), theta);
+          theta = ifelse(adjust & theta > pi*3/4, pmax(3.351, theta), theta);
+          
+          colour = ifelse(adjust & -pi/4 <= theta & theta <= pi/4, 'red', colour);
+          colour = ifelse(adjust & pi/4 <= theta & theta <= pi*3/4, 'blue', colour);
+          colour = ifelse(adjust & -pi/3*4 <= theta & theta <= -pi/4, 'green', colour);
+          colour = ifelse(adjust & theta < -pi*3/4, 'orange', colour);
+          colour = ifelse(adjust & theta > pi*3/4, 'purple', colour);
+          
+        }
+
         size = grid::unit(size, 'pt');
-  
         x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
         x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
         y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
@@ -297,6 +309,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linecolour = waiver(),
                            linecolor = waiver(),
                            arrow = NULL,
+                           tweak = c(0.02, 0.03), 
                            ...) {
   
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
@@ -317,7 +330,8 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       linemitre = linemitre,
       linesize = 0.5,
       linecolour = linecolour,
-      arrow = arrow,      
+      arrow = arrow,    
+      tweak = tweak,
       ...
     )
   )
@@ -339,7 +353,6 @@ GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
 
 
 
-#' @export
 #' @inheritParams geom_pointpath
 #' @rdname geom_pointpath
 geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
@@ -354,7 +367,7 @@ geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
                                 linecolor = waiver(),
                                 arrow = NULL,
                                 ...) {
-  
+  stop('geom_pointrangeline has not been implemented. Sorry')
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
   
   layer(
