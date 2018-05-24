@@ -132,11 +132,11 @@ GeomSideRange <- ggplot2::ggproto('GeomSideRange',
     #  from ggplot2/R/geom-rug.r
     sideranges <- list()
     if (!is.null(data$x) & grepl("[tb]", sides)) {
-      df <- plyr::ddply(data, .(PANEL, colour, group, size, linetype, alpha, stroke, fill),
+      df <- plyr::ddply(data, plyr::.(PANEL, colour, group, size, linetype, alpha, stroke, fill),
                         function(x) {c(max=max(x$x), min=min(x$x))})
       gp <- grid::gpar(col=alpha(df$colour, df$alpha), lty=df$linetype, lwd=df$size * .pt)
       if (grepl("t", sides)) {
-        df <- plyr::ddply(df, .(PANEL), function(x) {
+        df <- plyr::ddply(df, plyr::.(PANEL), function(x) {
           x$y <- grid::unit(1, 'npc') -  unit(df$size, 'pt') * order(x$group) * distance; 
           x
         })
@@ -170,7 +170,7 @@ GeomSideRange <- ggplot2::ggproto('GeomSideRange',
         sideranges$x_t <- grid::gTree(children=do.call(grid::gList, sideranges$x_t))
       }
       if (grepl("b", sides)) {
-        df <- plyr::ddply(df, .(PANEL), function(x) {
+        df <- plyr::ddply(df, plyr::.(PANEL), function(x) {
           x$y <- unit(df$size, 'pt') * order(x$group) * distance; 
           x
           })
@@ -205,11 +205,11 @@ GeomSideRange <- ggplot2::ggproto('GeomSideRange',
       }
     }
     if (!is.null(data$y) & grepl("[lr]", sides)) {
-      df <- plyr::ddply(data, .(PANEL, colour, group, size, linetype, alpha),
+      df <- plyr::ddply(data, plyr::.(PANEL, colour, group, size, linetype, alpha),
                        function(x) c(max=max(x$y), min=min(x$y)))
       gp <- grid::gpar(col=alpha(df$colour, df$alpha), lty=df$linetype, lwd=df$size * .pt)
       if (grepl("l", sides)) {
-        df <- plyr::ddply(df, .(PANEL), function(x) {
+        df <- plyr::ddply(df, plyr::.(PANEL), function(x) {
           x$x <- unit(df$size, 'pt') * order(x$group) * distance;
           x
         })
@@ -243,7 +243,7 @@ GeomSideRange <- ggplot2::ggproto('GeomSideRange',
         sideranges$y_l <- grid::gTree(children=do.call(grid::gList, sideranges$y_l))
       }
       if (grepl("r", sides)) {
-        df <- plyr::ddply(df, .(PANEL), function(x) {
+        df <- plyr::ddply(df, plyr::.(PANEL), function(x) {
           x$x <- unit(1, 'npc') - unit(df$size, 'pt') * order(x$group) * distance;
           x
         })
