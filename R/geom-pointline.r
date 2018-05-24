@@ -238,11 +238,11 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         # -0.2 corresponds to 12 degrees, about 1/16th of a radian
         # 1.371 = pi/2 - 0.2; 1.771 = pi/2 + 0.2
         deltay = y1 - y;
-        adjust = abs(y1 - y) < tweak[2];
+        adjust = abs(y1 - y) < tweak[2] | abs(x1 - x) < tweak[1];
         if (any(adjust, na.rm=TRUE)) {
-          theta = ifelse(adjust & -pi/4 <= theta & theta <= pi/4, pmax(pmin(theta, 0.2), -0.2), theta);
-          theta = ifelse(adjust & pi/4 <= theta & theta <= pi*3/4, pmax(pmin(theta, 1.771), 1.371), theta);
-          theta = ifelse(adjust & -pi/3*4 <= theta & theta <= -pi/4, pmax(pmin(theta, -1.771), -1.371), theta);
+          theta = ifelse(adjust & -pi/4 < theta & theta <= pi/4, pmax(pmin(theta, 0.2), -0.2), theta);
+          theta = ifelse(adjust & pi/4 < theta & theta <= pi*3/4, pmax(pmin(theta, 1.771), 1.371), theta);
+          theta = ifelse(adjust & -pi/3*4 < theta & theta <= -pi/4, pmax(pmin(theta, -1.771), -1.371), theta);
           theta = ifelse(adjust & theta < -pi*3/4, pmin(-3.351, theta), theta);
           theta = ifelse(adjust & theta > pi*3/4, pmax(3.351, theta), theta);
           
