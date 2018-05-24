@@ -23,6 +23,11 @@
   These geoms apply any position adjustments (e.g.\ `position_jitter`) to 
   *both* points and lines.
   Also adds a gap between point and end of lines that grows with pointsize.
+  
+* **Bug fix** Some sort of rounding error in `geom_pointpath` and `geom_pointline`
+  causes the connecting lines to appear in the wrong direction.
+  Added a parameter, `tweak`, which can force the angle of the connecting lines
+  closer to orthogonal angles.
 
 # lemon 0.3.2
 
