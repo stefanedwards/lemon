@@ -6,6 +6,11 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* **New feature**: `geom_siderange` which kinda works like `geom_rug`,
+  but displays a line within the plotting area and follows usual rules
+  of aesthetics i.e. colour, and with added benefit of defining 
+  starting and ending point symbol.
+
 # lemon 0.3.3-1
 
 * Bug fix: `linesize` did not work on `geom_pointline`.
