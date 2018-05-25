@@ -84,6 +84,8 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       position = "identity", na.rm = FALSE,
                       show.legend = NA, inherit.aes = TRUE, 
                       distance = unit(3, 'pt'), 
+                      shorten = 0.5,
+                      threshold = 0.1,
                       lineend = "butt",
                       linejoin = "round",
                       linemitre = 1,
@@ -91,8 +93,6 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       linecolour = waiver(),
                       linecolor = waiver(),
                       arrow = NULL,
-                      tweak = c(0.02, 0.03), 
-                      shorten = NULL,
                       ...) {
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
   
@@ -107,14 +107,14 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
     params = list(
       na.rm = na.rm,
       distance = distance,
+      shorten = shorten,
+      threshold = threshold,
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
       linesize = linesize,
       linecolour = linecolour,
       arrow = arrow,
-      tweak = tweak,
-      shorten = shorten,
       ...
     )
   )
@@ -139,12 +139,13 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
   ),
   
   draw_panel = function(data, panel_params, coord, na.rm = FALSE,
-                        distance = grid::unit(3, 'pt'), linesize = 0.5,
+                        distance = grid::unit(3, 'pt'), 
+                        shorten = 0.5,
+                        threshold = 0.1,
+                        linesize = 0.5,
                         linecolour = waiver(),
                         arrow = NULL,
-                        lineend = "butt", linejoin = "round", linemitre = 1,
-                        tweak = c(0.02, 0.03),
-                        shorten = NULL
+                        lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
     # Test input parameters
     if (is.null(distance) || is.na(distance)) 
@@ -152,13 +153,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     if (!grid::is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
     
-    if (is.null(tweak))
-      tweak = c(0.0,0.0)
-    if (any(is.na(tweak)))
-      tweak[is.na(tweak)] = 0
-    if (length(tweak) == 1)
-      tweak = c(tweak,tweak)
-
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
     coords_p <- coords
@@ -210,71 +204,79 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
 
     # Work out grouping variables for grobs
     n <- nrow(munched)
-    #start <- c(TRUE, group_diff)
     group_diff <- munched$group[-1] != munched$group[-n]
-    end <-   c(group_diff, TRUE)
+    munched$end <-   c(group_diff, TRUE)
 
+    munched <- within(munched, {
+      x1 = c(x[-1], NA);
+      y1 = c(y[-1], NA);
+      deltax = x1 - x;
+      deltay = y1 - y;
+      length <- sqrt(deltax**2 + deltay**2);
+    })
     
-    # Make df with x0,y0,x1,y1
-    munched$x1 <- c(munched$x[-1], NA)
-    munched$y1 <- c(munched$y[-1], NA)
-    munched$end <- end
-    
-    # Calculate angle between each pair of points:
-    if (is.null(shorten) && as.numeric(distance) != 0) {
-      munched <- within(munched, {
-        end = ifelse(sqrt((x-x1)**2 + (y-y1)**2) < tweak[3], TRUE, end);
-        #length = sqrt((x-x1)**2 + (y-y1)**2);
-        theta = atan2(y1-y, x1-x);
-        
-        #theta = ifelse(abs(y1 - y) < tweak[2], round(theta / pi * 4) * pi / 4, theta);
-        # -0.2 corresponds to 12 degrees, about 1/16th of a radian
-        # 1.371 = pi/2 - 0.2; 1.771 = pi/2 + 0.2
-        deltay = y1 - y;
-        adjust = abs(y1 - y) < tweak[2] | abs(x1 - x) < tweak[1];
-        if (any(adjust, na.rm=TRUE)) {
-          theta = ifelse(adjust & -pi/4 < theta & theta <= pi/4, pmax(pmin(theta, 0.2), -0.2), theta);
-          theta = ifelse(adjust & pi/4 < theta & theta <= pi*3/4, pmax(pmin(theta, 1.771), 1.371), theta);
-          theta = ifelse(adjust & -pi/3*4 < theta & theta <= -pi/4, pmax(pmin(theta, -1.771), -1.371), theta);
-          theta = ifelse(adjust & theta < -pi*3/4, pmin(-3.351, theta), theta);
-          theta = ifelse(adjust & theta > pi*3/4, pmax(3.351, theta), theta);
-        }
-
-        size = grid::unit(size, 'pt');
-        x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
-        x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
-        y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
-        y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
-      })
-    } else if (!is.null(shorten) & is.numeric(shorten)) {
-      munched <- within(munched, {
-        length = sqrt((x-x1)**2 + (y-y1)**2);
-        deltax = x1 - x;
-        deltay = y1 - y;
-        #ox = x; oy = y; ox1 = x1; oy1 = y1; # keep backup of old values
-        x = x + shorten/2 * deltax; 
-        x1 = x1 - shorten/2 * deltax;
-        y = y + shorten/2 * deltay;
-        y1 = y1 - shorten/2 * deltay;
-      })
+    if (any(munched$length > threshold)) {
+      # Calculate angle between each pair of points and move endpoints:
+      if (as.numeric(distance) != 0) {
+        df <- within(munched[munched$length > threshold,], {
+          theta = atan2(deltay, deltax);
+          size = grid::unit(size, 'pt');
+          x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
+          x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
+          y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
+          y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
+        })
+      }
+      
+      gr_distant <- with(df, grid::segmentsGrob(
+        x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
+        arrow = arrow,
+        gp = grid::gpar(
+          col = 'green', #ggplot2::alpha(colour, alpha)[!end],
+          fill = ggplot2::alpha(colour, alpha)[!end],
+          lwd = linesize * .pt,
+          lty = linetype[!end],
+          lineend = lineend,
+          linejoin = linejoin,
+          linemitre = linemitre
+        )
+      ))
+      if (!is.waive(linecolour)) 
+        gr_distant$gp$col <- linecolour
     }
     
-    gr_lines <- with(munched, grid::segmentsGrob(
-      x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
-      arrow = arrow,
-      gp = grid::gpar(
-        col = ggplot2::alpha(colour, alpha)[!end],
-        fill = ggplot2::alpha(colour, alpha)[!end],
-        lwd = linesize * .pt,
-        lty = linetype[!end],
-        lineend = lineend,
-        linejoin = linejoin,
-        linemitre = linemitre
-      )
-    ))
-    if (!is.waive(linecolour)) gr_lines$gp$col <- linecolour
+    if (any(munched$length <= threshold)) {
+      df <- within(munched[munched$length <= threshold,], {
+        x  = x + shorten/2 * deltax; x = grid::unit(x, 'native');
+        y  = y + shorten/2 * deltay; y = grid::unit(y, 'native');
+        x1 = x1 - shorten/2 * deltax; x1 = grid::unit(x1, 'native');
+        y1 = y1 - shorten/2 * deltay; y1 = grid::unit(y1, 'native');
+      })
+      
+      gr_short <- with(df, grid::segmentsGrob(
+        x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
+        arrow = arrow,
+        gp = grid::gpar(
+          col = 'red', #ggplot2::alpha(colour, alpha)[!end],
+          fill = ggplot2::alpha(colour, alpha)[!end],
+          lwd = linesize * .pt,
+          lty = linetype[!end],
+          lineend = lineend,
+          linejoin = linejoin,
+          linemitre = linemitre
+        )
+      ))
+      if (!is.waive(linecolour)) 
+        gr_short$gp$col <- linecolour
+    }
+
     
-    grid::gList(gr_points, gr_lines)
+    
+    saveRDS(munched, 'munced.rds')
+    
+    
+    
+    grid::gList(gr_points, gr_distant, gr_short)
   },
   
   draw_key = ggplot2::draw_key_point
