@@ -22,6 +22,17 @@ NULL
 #' \emph{also} use this, thus lines between x-values are not grouped.
 #' Use \code{aes(group=...)} to enforce a group across x-values.
 #' 
+#' The \strong{tweak} parameter can be used to fine adjust the slope of a line.
+#' If two points are very close horizontally or vertically, something happens
+#' and the line may appear to be pointing in the wrong direction 
+#' (e.g. upwards when the point indicates it should be downwards). I have no
+#' explanation for this, other than it could be a rounding error.
+#' The size of this weaking parameter depends on the physical size of the output.
+#' Good values could be \code{c(0.02, 0.02)} for very small graphs,
+#' \code{c(0.02, 0.06)} for a low, but wide graph, or \code{c(0.06, 0.06)} for
+#' a larger graph.
+#' 
+#' 
 #' @section Aesthetics:
 #' \code{geom_pointline} and \code{geom_pointpath} understands the following 
 #' aesthetics (required aesthetics are in bold):
@@ -67,6 +78,8 @@ NULL
 #'   use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
 #' @param linecolour,linecolor When not \code{waiver()}, the line is drawn with 
 #'   this colour instead of that set by aesthetic \code{colour}.
+#' @param tweak Numeric vector for x or y tweaking parameter.
+#'   When \code{NULL} and \code{NA}, \code{tweak = c(0,0).}
 #' 
 #' @section Known bugs:
 #' Issue #7: When points are too close, the line between them might be 
@@ -86,6 +99,7 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       linecolour = waiver(),
                       linecolor = waiver(),
                       arrow = NULL,
+                      tweak = c(0.02, 0.03), 
                       ...) {
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
   
@@ -105,7 +119,8 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
       linemitre = linemitre,
       linesize = linesize,
       linecolour = linecolour,
-      arrow = arrow,      
+      arrow = arrow,
+      tweak = tweak,
       ...
     )
   )
@@ -133,11 +148,22 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                         distance = grid::unit(3, 'pt'), linesize = 0.5,
                         linecolour = waiver(),
                         arrow = NULL,
-                        lineend = "butt", linejoin = "round", linemitre = 1
+                        lineend = "butt", linejoin = "round", linemitre = 1,
+                        tweak = c(0.02, 0.03) 
                         ) {
-    if (!grid::is.unit(distance) && is.numeric(distance)) 
+    # Test input parameters
+    if (is.null(distance) || is.na(distance)) 
+      distance=grid::unit(0, 'pt')
+    if (!is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
     
+    if (is.null(tweak))
+      tweak = c(0.0,0.0)
+    if (any(is.na(tweak)))
+      tweak[is.na(tweak)] = 0
+    if (length(tweak) == 1)
+      tweak = c(tweak,tweak)
+
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
     saveRDS(coords, 'tmp.rds')
@@ -196,21 +222,35 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     # Make df with x0,y0,x1,y1
     munched$x1 <- c(munched$x[-1], NA)
     munched$y1 <- c(munched$y[-1], NA)
-    #munched$start <- start
     munched$end <- end
     
     # Calculate angle between each pair of points:
-    munched <- within(munched, {
-      xn = x;
-      yn = y;
-      theta = atan2(y1-y, x1-x);
-      size = grid::unit(size, 'pt');
+    if (TRUE && as.numeric(distance) != 0) {
+      munched <- within(munched, {
+        end = ifelse(sqrt((x-x1)**2 + (y-y1)**2) < tooshort, TRUE, end);
+        length = sqrt((x-x1)**2 + (y-y1)**2);
+        theta = atan2(y1-y, x1-x);
+        
+        #theta = ifelse(abs(y1 - y) < tweak[2], round(theta / pi * 4) * pi / 4, theta);
+        # -0.2 corresponds to 12 degrees, about 1/16th of a radian
+        # 1.371 = pi/2 - 0.2; 1.771 = pi/2 + 0.2
+        deltay = y1 - y;
+        adjust = abs(y1 - y) < tweak[2] | abs(x1 - x) < tweak[1];
+        if (any(adjust, na.rm=TRUE)) {
+          theta = ifelse(adjust & -pi/4 < theta & theta <= pi/4, pmax(pmin(theta, 0.2), -0.2), theta);
+          theta = ifelse(adjust & pi/4 < theta & theta <= pi*3/4, pmax(pmin(theta, 1.771), 1.371), theta);
+          theta = ifelse(adjust & -pi/3*4 < theta & theta <= -pi/4, pmax(pmin(theta, -1.771), -1.371), theta);
+          theta = ifelse(adjust & theta < -pi*3/4, pmin(-3.351, theta), theta);
+          theta = ifelse(adjust & theta > pi*3/4, pmax(3.351, theta), theta);
+        }
 
-      x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
-      x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
-      y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
-      y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta)
-    })
+        size = grid::unit(size, 'pt');
+        x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
+        x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
+        y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
+        y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
+      })
+    }
     
     gr_lines <- grid::segmentsGrob(
       x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
@@ -231,11 +271,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
   },
   
   draw_key = ggplot2::draw_key_point
-  # function(data, params, size) {
-  #   grid::grobTree(ggplot2::draw_key_path(data, params, size),
-  #               ggplot2::draw_key_point(data, params, size)
-  #   )
-  # }
 )
 
 
@@ -253,6 +288,7 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linecolour = waiver(),
                            linecolor = waiver(),
                            arrow = NULL,
+                           tweak = c(0.02, 0.03), 
                            ...) {
   
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
@@ -273,7 +309,8 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       linemitre = linemitre,
       linesize = linesize,
       linecolour = linecolour,
-      arrow = arrow,      
+      arrow = arrow,    
+      tweak = tweak,
       ...
     )
   )
@@ -292,3 +329,72 @@ GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
     }
 )
 
+
+
+#' @inheritParams geom_pointpath
+#' @rdname geom_pointpath
+geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
+                                position = "identity", na.rm = FALSE,
+                                show.legend = NA, inherit.aes = TRUE, 
+                                distance = unit(3, 'pt'), 
+                                lineend = "butt",
+                                linejoin = "round",
+                                linemitre = 1,
+                                linesize = 0.5,
+                                linecolour = waiver(),
+                                linecolor = waiver(),
+                                arrow = NULL,
+                                ...) {
+  stop('geom_pointrangeline has not been implemented. Sorry')
+  if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
+  
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomPointRangeLine,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      distance = distance,
+      lineend = lineend,
+      linejoin = linejoin,
+      linemitre = linemitre,
+      linesize = 0.5,
+      linecolour = linecolour,
+      arrow = arrow,      
+      ...
+    )
+  )
+}
+
+#' @rdname lemon-ggproto
+#' @keywords internal
+#' @format NULL
+#' @usage NULL
+#' @import ggplot2
+#' @import gtable
+GeomPointRangeLine <- ggproto("GeomPointRangeLine", GeomPointLine,
+  required_aes = c("x", "y", "ymin", "ymax"),
+  
+  setup_data = function(data, params) {
+    data[order(data$PANEL, data$group, data$x), ]
+  },
+  draw_panel = function(data, panel_params, coord, na.rm = FALSE,
+                        distance = grid::unit(3, 'pt'), linesize = 0.5,
+                        linecolour = waiver(),
+                        arrow = NULL,
+                        lineend = "butt", linejoin = "round", linemitre = 1
+  ) {
+    data <- transform(data, xend = x, y = ymin, yend = ymax)
+    grid::gList(ggname("geom_linerange", GeomSegment$draw_panel(data, panel_params, coord)),
+                GeomPointLine$draw_panel(data, panel_params, coord,
+                                         na.rm=na.rm, distance=distance,
+                                         linesize=linesize, linecolour=linecolour,
+                                         arrow=arrow, lineend=lineend,
+                                         linejoin=linejoin, linemitre=linemitre)
+    )
+  }
+)
