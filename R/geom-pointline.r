@@ -92,6 +92,7 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       linecolor = waiver(),
                       arrow = NULL,
                       tweak = c(0.02, 0.03), 
+                      shorten = NULL,
                       ...) {
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
   
@@ -113,6 +114,7 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
       linecolour = linecolour,
       arrow = arrow,
       tweak = tweak,
+      shorten = shorten,
       ...
     )
   )
@@ -141,12 +143,13 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                         linecolour = waiver(),
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1,
-                        tweak = c(0.02, 0.03) 
+                        tweak = c(0.02, 0.03),
+                        shorten = NULL
                         ) {
     # Test input parameters
     if (is.null(distance) || is.na(distance)) 
       distance=grid::unit(0, 'pt')
-    if (!is.unit(distance) && is.numeric(distance)) 
+    if (!grid::is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
     
     if (is.null(tweak))
@@ -218,10 +221,10 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     munched$end <- end
     
     # Calculate angle between each pair of points:
-    if (TRUE && as.numeric(distance) != 0) {
+    if (is.null(shorten) && as.numeric(distance) != 0) {
       munched <- within(munched, {
-        end = ifelse(sqrt((x-x1)**2 + (y-y1)**2) < tooshort, TRUE, end);
-        length = sqrt((x-x1)**2 + (y-y1)**2);
+        end = ifelse(sqrt((x-x1)**2 + (y-y1)**2) < tweak[3], TRUE, end);
+        #length = sqrt((x-x1)**2 + (y-y1)**2);
         theta = atan2(y1-y, x1-x);
         
         #theta = ifelse(abs(y1 - y) < tweak[2], round(theta / pi * 4) * pi / 4, theta);
@@ -243,21 +246,32 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
         y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
       })
+    } else if (!is.null(shorten) & is.numeric(shorten)) {
+      munched <- within(munched, {
+        length = sqrt((x-x1)**2 + (y-y1)**2);
+        deltax = x1 - x;
+        deltay = y1 - y;
+        #ox = x; oy = y; ox1 = x1; oy1 = y1; # keep backup of old values
+        x = x + shorten/2 * deltax; 
+        x1 = x1 - shorten/2 * deltax;
+        y = y + shorten/2 * deltay;
+        y1 = y1 - shorten/2 * deltay;
+      })
     }
     
-    gr_lines <- grid::segmentsGrob(
-      x0=munched$x[!end], y0=munched$y[!end], x1=munched$x1[!end], y1=munched$y1[!end],
+    gr_lines <- with(munched, grid::segmentsGrob(
+      x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
       arrow = arrow,
       gp = grid::gpar(
-        col = ggplot2::alpha(munched$colour, munched$alpha)[!end],
-        fill = ggplot2::alpha(munched$colour, munched$alpha)[!end],
+        col = ggplot2::alpha(colour, alpha)[!end],
+        fill = ggplot2::alpha(colour, alpha)[!end],
         lwd = linesize * .pt,
-        lty = munched$linetype[!end],
+        lty = linetype[!end],
         lineend = lineend,
         linejoin = linejoin,
         linemitre = linemitre
       )
-    )
+    ))
     if (!is.waive(linecolour)) gr_lines$gp$col <- linecolour
     
     grid::gList(gr_points, gr_lines)
