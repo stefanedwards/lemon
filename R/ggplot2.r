@@ -89,3 +89,11 @@ absoluteGrob <- function(grob, width = NULL, height = NULL,
     vp = vp, cl = "absoluteGrob"
   )
 }
+
+
+# From ggplot2/??
+message_wrap <- function (...)  {
+  msg <- paste(..., collapse = "", sep = "")
+  wrapped <- strwrap(msg, width = getOption("width") - 2)
+  message(paste0(wrapped, collapse = "\n"))
+}
