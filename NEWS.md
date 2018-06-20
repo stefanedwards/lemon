@@ -1,10 +1,12 @@
-# lemon 0.3.9000
+# lemon 0.4.9000
 
 * **TODO:** Create `grobHeight` on gtables.
 
 * **TODO:** Create CITATION file.
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
+
+# lemon 0.4.0
 
 * **New feature**: `geom_siderange` which kinda works like `geom_rug`,
   but displays a line within the plotting area and follows usual rules
