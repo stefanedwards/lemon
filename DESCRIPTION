@@ -52,6 +52,5 @@ Suggests:
     rmarkdown,
     stringr,
     dplyr,
-    tidyverse,
     testthat
 VignetteBuilder: knitr
