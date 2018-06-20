@@ -1,4 +1,4 @@
-#library(ggplot2)
+library(ggplot2)
 
 x <- rnorm(25)
 df <- data.frame(x=x, y=x+rnorm(25, sd=0.2), 

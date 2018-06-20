@@ -150,7 +150,6 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
-    saveRDS(coords, 'tmp.rds')
     gr_points <- ggplot2:::ggname("geom_point",
            grid::pointsGrob(
              coords$x, coords$y,
@@ -209,7 +208,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       length <- sqrt(deltax**2 + deltay**2);
     })
     
-    if (any(munched$length > threshold)) {
+    if (any(munched$length > threshold, na.rm=TRUE)) {
       # Calculate angle between each pair of points and move endpoints:
       if (as.numeric(distance) != 0) {
         df <- within(munched[munched$length > threshold,], {
@@ -237,9 +236,11 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       ))
       if (!is.waive(linecolour)) 
         gr_distant$gp$col <- linecolour
+    } else {
+      gr_distant <- ggplot2::zeroGrob()
     }
     
-    if (any(munched$length <= threshold)) {
+    if (any(munched$length <= threshold, na.rm=TRUE)) {
       df <- within(munched[munched$length <= threshold,], {
         x  = x + shorten/2 * deltax; x = grid::unit(x, 'native');
         y  = y + shorten/2 * deltay; y = grid::unit(y, 'native');
@@ -262,6 +263,8 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       ))
       if (!is.waive(linecolour)) 
         gr_short$gp$col <- linecolour
+    } else {
+      gr_short <- ggplot2::zeroGrob()
     }
     
     grid::gList(gr_points, gr_distant, gr_short)

@@ -12,7 +12,7 @@ NULL
 #' of the line, and lines are offset from the edge and each other.
 #' 
 #' To display a symbol, specify an integer for either \code{start} or \code{end}.
-#' See the list for \code{pch} in \code{\link[graphics]{point}} for values to use.
+#' See the list for \code{pch} in \code{\link[graphics]{points}} for values to use.
 #' The argumetns \code{start} and \code{end} also accepts a list object with
 #' named entries \code{pch}, \code{alpha}, \code{stroke}, and \code{fill}, which 
 #' correspond to the usual aesthetics, as well as a special named entry, 

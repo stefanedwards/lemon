@@ -24,6 +24,7 @@ Depends:
     R (>= 3.1.0)
 Imports:
     ggplot2 (>= 2.2.0),
+    plyr,
     grid,
     gridExtra,
     gtable,
