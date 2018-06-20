@@ -143,7 +143,8 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                         ) {
     # Test input parameters
     if (is.null(distance) || is.na(distance)) 
-      distance=grid::unit(0, 'pt')
+      distance <- grid::unit(0, 'pt')
+
     if (!grid::is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
     
@@ -225,7 +226,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
         arrow = arrow,
         gp = grid::gpar(
-          col = 'green', #ggplot2::alpha(colour, alpha)[!end],
+          col = ggplot2::alpha(colour, alpha)[!end],
           fill = ggplot2::alpha(colour, alpha)[!end],
           lwd = linesize * .pt,
           lty = linetype[!end],
@@ -250,7 +251,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
         arrow = arrow,
         gp = grid::gpar(
-          col = 'red', #ggplot2::alpha(colour, alpha)[!end],
+          col = ggplot2::alpha(colour, alpha)[!end],
           fill = ggplot2::alpha(colour, alpha)[!end],
           lwd = linesize * .pt,
           lty = linetype[!end],
@@ -277,6 +278,8 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            position = "identity", na.rm = FALSE,
                            show.legend = NA, inherit.aes = TRUE, 
                            distance = unit(3, 'pt'), 
+                           shorten = 0.5,
+                           threshold = 0.1,
                            lineend = "butt",
                            linejoin = "round",
                            linemitre = 1,
@@ -323,72 +326,3 @@ GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
     }
 )
 
-
-
-#' @inheritParams geom_pointpath
-#' @rdname geom_pointpath
-geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
-                                position = "identity", na.rm = FALSE,
-                                show.legend = NA, inherit.aes = TRUE, 
-                                distance = unit(3, 'pt'), 
-                                lineend = "butt",
-                                linejoin = "round",
-                                linemitre = 1,
-                                linesize = 0.5,
-                                linecolour = waiver(),
-                                linecolor = waiver(),
-                                arrow = NULL,
-                                ...) {
-  stop('geom_pointrangeline has not been implemented. Sorry')
-  if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
-  
-  layer(
-    data = data,
-    mapping = mapping,
-    stat = stat,
-    geom = GeomPointRangeLine,
-    position = position,
-    show.legend = show.legend,
-    inherit.aes = inherit.aes,
-    params = list(
-      na.rm = na.rm,
-      distance = distance,
-      lineend = lineend,
-      linejoin = linejoin,
-      linemitre = linemitre,
-      linesize = 0.5,
-      linecolour = linecolour,
-      arrow = arrow,      
-      ...
-    )
-  )
-}
-
-#' @rdname lemon-ggproto
-#' @keywords internal
-#' @format NULL
-#' @usage NULL
-#' @import ggplot2
-#' @import gtable
-GeomPointRangeLine <- ggproto("GeomPointRangeLine", GeomPointLine,
-  required_aes = c("x", "y", "ymin", "ymax"),
-  
-  setup_data = function(data, params) {
-    data[order(data$PANEL, data$group, data$x), ]
-  },
-  draw_panel = function(data, panel_params, coord, na.rm = FALSE,
-                        distance = grid::unit(3, 'pt'), linesize = 0.5,
-                        linecolour = waiver(),
-                        arrow = NULL,
-                        lineend = "butt", linejoin = "round", linemitre = 1
-  ) {
-    data <- transform(data, xend = x, y = ymin, yend = ymax)
-    grid::gList(ggname("geom_linerange", GeomSegment$draw_panel(data, panel_params, coord)),
-                GeomPointLine$draw_panel(data, panel_params, coord,
-                                         na.rm=na.rm, distance=distance,
-                                         linesize=linesize, linecolour=linecolour,
-                                         arrow=arrow, lineend=lineend,
-                                         linejoin=linejoin, linemitre=linemitre)
-    )
-  }
-)
