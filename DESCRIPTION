@@ -3,7 +3,7 @@ Type: Package
 Title: Freshing Up your 'ggplot2' Plots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
-Version: 0.3.3-1
+Version: 0.3.3.9000
 Date: 2018-01-31
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
@@ -24,6 +24,7 @@ Depends:
     R (>= 3.1.0)
 Imports:
     ggplot2 (>= 2.2.0),
+    plyr,
     grid,
     gridExtra,
     gtable,
@@ -42,11 +43,12 @@ Collate:
     'facet-rep-lab.r'
     'facet-wrap.r'
     'geom-pointline.r'
+    'lemon_print.r'
+    'geom-siderange.r'
     'gtable_show-.r'
     'guides-axis.r'
     'legends.r'
     'lemon.r'
-    'lemon_print.r'
 Suggests:
     rmarkdown,
     stringr,

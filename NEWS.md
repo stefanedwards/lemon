@@ -6,6 +6,18 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* **New feature**: `geom_siderange` which kinda works like `geom_rug`,
+  but displays a line within the plotting area and follows usual rules
+  of aesthetics i.e. colour, and with added benefit of defining 
+  starting and ending point symbol.
+
+* **Bug fix** Some sort of rounding error in `geom_pointpath` and `geom_pointline`
+  causes the connecting lines to appear in the wrong direction.
+  The connecting lines are drawn by two different algorithms;
+  when distance between points exceeds the `threshold`, the offset is calculated
+  based on the points' size. When the distance is lower than the threshold,
+  the lines are shortened by the proportion given by `shorten`.
+
 # lemon 0.3.3-1
 
 * Bug fix: `linesize` did not work on `geom_pointline`.

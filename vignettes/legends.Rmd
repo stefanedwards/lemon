@@ -301,6 +301,7 @@ Before:
 library(ggplot2)
 library(grid)
 library(gridExtra)
+
 d0 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
 d1 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")
 d2 <- read.csv(text="x, y, col\na,2,x\nb,2,y\nc,1,z")

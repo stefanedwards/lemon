@@ -300,8 +300,11 @@ reposition_legend <- function(aplot,
   if (is.null(legend) || inherits(legend, 'zeroGrob'))
     stop('No legend given in arguments, or could not extract legend from plot.')
 
-  if (!inherits(aplot, 'gtable'))
-    aplot <- ggplot_gtable(ggplot_build(aplot + theme(legend.position='hidden')))
+  if (!inherits(aplot, 'gtable')) {
+    aplot$theme$legend.position <- 'hidden'
+    aplot <- ggplotGrob(aplot)
+    #aplot <- ggplot_gtable(ggplot_build(aplot + theme(legend.position='hidden')))
+  }
 
   # Update name if already found. No idea why this is necessary.
   if (any(grepl(name, aplot$layout$name))) {
