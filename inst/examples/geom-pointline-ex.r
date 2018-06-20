@@ -33,7 +33,9 @@ ggplot(mtcars, aes(wt, mpg)) +
   geom_pointline(shape = 21, colour = "black", fill = "white", 
                  size = 5, stroke = 5, distance = unit(10, 'pt'))
 
-# geom_line() examples, updated to geom_pointline
+## Another example
+df <- data.frame(x=rep(c('orange','apple','pear'), each=3), b=rep(c('red','green','purple'), times=3), y=runif(9))
+ggplot(df, aes(x=x, y=y, colour=b, group=b)) + geom_pointline(linesize=1, size=2, distance=6) + theme_bw()
 
 # geom_line() is suitable for time series
 ggplot(economics, aes(date, unemploy)) + geom_pointline()

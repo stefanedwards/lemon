@@ -6,6 +6,10 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+# lemon 0.3.3-1
+
+* Bug fix: `linesize` did not work on `geom_pointline`.
+
 # lemon 0.3.3
 
 * Added argument `offset` to `reposition_legend` to better nudge legend into place.
