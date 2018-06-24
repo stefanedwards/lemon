@@ -19,7 +19,7 @@
 is.small <- function(x) {
   #if (is.list(x) & !inherits(x[[1]], 'unit.list') & length(x) == 1) x <- x[[1]]
   #if (inherits(x, 'unit.list')) return(FALSE)
-  if (!is.unit(x)) stop('`h` is not a unit.')
+  if (!grid::is.unit(x)) stop('`h` is not a unit.')
   if (is.null(attr(x, 'unit'))) return(FALSE)
   if (as.numeric(x) == 1 & attr(x, 'unit') == 'null') return(FALSE)
   if (as.numeric(x) == 0) return(TRUE)
