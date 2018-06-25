@@ -68,6 +68,64 @@ g_legend<-function(a.gplot){
   a.gplot$grobs[[leg]]
 }
 
+#' Guidebox as a column
+#' 
+#' Takes a plot or legend and returns a single guide-box in a single column,
+#' for embedding in e.g. tables.
+#' 
+#' @param p A ggplot2 plot or the extracted legend. 
+#'   \emph{Do not} provide a \code{\link[ggplot2]{ggplotGrob}} as it is indistinguisble
+#'   from a legend.
+#' @param which.legend Integer, a legend can contain multiple guide-boxes (or vice versa?).
+#'   Use this argument to select which to use.
+#' @return A \code{\link[gtable]{gtable}} with keys and labels reordered into 
+#'   a single column and each pair of keys and labels in the same cell.
+#' @export 
+#' @seealso \code{\link{g_legend}}
+#' @import ggplot2
+#' @import gtable
+#' @import gridExtra
+#' @examples
+#' library(ggplot2)
+#' library(dplyr)
+#' 
+#' p <- ggplot(diamonds, aes(x=x, y=y, colour=cut)) + geom_point()
+#' guidebox_as_column(p)
+#' p <- p + guides(colour=guide_legend(ncol=2, byrow=TRUE))
+#' guidebox_as_column(p)
+guidebox_as_column <- function(legend, which.legend=1) {
+  if (ggplot2::is.ggplot(legend)) {
+    legend <- g_legend(legend)
+  }
+  if (gtable::is.gtable(legend) & legend$name == 'guide-box') {
+    legend <- legend$grobs[[which.legend]]
+  }
+  
+  # deduct number of keys from legend
+  # assumes background, labels, and keys, are all in same order (albeit intermixed)
+  bgs <- which(grepl('-bg', legend$layout$name))
+  keys <- which(grepl('key-[0-9]+-[0-9]+-[0-9]+', legend$layout$name))
+  labels <- which(grepl('label-[0-9]+-[0-9]+', legend$layout$name))
+  
+  all.keys <- list()
+  for (i in 1:length(bgs)) {
+    t = legend$layout$t[bgs[i]]
+    lr = range(legend$layout[c(bgs[i], keys[i], labels[i]), c('l','r')])
+    b = legend$layout$b[bgs[i]]
+    
+    n <- gtable::gtable(heights = legend$heights[t:b], 
+                        widths = legend$widths[lr[1]:lr[2]],
+                        name = paste0(legend$layout$name[keys[i]], '-all')
+    )
+    n <- gtable::gtable_add_grob(n, legend$grobs[bgs[i]], t=1, l=1, name=legend$layout$name[bgs[i]])
+    n <- gtable::gtable_add_grob(n, legend$grobs[keys[i]], t=1, l=1, name=legend$layout$name[keys[i]])
+    n <- gtable::gtable_add_grob(n, legend$grobs[labels[i]], t=1, l=3, name=legend$layout$name[labels[i]])
+    
+    all.keys[[i]] <- n
+  }
+  do.call(rbind, all.keys)
+}
+
 
 #' Share a legend between multiple plots
 #'

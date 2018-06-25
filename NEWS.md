@@ -6,6 +6,11 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+# lemon 0.4.1
+
+* `guidebox_as_column`: Reorders the keys and labels in a legend to a 
+  single-column gtable.
+
 # lemon 0.4.0
 
 * **New feature**: `geom_siderange` which kinda works like `geom_rug`,
