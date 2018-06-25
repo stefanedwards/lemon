@@ -78,6 +78,7 @@ g_legend<-function(a.gplot){
 #'   from a legend.
 #' @param which.legend Integer, a legend can contain multiple guide-boxes (or vice versa?).
 #'   Use this argument to select which to use.
+#' @param add.title Does nothing yet.
 #' @return A \code{\link[gtable]{gtable}} with keys and labels reordered into 
 #'   a single column and each pair of keys and labels in the same cell.
 #' @export 
@@ -93,7 +94,7 @@ g_legend<-function(a.gplot){
 #' guidebox_as_column(p)
 #' p <- p + guides(colour=guide_legend(ncol=2, byrow=TRUE))
 #' guidebox_as_column(p)
-guidebox_as_column <- function(legend, which.legend=1) {
+guidebox_as_column <- function(legend, which.legend=1, add.title=TRUE) {
   if (ggplot2::is.ggplot(legend)) {
     legend <- g_legend(legend)
   }
@@ -108,13 +109,14 @@ guidebox_as_column <- function(legend, which.legend=1) {
   labels <- which(grepl('label-[0-9]+-[0-9]+', legend$layout$name))
   
   all.keys <- list()
+  label.width <- max(legend$widths[legend$layout$l[labels]])
   for (i in 1:length(bgs)) {
     t = legend$layout$t[bgs[i]]
     lr = range(legend$layout[c(bgs[i], keys[i], labels[i]), c('l','r')])
     b = legend$layout$b[bgs[i]]
     
     n <- gtable::gtable(heights = legend$heights[t:b], 
-                        widths = legend$widths[lr[1]:lr[2]],
+                        widths = unit.c(legend$widths[lr[1]:(lr[2]-1)], label.width),
                         name = paste0(legend$layout$name[keys[i]], '-all')
     )
     n <- gtable::gtable_add_grob(n, legend$grobs[bgs[i]], t=1, l=1, name=legend$layout$name[bgs[i]])
@@ -123,7 +125,18 @@ guidebox_as_column <- function(legend, which.legend=1) {
     
     all.keys[[i]] <- n
   }
-  do.call(rbind, all.keys)
+  #all.keys$size <- 'first'
+  all.keys$ncol <- 1
+  do.call(gridExtra::arrangeGrob, all.keys)
+  
+  # if (add.title) { ## argument
+  #   i <- which(legend$layout$name == 'title')
+  #   if (length(i) > 0) {
+  #     all.keys <- rbind(gtable::gtable_row(
+  #       name = 'title', grobs=legend$grobs[i]), all.keys, size='last')
+  #   }
+  # }
+  # all.keys
 }
 
 
