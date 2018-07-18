@@ -73,7 +73,7 @@ g_legend<-function(a.gplot){
 #' Takes a plot or legend and returns a single guide-box in a single column,
 #' for embedding in e.g. tables.
 #' 
-#' @param p A ggplot2 plot or the extracted legend. 
+#' @param legend A ggplot2 plot or the legend extracted with \code{\link{g_legend}}.
 #'   \emph{Do not} provide a \code{\link[ggplot2]{ggplotGrob}} as it is indistinguisble
 #'   from a legend.
 #' @param which.legend Integer, a legend can contain multiple guide-boxes (or vice versa?).
@@ -94,7 +94,7 @@ g_legend<-function(a.gplot){
 #' guidebox_as_column(p)
 #' p <- p + guides(colour=guide_legend(ncol=2, byrow=TRUE))
 #' guidebox_as_column(p)
-guidebox_as_column <- function(legend, which.legend=1, add.title=TRUE) {
+guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
   if (ggplot2::is.ggplot(legend)) {
     legend <- g_legend(legend)
   }

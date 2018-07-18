@@ -4,17 +4,17 @@
 \alias{guidebox_as_column}
 \title{Guidebox as a column}
 \usage{
-guidebox_as_column(legend, which.legend = 1, add.title = TRUE)
+guidebox_as_column(legend, which.legend = 1, add.title = FALSE)
 }
 \arguments{
+\item{legend}{A ggplot2 plot or the legend extracted with \code{\link{g_legend}}.
+\emph{Do not} provide a \code{\link[ggplot2]{ggplotGrob}} as it is indistinguisble
+from a legend.}
+
 \item{which.legend}{Integer, a legend can contain multiple guide-boxes (or vice versa?).
 Use this argument to select which to use.}
 
 \item{add.title}{Does nothing yet.}
-
-\item{p}{A ggplot2 plot or the extracted legend. 
-\emph{Do not} provide a \code{\link[ggplot2]{ggplotGrob}} as it is indistinguisble
-from a legend.}
 }
 \value{
 A \code{\link[gtable]{gtable}} with keys and labels reordered into 
