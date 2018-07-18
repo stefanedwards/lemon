@@ -38,6 +38,7 @@ is.waive <- function(x) inherits(x, "waiver")
 #' @keywords internal
 #' @rdname ggplot2-non-exports
 #' @name if-not-null
+#' @export 
 "%||%" <- function(a, b) {
   if (!is.null(a)) a else b
 }
@@ -53,20 +54,6 @@ render_axis <- function(panel_params, axis, scale, position, theme) {
   }
 }
 
-
-# From ggplot2/R/theme-elements.r
-element_render <- function(theme, element, ..., name = NULL) {
-
-  # Get the element from the theme, calculating inheritance
-  el <- ggplot2::calc_element(element, theme)
-  if (is.null(el)) {
-    message("Theme element ", element, " missing")
-    return(zeroGrob())
-  }
-
-  grob <- ggplot2::element_grob(el, ...)
-  ggname(paste(element, name, sep = "."), grob)
-}
 
 #' @import grid
 ggname <- function (prefix, grob) {

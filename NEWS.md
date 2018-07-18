@@ -6,6 +6,11 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* Added `element_render` and `render_gpar` that helps render grobs with the
+  ggplot2 themes applied. `render_gpar` simply returns a gpar object.
+
+* Exports the function `%||%` which is simply a "x if not null else y" operator.
+
 # lemon 0.4.1
 
 * `guidebox_as_column`: Reorders the keys and labels in a legend to a 
