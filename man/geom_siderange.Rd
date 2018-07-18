@@ -61,7 +61,7 @@ symbol  at either end
 of the line, and lines are offset from the edge and each other.
 
 To display a symbol, specify an integer for either \code{start} or \code{end}.
-See the list for \code{pch} in \code{\link[graphics]{point}} for values to use.
+See the list for \code{pch} in \code{\link[graphics]{points}} for values to use.
 The argumetns \code{start} and \code{end} also accepts a list object with
 named entries \code{pch}, \code{alpha}, \code{stroke}, and \code{fill}, which 
 correspond to the usual aesthetics, as well as a special named entry, 
@@ -97,16 +97,16 @@ df <- data.frame(x=x, y=x+rnorm(25, sd=0.2),
                  a=sample(c('horse','goat'), 25, replace=TRUE), 
                  stringsAsFactors = FALSE)
 df$y <- with(df, ifelse(y > 1 & a=='horse', 1, y))
-(p <- ggplot(df, aes(x=x, y=y, colour=a)) + geom_point())
+(p <- ggplot(df, aes(x=x, y=y, colour=a)) + geom_point(shape=1))
 
 p + geom_siderange(start=19)
 
 # Capping the sideranges with different symbols:
-p + geom_siderange(start=19, end=22, fill='black', sides='b', size=2) + geom_siderange(sides='tl')
+p + geom_siderange(start=19, end=22, fill='black', sides='b') + geom_siderange(sides='tl')
 
 # It also works with facets
 
-p <- ggplot(mpg, aes(displ, hwy)) +
+p <- ggplot(mpg, aes(displ, hwy, colour=fl)) +
   geom_point() +
   facet_wrap(~class, nrow = 4)
 

@@ -26,7 +26,7 @@ In this vignette, we will demonstrate the two geoms:
 The difference is that `geom_line` draws its lines through the data points,
 `geom_pointline` leaves a small aesthetic gap between the symbol and the line:
 
-```{r fig.cap=''}
+```{r fig.height=8,fig.cap=''}
 library(ggplot2)
 library(lemon)
 library(gridExtra)
@@ -35,15 +35,9 @@ data(sunspot.year)
 sunspots <- data.frame(count=as.numeric(sunspot.year), year=seq.int(start(sunspot.year)[1], end(sunspot.year)[1]))
 sunspots <- subset(sunspots, year > 1900)
 
-point <- ggplot(sunspots, aes(x=year, y=count)) + geom_point() + geom_line() + labs(main='geom_point')
-pointline <- ggplot(sunspots, aes(x=year, y=count)) + geom_pointline(distance=unit(3, 'pt')) + labs(main='geom_pointline')
+point <- ggplot(sunspots, aes(x=year, y=count)) + geom_point() + geom_line() + labs(title='geom_point + geom_line')
+pointline <- ggplot(sunspots, aes(x=year, y=count)) + geom_pointline(distance=unit(3, 'pt'), threshold=1) + labs(title='geom_pointline')
 grid.arrange(point, pointline)
-pointline
 ```
 
 
-
-```{r}
-ggplot(sunspots, aes(x=year, y=count)) + geom_pointline(distance=unit(3, 'pt')) + labs(main='geom_pointline')
-
-```

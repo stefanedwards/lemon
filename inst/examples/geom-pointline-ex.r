@@ -31,8 +31,10 @@ ggplot(mtcars, aes(wt, mpg)) +
                  size = 5, stroke = 5, distance = unit(10, 'pt'))
 
 ## Another example
-df <- data.frame(x=rep(c('orange','apple','pear'), each=3), b=rep(c('red','green','purple'), times=3), y=runif(9))
-ggplot(df, aes(x=x, y=y, colour=b, group=b)) + geom_pointline(linesize=1, size=2, distance=6) + theme_bw()
+df <- data.frame(x=rep(c('orange','apple','pear'), each=3), 
+                 b=rep(c('red','green','purple'), times=3), y=runif(9))
+ggplot(df, aes(x=x, y=y, colour=b, group=b)) + 
+  geom_pointline(linesize=1, size=2, distance=6) + theme_bw()
 
 # geom_pointline() is suitable for time series
 ggplot(economics, aes(date, unemploy)) + geom_pointline()

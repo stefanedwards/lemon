@@ -90,10 +90,16 @@ absoluteGrob <- function(grob, width = NULL, height = NULL,
   )
 }
 
-
-# From ggplot2/??
-message_wrap <- function (...)  {
+# From ggplot2/R/utilities.r
+message_wrap <- function(...) {
   msg <- paste(..., collapse = "", sep = "")
   wrapped <- strwrap(msg, width = getOption("width") - 2)
   message(paste0(wrapped, collapse = "\n"))
 }
+
+warning_wrap <- function(...) {
+  msg <- paste(..., collapse = "", sep = "")
+  wrapped <- strwrap(msg, width = getOption("width") - 2)
+  warning(paste0(wrapped, collapse = "\n"), call. = FALSE)
+}
+
