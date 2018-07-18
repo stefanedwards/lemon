@@ -50,10 +50,10 @@ brackets_horizontal <- function(direction = c('up','down'),
                                 length = unit(0.05, 'npc'),
                                 tick.length = waiver()) {
 
-  if (!is.unit(length))
+  if (!grid::is.unit(length))
     length <- unit(as.numeric(length), 'npc')
   
-  if (!is.waive(tick.length) && !is.unit(tick.length))
+  if (!is.waive(tick.length) && !grid::is.unit(tick.length))
     tick.length <- unit(as.numeric(tick.length), 'npc')
   
   direction=match.arg(direction)
@@ -133,10 +133,10 @@ brackets_vertical <- function(direction = c('left','right'),
                               length = unit(0.05, 'npc'),
                               tick.length = waiver()) {
   
-  if (!is.unit(length))
+  if (!grid::is.unit(length))
     length <- unit(as.numeric(length), 'npc')
   
-  if (!is.waive(tick.length) && !is.unit(tick.length))
+  if (!is.waive(tick.length) && !grid::is.unit(tick.length))
     tick.length <- unit(as.numeric(tick.length), 'npc')
   
   direction=match.arg(direction)

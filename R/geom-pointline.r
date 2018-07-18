@@ -208,19 +208,17 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       length <- sqrt(deltax**2 + deltay**2);
     })
     
-    if (any(munched$length > threshold, na.rm=TRUE)) {
+    if (any(munched$length > threshold, na.rm=TRUE) &
+        as.numeric(distance) != 0) {
       # Calculate angle between each pair of points and move endpoints:
-      if (as.numeric(distance) != 0) {
-        df <- within(munched[munched$length > threshold,], {
-          theta = atan2(deltay, deltax);
-          size = grid::unit(size, 'pt');
-          x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
-          x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
-          y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
-          y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
-        })
-      }
-      
+      df <- within(munched[munched$length > threshold,], {
+        theta = atan2(deltay, deltax);
+        size = grid::unit(size, 'pt');
+        x = grid::unit(x, 'native') + size*cos(theta) + distance*cos(theta);
+        x1 = grid::unit(x1, 'native') - size*cos(theta) - distance*cos(theta);
+        y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
+        y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
+      })      
       gr_distant <- with(df, grid::segmentsGrob(
         x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
         arrow = arrow,
@@ -305,6 +303,8 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
     params = list(
       na.rm = na.rm,
       distance = distance,
+      shorten = shorten,
+      threshold = threshold,
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
