@@ -148,7 +148,7 @@ ggplot_gtable.g_built_twist <- function(data) {
   if (inherits(data$plot$scales$get_scales('y'), 'TwistedContinuousScale')) {
     cat('Inheriting...\n')
     twistedy <- data$plot$scales$get_scales('y')  ## returns a scale object (atleast without facets)
-    # data$layout$panel_scales_y ## returns list, could be more for facets
+    # data$layout$panel_scales_y ## returns list, is more for facets (and free scales)
     if (nrow(data$layout$layout) == 1) {
       name <- switch(twistedy$position, left='axis-l', right='axis-r')
       cat(name, '\n')
@@ -162,3 +162,7 @@ ggplot_gtable.g_built_twist <- function(data) {
 
 p <- ggplot(mtcars, aes(wt, y=mpg)) + geom_point()
 (pt <- p + twisted_y_scale(name=NULL, sec.axis=dup_axis(name='mpg')))
+
+
+p2 <- ggplot(mtcars, aes(wt, mpg, colour=drat)) + geom_point() + facet_grid(cyl~., scales='free_y')
+(pt2 <- p2 + twisted_y_scale(name=NULL, sec.axis=dup_axis(name='mpg')))
