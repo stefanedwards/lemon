@@ -40,7 +40,7 @@ annotated_y_axis <- function(label, y,
   }
   
   aa <- ggplot2::ggproto(NULL, 
-    `_inherit`=if (parsed) AxisAnnotation else AxisAnnotationText,
+    `_inherit`=if (parsed) AxisAnnotationBquote else AxisAnnotationText,
     aesthetic = 'y',
     side = side,
     params = list(
@@ -143,8 +143,11 @@ AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   }
 )
 
-
-
+quoted <- 'x^2 == y + .(y)'
+params <- self$params[c('value','y')]
+plot(1, main=eval(substitute(parse(text=quoted), params)))
+plot(1:2, 1:2, 
+     main=eval(substitute(bquote(expr, params), list(expr = quoted))))
 
 # Annotation "slot" in the plot ----------------
 # Modelled after ScalesList in ggplot2/R/scales-.r
@@ -195,10 +198,10 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     if (length(annotations) == 0)
       return(zeroGrob())
     
+    temp <- AxisAnnotationText$draw(side, range, theme)
     # coerce to single data.frame where possible
     are_simple <- vapply(annotations, function(a) inherits(a, 'AxisAnnotationText'), logical(1))
     if (sum(are_simple) > 0) {
-      temp <- AxisAnnotationText$draw(side, range, theme)
       
       summed <- lapply(annotations[are_simple], function(a) {
         data.frame(label = a$label(),
@@ -240,7 +243,14 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     } else {
       textgrob <- ggplot2::zeroGrob()
     }
-    textgrob
+    
+    if (sum(!are_simple) > 0) {
+      rest <- do.call(grid::gList,
+        lapply(annotations[!are_simple], function(a) a$draw(side, range, theme)))
+    } else {
+      rest <- ggplot2::zeroGrob()
+    }
+    grid::grobTree(textgrob, rest, vp=temp$vp, gp=temp$gp)
   },
   # input = function(self) {
   #   unlist(lapply(self$scales, "[[", "aesthetics"))

@@ -68,9 +68,13 @@ ggplot_gtable.built_lemon <- function(data) {
                                         t = gtable$layout$t[i],
                                         l = gtable$layout$l[i],
                                         r = gtable$layout$l[i],
-                                        b  = gtable$layout$b[i]
-                                        )
-      gtable$widths[[gtable$layout$l[i]]] <- grid::unit.pmax(grid::grobWidth(g), gtable$widths[[gtable$layout$l[i]]])
+                                        b  = gtable$layout$b[i],
+                                        name='axis2-r',
+                                        clip='off')
+      gtable$widths[[gtable$layout$l[i]]] <- grid::unit.pmax(
+        grid::grobWidth(g$children[[1]]), 
+        grid::grobWidth(g$children[[2]]), 
+        gtable$widths[[gtable$layout$l[i]]])
     }
   }
   gtable
