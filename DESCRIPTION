@@ -36,6 +36,8 @@ LazyData: true
 RoxygenNote: 6.0.1
 Collate: 
     'ggplot2.r'
+    'lemon-plot.r'
+    'axis-annotation.r'
     'brackets.R'
     'coord-flex.r'
     'coord-capped.r'
@@ -51,7 +53,6 @@ Collate:
     'guides-axis.r'
     'legends.r'
     'lemon.r'
-    'lemon_plot.r'
     'scales-.r'
 Suggests:
     rmarkdown,

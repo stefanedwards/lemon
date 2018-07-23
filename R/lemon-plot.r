@@ -31,6 +31,8 @@ object
 as.lemon_plot <- function(plot) {
   if (inherits(plot, 'lemon_plot')) 
     return(plot)
+  if (!'axis_annotation' %in% names(plot))
+    plot$axis_annotation <- axis_annotation_list()
   prependClass(plot, 'lemon_plot')
 }
 
@@ -47,16 +49,9 @@ ggplot_build.lemon_plot <- function(plot) {
 #' @export
 ggplot_gtable.built_lemon <- function(data) {
   gtable <- NextMethod()
-  if (inherits(data$plot$scales$get_scales('y'), 'LemonContinuousPosition')) {
-    cat('Inheriting...\n')
-    twistedy <- data$plot$scales$get_scales('y')  ## returns a scale object (atleast without facets)
-    # data$layout$panel_scales_y ## returns list, is more for facets (and free scales)
-    if (nrow(data$layout$layout) == 1) {
-      name <- switch(twistedy$position, left='axis-l', right='axis-r')
-      cat(name, '\n')
-      i <- which(gtable$layout$name == name)
-      gtable$grobs[i] <- twistedy$draw()
-    }
+  if ('axis_annotation' %in% names(data$plot) && 
+      data$plot$axis_annotation$n() > 0) {
+    cat("I'm gonna draw some annotations!\n")
   }
   gtable
 }

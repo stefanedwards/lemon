@@ -29,3 +29,6 @@ Helps add the ggplot2-theme's look-and-feel to \code{grid}'s grob objects.
 \seealso{
 \code{\link[ggplot2]{theme}}
 }
+\author{
+\code{element_render} is from ggplot2 source.
+}
