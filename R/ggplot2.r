@@ -98,4 +98,16 @@ is.sec_axis <- function(x) {
 }
 
 
-
+# From ggplot2/R/theme.r
+# renders a theme as complete
+#' @importFrom plyr defaults
+plot_theme <- function (x, default = theme_get()) {
+  theme <- x$theme
+  if (is_theme_complete(theme)) {
+    theme
+  }
+  else {
+    plyr::defaults(theme, default)
+  }
+}
+is_theme_complete <- function(x) isTRUE(attr(x, "complete"))

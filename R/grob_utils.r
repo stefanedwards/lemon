@@ -39,7 +39,35 @@ element_render <- function(theme, element, ..., name = NULL) {
 #' @return A \code{\link[grid]{grob}} or \code{\link[grid]{gpar}} object.
 #' @seealso \code{\link[ggplot2]{theme}}
 #' @rdname element_render
+#' @export
 render_gpar <- function(theme, element, ...) {
-  gp <- render_gpar(theme, element)
+  gp <- element_render(theme, element)
   gp$gp %||% gp$children[[1]]$gp
 }
+
+#' Version safe(r) method to get the y- and x-range from trained scales.
+#' 
+#' The names of the internal layout objects from \code{ggplot_build} changed
+#' slightly.
+#' @name get_panel_range
+#' @param layout \code{layout} part from ggplot_build
+#' @param index Could be panel number?
+#' @export
+get_panel_y_range <- function(layout, index=1) {
+  layout$panel_params[[index]]$y.range %||% layout$panel_ranges[[index]]$y.range
+}
+
+#' @rdname get_panel_range
+#' @inheritParams get_panel_y_range
+#' @export
+get_panel_x_range <- function(layout, index=1) {
+  layout$panel_params[[index]]$x.range %||% layout$panel_ranges[[index]]$x.range
+}
+
+#' @rdname get_panel_range
+#' @inheritParams get_panel_y_range
+#' @export
+get_panel_params <- function(layout, index=1) {
+  layout$panel_params[[index]] %||% layout$panel_ranges[[index]]
+}
+

@@ -41,17 +41,37 @@ as.lemon_plot <- function(plot) {
 #' @export
 ggplot_build.lemon_plot <- function(plot) {
   g_built <- NextMethod() 
+  cat('lalal\n')
   prependClass(g_built, 'built_lemon')
 }
 
 #' @keywords internal
 #' @rdname lemon_plot
+#' @import gtable
 #' @export
 ggplot_gtable.built_lemon <- function(data) {
   gtable <- NextMethod()
+  
   if ('axis_annotation' %in% names(data$plot) && 
-      data$plot$axis_annotation$n() > 0) {
-    cat("I'm gonna draw some annotations!\n")
+    data$plot$axis_annotation$n('y') > 0) {
+    
+    #right
+    g <- data$plot$axis_annotation$draw(
+        side='right', 
+        is.primary=get_panel_params(data$layout, 1)$y.arrange[2] == 'primary', 
+        range=get_panel_y_range(data$layout, 1), 
+        theme=plot_theme(data$plot$theme)
+    )
+    if (!is.zero(g)) {
+      i <- which(gtable$layout$name == 'axis-r')
+      gtable <- gtable::gtable_add_grob(gtable, g, 
+                                        t = gtable$layout$t[i],
+                                        l = gtable$layout$l[i],
+                                        r = gtable$layout$l[i],
+                                        b  = gtable$layout$b[i]
+                                        )
+      gtable$widths[[gtable$layout$l[i]]] <- grid::unit.pmax(grid::grobWidth(g), gtable$widths[[gtable$layout$l[i]]])
+    }
   }
   gtable
 }

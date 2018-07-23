@@ -17,13 +17,32 @@ NULL
 #' @param side left or right side to print annotation
 #' @param ... ???
 #' @example inst/examples/axis-annotation-ex.r
-annotated_y_axis <- function(label, y, colour=waiver(), side='right', ...) {
-  aa <- ggplot2::ggproto(NULL, AxisAnnotationY,
+annotated_y_axis <- function(label, y, 
+                             colour = waiver(), 
+                             side = waiver(), 
+                             digits = 2, 
+                             parsed = FALSE,
+                             print_label = TRUE,
+                             print_value = TRUE,
+                             print_both = TRUE,
+                             sep = ' = ',
+                             ...) {
+  
+  if (!missing(print_both) && print_both) {
+    print_label <- TRUE
+    print_value <- TRUE
+  }
+  
+  aa <- ggplot2::ggproto(NULL, if (parsed) AxisAnnotationYParsed else AxisAnnotationY,
     side = side,
     params = list(
       label = label,
       y = y,
+      value = y,
       colour = colour,
+      digits = digits,
+      print_label = print_label,
+      print_value = print_value,
       ...
     )
   )
@@ -47,10 +66,38 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
   aesthetic = NULL,
   params = list()
 )
+AxisAnnotationSimple <- ggplot2::ggproto('AxisAnnotationSimple', AxisAnnotation,
+  side = waiver(),
+  aesthetic = NULL,
+  params = list(
+    value = NA,
+    label = NA,
+    print_label = TRUE,
+    print_value = TRUE,
+    colour = waiver(),
+    sep = ' = '
+  ),
+  parse = function(self) {
+    if (!self$params$print_label)
+      return(self$params$value)
+    if (!self$params$print_value)
+      return(self$params$label)
+    paste0(self$params$label, self$params$sep, self$params$value)
+  }
+)
+AxisAnnotationParsed <- ggplot2::ggproto('AxisAnnotationParsed', AxisAnnotation)
 
-AxisAnnotationY <- ggplot2::ggproto('AxisAnnotationY', AxisAnnotation, 
+AxisAnnotationY <- ggplot2::ggproto('AxisAnnotationY', AxisAnnotationSimple, 
   aesthetic = 'y'
 )
+AxisAnnotationYParsed <- ggplot2::ggproto('AxisAnnotationYParsed', AxisAnnotationParsed,
+  aesthetic = 'y',
+  parse = function(self) {
+    stop('Doesn\'t work yet.')
+  }
+)
+
+
 
 # Annotation "slot" in the plot ----------------
 # Modelled after ScalesList in ggplot2/R/scales-.r
@@ -62,6 +109,7 @@ axis_annotation_list <- function() {
 
 
 #' @import ggplot2
+#' @import grid
 AAList <- ggplot2::ggproto("AAList", NULL,
   annotations = list(),
   
@@ -92,7 +140,8 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     if (is.null(self$annotations[[new_aes]])) {
       self$annotations[[new_aes]] <- list(new_annotation)
     } else {
-      self$annotations[[new_aes]][[length(self$annotations[[new_aes]]) + 1]] <- new_annotation
+      n <- length(self$annotations[[new_aes]])
+      self$annotations[[new_aes]][n+1] <- list(new_annotation)
     }
   },
   
@@ -112,6 +161,58 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     
   },
   
+  draw = function(self, side, is.primary=FALSE, range, theme) {
+    annotations <- self$get_annotations(side, is.primary)
+    if (length(annotations) == 0)
+      return(zeroGrob())
+    
+    aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
+    element.side <- switch(side, top='.top', right='.right', '')
+    x = switch(side, top=0.5, bottom=0.5, left=1, right=0)
+    y = switch(side, top=0, bottom=1, left=0.5, right=0.5)
+    hjust = switch(side, top=0.5, bottom=0.5, left=1, right=0)
+    vjust = switch(side, top=1, bottom=0, left=0.5, right=0.5)
+    
+    gp <- render_gpar(theme, paste0('axis.text.', aes, element.side))
+    if (aes == 'y') {
+      vp <- grid::viewport(yscale = range)
+    } else if (aes == 'x') {
+      vp <- grid::viewport(xscale = range)
+    }
+    
+    # coerce to single data.frame where possible
+    are_simple <- vapply(annotations, function(a) inherits(a, 'AxisAnnotationSimple'), logical(1))
+    collective <- lapply(annotations[are_simple], function(a) {
+      data.frame(label=a$parse(), 
+                 pos=a$params$value, 
+                 col=a$params$colour %|W|% gp$col,
+                 x = x,
+                 y = y,
+                 hjust=hjust,
+                 vjust=vjust,
+                 rot=0
+                 )
+    })
+    collective <- do.call(rbind, collective)
+    collective[aes] <- collective$pos
+    if (nrow(collective) > 0) {
+      simple_text <- with(collective, grid::textGrob(
+        label = label, x = x, y = y, default.units='native',
+        hjust = hjust, vjust = vjust, rot=rot,
+        gp = grid::gpar(
+          col = col,
+          fontsize = gp$fontsize,
+          fontfamily = gp$fontfamily,
+          fontface = gp$font
+        ),
+        vp = vp
+      ))
+    } else {
+      simple_text <- zeroGrob()
+    }
+    
+    simple_text
+  },
   # input = function(self) {
   #   unlist(lapply(self$scales, "[[", "aesthetics"))
   # },
@@ -135,14 +236,27 @@ AAList <- ggplot2::ggproto("AAList", NULL,
   # axis annotations can be shown on top, left, right, or bottom.
   # defaults to where the secondary axis is (i.e. not the primary)
   # the annotation itself does not need to know which side it has to be on.
-  get_annotations = function(self, side) {
+  #' @param side top, left, right, bottom, etc.
+  #' @param is.primary When TRUE, only get annotations whose side are set to that
+  #'   side. When FALSE (default), also get those that are waiver.
+  get_annotations = function(self, side, is.primary=FALSE) {
     aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
     
-    i <- which(vapply(self$annotations[aes], function(a) {a$side == side}, logical(1)))
-    if (length(i) == 0)
+    if (self$n(aes) == 0)
       return()
     
-    self$annotations[aes][i]
+    if (is.primary) {
+      # only those with side as set
+      i <- which(vapply(self$annotations[[aes]], function(a) {
+        !is.waive(a$side) && a$side == side
+      }, logical(1)))
+    } else {
+      i <- which(vapply(self$annotations[[aes]], function(a) {
+        is.waive(a$side) || a$side == side
+      }, logical(1)))
+    }
+    
+    self$annotations[[aes]][i]
   }
 
 )
