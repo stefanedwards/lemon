@@ -26,6 +26,12 @@ annotated_y_axis <- function(label, y,
                              print_value = TRUE,
                              print_both = TRUE,
                              sep = ' = ',
+                             hjust = waiver(),
+                             vjust = waiver(),
+                             size = waiver(),
+                             fontface = waiver(),
+                             family = waiver(),
+                             rot = waiver(),
                              ...) {
   
   if (!missing(print_both) && print_both) {
@@ -33,7 +39,9 @@ annotated_y_axis <- function(label, y,
     print_value <- TRUE
   }
   
-  aa <- ggplot2::ggproto(NULL, if (parsed) AxisAnnotationYParsed else AxisAnnotationY,
+  aa <- ggplot2::ggproto(NULL, 
+    `_inherit`=if (parsed) AxisAnnotation else AxisAnnotationText,
+    aesthetic = 'y',
     side = side,
     params = list(
       label = label,
@@ -43,6 +51,13 @@ annotated_y_axis <- function(label, y,
       digits = digits,
       print_label = print_label,
       print_value = print_value,
+      sep = sep,
+      hjust = hjust,
+      vjust = vjust,
+      size = size,
+      fontface = fontface,
+      family = family,
+      rot = rot,
       ...
     )
   )
@@ -64,38 +79,70 @@ ggplot_add.axis_annotation <- function(object, plot, object_name) {
 AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
   side = waiver(),
   aesthetic = NULL,
-  params = list()
-)
-AxisAnnotationSimple <- ggplot2::ggproto('AxisAnnotationSimple', AxisAnnotation,
-  side = waiver(),
-  aesthetic = NULL,
   params = list(
     value = NA,
     label = NA,
     print_label = TRUE,
     print_value = TRUE,
+    sep = ' = ',
+    digits = 2,
     colour = waiver(),
-    sep = ' = '
+    hjust = waiver(),
+    vjust = waiver(),
+    size = waiver(),
+    fontface = waiver(),
+    family = waiver(),
+    rot = waiver()
   ),
-  parse = function(self) {
+  
+  label = function(self) {
     if (!self$params$print_label)
       return(self$params$value)
     if (!self$params$print_value)
       return(self$params$label)
-    paste0(self$params$label, self$params$sep, self$params$value)
-  }
-)
-AxisAnnotationParsed <- ggplot2::ggproto('AxisAnnotationParsed', AxisAnnotation)
+    paste0(self$params$label, self$params$sep, round(self$params$value, self$params$digits))
+  },
+  
+  draw = function(self, side, range, theme) {
+    aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
+    if (aes == 'y') {
+      vp <- grid::viewport(yscale = range)
+    } else if (aes == 'x') {
+      vp <- grid::viewport(xscale = range)
+    }
+    
+    element <- switch(side, top='.top', right='.right', '')
+    el <- ggplot2::calc_element(paste0('axis.text.', aes, element), theme)
 
-AxisAnnotationY <- ggplot2::ggproto('AxisAnnotationY', AxisAnnotationSimple, 
-  aesthetic = 'y'
-)
-AxisAnnotationYParsed <- ggplot2::ggproto('AxisAnnotationYParsed', AxisAnnotationParsed,
-  aesthetic = 'y',
-  parse = function(self) {
-    stop('Doesn\'t work yet.')
+    grid::textGrob(
+      label = self$label(),
+      x = switch(side, top=self$params$value, bottom=self$params$value, 
+                 left=1, right=0),
+      y = switch(side, top=0, bottom=1, 
+                 left=self$params$value, right=self$params$value),
+      default.units = 'native',
+      vp = vp,
+      rot = self$params$rot %|W|% el$angle,
+      hjust = self$params$hjust %|W|% el$hjust,
+      vjust = self$params$vjust %|W|% el$vjust,
+      gp = grid::gpar(
+        col = self$params$colour %|W|% el$colour,
+        fontsize = self$params$size %|W|% el$size,
+        fontfamily = self$params$family %|W|% el$family,
+        fontface = self$params$fontface %|W|% el$face
+      )
+    )
   }
 )
+
+AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation)
+
+AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
+  label = function(self) {
+     bquote(quote(self$params$label), list(value=self$params$value, y=self$params$y))
+  }
+)
+
 
 
 
@@ -112,15 +159,6 @@ axis_annotation_list <- function() {
 #' @import grid
 AAList <- ggplot2::ggproto("AAList", NULL,
   annotations = list(),
-  
-  
-  #find = function(self, aesthetic) {
-  #£  vapply(self$scales, function(x) any(aesthetic %in% x$aesthetics), logical(1))
-  #},
-  
-  #has_scale = function(self, aesthetic) {
-  #  any(self$find(aesthetic))
-  #},
   
   # self.annotations holds a heriachical list of all annotations, i.e.
   # self.annotations$x = list(...)
@@ -150,15 +188,6 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       return(sum(vapply(self$annotations, length, integer(1))))
     
     vapply(aesthetic, function(x) length(self$annotations[[x]]), integer(1))
-    #there <- aesthetic %in% names(self$annotations)
-    #notthere <- structure(rep.int(0, sum(!there)), .Names=aesthetic[!there])
-    #if (sum(there) > 0) {
-    #  there <- vapply(aesthetic[there], function(x) length(self$annotations[x]), integer(1))
-    #  return(c(there, notthere)[aesthetic])
-    #} else {
-    #  return(notthere[aesthetic])
-    #}
-    
   },
   
   draw = function(self, side, is.primary=FALSE, range, theme) {
@@ -166,52 +195,52 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     if (length(annotations) == 0)
       return(zeroGrob())
     
-    aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
-    element.side <- switch(side, top='.top', right='.right', '')
-    x = switch(side, top=0.5, bottom=0.5, left=1, right=0)
-    y = switch(side, top=0, bottom=1, left=0.5, right=0.5)
-    hjust = switch(side, top=0.5, bottom=0.5, left=1, right=0)
-    vjust = switch(side, top=1, bottom=0, left=0.5, right=0.5)
-    
-    gp <- render_gpar(theme, paste0('axis.text.', aes, element.side))
-    if (aes == 'y') {
-      vp <- grid::viewport(yscale = range)
-    } else if (aes == 'x') {
-      vp <- grid::viewport(xscale = range)
-    }
-    
     # coerce to single data.frame where possible
-    are_simple <- vapply(annotations, function(a) inherits(a, 'AxisAnnotationSimple'), logical(1))
-    collective <- lapply(annotations[are_simple], function(a) {
-      data.frame(label=a$parse(), 
-                 pos=a$params$value, 
-                 col=a$params$colour %|W|% gp$col,
-                 x = x,
-                 y = y,
-                 hjust=hjust,
-                 vjust=vjust,
-                 rot=0
-                 )
-    })
-    collective <- do.call(rbind, collective)
-    collective[aes] <- collective$pos
-    if (nrow(collective) > 0) {
-      simple_text <- with(collective, grid::textGrob(
-        label = label, x = x, y = y, default.units='native',
-        hjust = hjust, vjust = vjust, rot=rot,
+    are_simple <- vapply(annotations, function(a) inherits(a, 'AxisAnnotationText'), logical(1))
+    if (sum(are_simple) > 0) {
+      temp <- AxisAnnotationText$draw(side, range, theme)
+      
+      summed <- lapply(annotations[are_simple], function(a) {
+        data.frame(label = a$label(),
+                   value = a$params$value,
+                   colour = a$params$colour %|W|% temp$gp$col,
+                   hjust = a$params$hjust %|W|% temp$hjust,
+                   vjust = a$params$vjust %|W|% temp$vjust,
+                   rot = a$params$rot %|W|% temp$rot,
+                   fontface = a$params$fontface %|W|% temp$gp$fontface,
+                   fontfamily = a$params$family %|W|% temp$gp$fontfamily,
+                   fontsize = a$params$size %|W|% temp$gp$fontsize,
+                   stringsAsFactors = FALSE
+                   )
+      })
+      summed <- do.call(rbind, summed)
+      if (aes == 'x') {
+        summed$x <- summed$value
+        summed$y <- as.numeric(temp$y)
+      } else if (aes == 'y') {
+        summed$x <- as.numeric(temp$x)
+        summed$y <- summed$value
+      }
+      textgrob <- grid::textGrob(
+        label = summed$label,
+        x = summed$x,
+        y = summed$y,
+        default.units = 'native',
+        hjust = summed$hjust,
+        vjust = summed$vjust,
+        rot = summed$rot,
         gp = grid::gpar(
-          col = col,
-          fontsize = gp$fontsize,
-          fontfamily = gp$fontfamily,
-          fontface = gp$font
+          col = summed$colour,
+          fontface = summed$fontface,
+          fontsize = summed$fontsize,
+          fontfamily = summed$fontfamily
         ),
-        vp = vp
-      ))
+        vp = temp$vp
+      )
     } else {
-      simple_text <- zeroGrob()
+      textgrob <- ggplot2::zeroGrob()
     }
-    
-    simple_text
+    textgrob
   },
   # input = function(self) {
   #   unlist(lapply(self$scales, "[[", "aesthetics"))
