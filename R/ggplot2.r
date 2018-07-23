@@ -90,3 +90,12 @@ warning_wrap <- function(...) {
   warning(paste0(wrapped, collapse = "\n"), call. = FALSE)
 }
 
+is.formula <- function(x) inherits(x, "formula")
+
+# From ggplot2/R/axis-secondary.R
+is.sec_axis <- function(x) {
+  inherits(x, "AxisSecondary")
+}
+
+
+
