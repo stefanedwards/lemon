@@ -139,15 +139,17 @@ AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation)
 
 AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   label = function(self) {
-     bquote(quote(self$params$label), list(value=self$params$value, y=self$params$y))
+    l <- self$params$label
+    l <- gsub("\\.\\(y\\)", round(self$params$value, self$params$digits), l)
+    l <- gsub("\\.\\(val\\)", round(self$params$value, self$params$digits), l)
+    parse(text=l)
+  },
+  draw = function(self, side, range, theme) {
+    g <- ggplot2::ggproto_parent(AxisAnnotation, self)$draw(side, range, theme)
+    g$label <- self$label()
+    g
   }
 )
-
-quoted <- 'x^2 == y + .(y)'
-params <- self$params[c('value','y')]
-plot(1, main=eval(substitute(parse(text=quoted), params)))
-plot(1:2, 1:2, 
-     main=eval(substitute(bquote(expr, params), list(expr = quoted))))
 
 # Annotation "slot" in the plot ----------------
 # Modelled after ScalesList in ggplot2/R/scales-.r

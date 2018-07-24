@@ -62,7 +62,7 @@ ggplot_gtable.built_lemon <- function(data) {
         range=get_panel_y_range(data$layout, 1), 
         theme=plot_theme(data$plot$theme)
     )
-    if (!is.zero(g)) {
+    if (!all(sapply(g$children, is.zero))) {
       i <- which(gtable$layout$name == 'axis-r')
       gtable <- gtable::gtable_add_grob(gtable, g, 
                                         t = gtable$layout$t[i],
@@ -71,11 +71,30 @@ ggplot_gtable.built_lemon <- function(data) {
                                         b  = gtable$layout$b[i],
                                         name='axis2-r',
                                         clip='off')
-      gtable$widths[[gtable$layout$l[i]]] <- grid::unit.pmax(
-        grid::grobWidth(g$children[[1]]), 
-        grid::grobWidth(g$children[[2]]), 
-        gtable$widths[[gtable$layout$l[i]]])
+      widths <- lapply(g$children, grid::grobWidth)
+      gtable$widths[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(widths, gtable$widths[gtable$layout$l[i]]))
     }
+    
+    #left
+    g <- data$plot$axis_annotation$draw(
+      side='left', 
+      is.primary=get_panel_params(data$layout, 1)$y.arrange[1] == 'primary', 
+      range=get_panel_y_range(data$layout, 1), 
+      theme=plot_theme(data$plot$theme)
+    )
+    if (!all(sapply(g$children, is.zero))) {
+      i <- which(gtable$layout$name == 'axis-l')
+      gtable <- gtable::gtable_add_grob(gtable, g, 
+                                        t = gtable$layout$t[i],
+                                        l = gtable$layout$l[i],
+                                        r = gtable$layout$l[i],
+                                        b  = gtable$layout$b[i],
+                                        name='axis2-l',
+                                        clip='off')
+      widths <- lapply(g$children, grid::grobWidth)
+      gtable$widths[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(widths, gtable$widths[gtable$layout$l[i]]))
+    }
+    
   }
   gtable
 }
