@@ -4,7 +4,6 @@
 \alias{as.lemon_plot}
 \alias{ggplot_build.lemon_plot}
 \alias{ggplot_gtable.built_lemon}
-\alias{ggplot_add.lemon_scale}
 \title{Lemon plots; ggplots with extended functionality.}
 \usage{
 as.lemon_plot(plot)
@@ -12,8 +11,6 @@ as.lemon_plot(plot)
 \method{ggplot_build}{lemon_plot}(plot)
 
 \method{ggplot_gtable}{built_lemon}(data)
-
-\method{ggplot_add}{lemon_scale}(object, plot, object_name)
 }
 \arguments{
 \item{plot}{ggplot object}

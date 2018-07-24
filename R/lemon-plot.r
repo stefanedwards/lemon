@@ -13,7 +13,7 @@ NULL
 
 # Adds a classname to an object, if it does not already have it.
 prependClass <- function(object, new_class) {
-if (!inherits(plot, new_class)) 
+if (!inherits(object, new_class)) 
   class(object) <- c(new_class, class(object))
 object
 }
@@ -41,7 +41,6 @@ as.lemon_plot <- function(plot) {
 #' @export
 ggplot_build.lemon_plot <- function(plot) {
   g_built <- NextMethod() 
-  cat('lalal\n')
   prependClass(g_built, 'built_lemon')
 }
 
@@ -144,11 +143,11 @@ ggplot_gtable.built_lemon <- function(data) {
   gtable
 }
 
-#' @keywords internal
-#' @rdname lemon_plot
-#' @export
-ggplot_add.lemon_scale <- function(object, plot, object_name) {
-  plot$scales$add(object)
-  plot <- prependClass(plot, 'lemon_plot')
-  plot
-}
+#' #' @keywords internal
+#' #' @rdname lemon_plot
+#' #' @export
+#' ggplot_add.lemon_scale <- function(object, plot, object_name) {
+#'   plot$scales$add(object)
+#'   plot <- prependClass(plot, 'lemon_plot')
+#'   plot
+#' }

@@ -5,32 +5,37 @@
 \alias{annotated_x_axis}
 \title{Annotations in the axis}
 \usage{
-annotated_y_axis(label, y, colour = waiver(), side = waiver(),
-  tick = TRUE, digits = 2, parsed = FALSE, print_label = TRUE,
-  print_value = TRUE, print_both = TRUE, sep = " = ", hjust = waiver(),
-  vjust = waiver(), size = waiver(), fontface = waiver(),
-  family = waiver(), rot = waiver(), ...)
+annotated_y_axis(label, y, side = waiver(), print_label = TRUE,
+  print_value = TRUE, print_both = TRUE, parsed = FALSE, ...)
 
-annotated_x_axis(label, x, colour = waiver(), side = waiver(),
-  tick = TRUE, digits = 2, parsed = FALSE, print_label = TRUE,
-  print_value = TRUE, print_both = TRUE, sep = " = ", hjust = waiver(),
-  vjust = waiver(), size = waiver(), fontface = waiver(),
-  family = waiver(), rot = waiver(), ...)
+annotated_x_axis(label, x, side = waiver(), print_label = TRUE,
+  print_value = TRUE, print_both = TRUE, parsed = FALSE, ...)
 }
 \arguments{
 \item{label}{Text to print}
 
-\item{y}{Position on panel's y-scale for label}
+\item{y, x}{Position of the annotation.}
 
-\item{colour}{Colour of label}
+\item{side}{left or right, or top or bottom side to print annotation}
 
-\item{side}{left or right side to print annotation}
+\item{print_label, print_value, print_both}{Logical; what to show on annotation. Label and/or value.
+\code{print_both} is shortcut for setting both \code{print_label} and
+\code{print_value}.}
+
+\item{parsed}{Logical (default \code{FALSE}), 
+when \code{TRUE}, uses mathplot for outputting expressions. 
+See section "Showing values".}
 
 \item{...}{???}
 }
 \description{
 Annotations in the axis
 }
+\section{}{
+ Showing values:
+See
+}
+
 \examples{
 library(ggplot2)
 
@@ -43,6 +48,8 @@ l <- l + annotated_y_axis('nah', y=300, colour='blue') +
   annotated_y_axis("bar(x) ~ yadayda == .(y)", y=150, parsed=TRUE, col='green', hjust=0, x=1)
 (l <- p +   annotated_y_axis("x^2 == .(y)", y=250, parsed=TRUE, vjust=0.3, tick=TRUE) )
 (l <- p +   annotated_y_axis("X == .(y)", y=250, parsed=TRUE, tick=TRUE) )
+
+l + annotated_x_axis(x=25, side='bottom', label='nada')
 
 l
 gt <- ggplot_gtable(ggplot_build(l))

@@ -13,35 +13,34 @@ NULL
 
 #' Annotations in the axis
 #' 
+#' @section: Showing values:
+#' See
+#' 
 #' @rdname annotated_axis
 #' @param label Text to print
-#' @param y Position on panel's y-scale for label
-#' @param colour Colour of label
+#' @param y,x Position of the annotation.
 #' @param side left or right, or top or bottom side to print annotation
+#' @param parsed Logical (default \code{FALSE}), 
+#'   when \code{TRUE}, uses mathplot for outputting expressions. 
+#'   See section "Showing values".
+#' @param print_label,print_value,print_both
+#'   Logical; what to show on annotation. Label and/or value.
+#'   \code{print_both} is shortcut for setting both \code{print_label} and
+#'   \code{print_value}.
 #' @param ... ???
 #' @example inst/examples/axis-annotation-ex.r
 #' @export 
 annotated_y_axis <- function(label, y, 
-                             colour = waiver(), 
                              side = waiver(), 
-                             tick = TRUE,
-                             digits = 2, 
-                             parsed = FALSE,
                              print_label = TRUE,
                              print_value = TRUE,
                              print_both = TRUE,
-                             sep = ' = ',
-                             hjust = waiver(),
-                             vjust = waiver(),
-                             size = waiver(),
-                             fontface = waiver(),
-                             family = waiver(),
-                             rot = waiver(),
+                             parsed = FALSE,
                              ...) {
   
-  if (!missing(print_both) && print_both) {
-    print_label <- TRUE
-    print_value <- TRUE
+  if (!missing(print_both)) {
+    print_label <- print_both
+    print_value <- print_both
   }
   
   aa <- ggplot2::ggproto(NULL, 
@@ -50,23 +49,14 @@ annotated_y_axis <- function(label, y,
     side = side,
     params = list(
       label = label,
-      tick = tick,
       y = y,
       value = y,
-      colour = colour,
-      digits = digits,
       print_label = print_label,
-      print_value = print_value,
-      sep = sep,
-      hjust = hjust,
-      vjust = vjust,
-      size = size,
-      fontface = fontface,
-      family = family,
-      rot = rot,
+      print_value = print_value,      
       ...
     )
   )
+  
   
   prependClass(aa, 'axis_annotation')
 }
@@ -74,56 +64,38 @@ annotated_y_axis <- function(label, y,
 #' @export
 #' @inheritParams annotated_y_axis
 annotated_x_axis <- function(label, x, 
-                             colour = waiver(), 
                              side = waiver(), 
-                             tick = TRUE,
-                             digits = 2, 
-                             parsed = FALSE,
                              print_label = TRUE,
                              print_value = TRUE,
                              print_both = TRUE,
-                             sep = ' = ',
-                             hjust = waiver(),
-                             vjust = waiver(),
-                             size = waiver(),
-                             fontface = waiver(),
-                             family = waiver(),
-                             rot = waiver(),
+                             parsed = FALSE,
                              ...) {
   
-  if (!missing(print_both) && print_both) {
-    print_label <- TRUE
-    print_value <- TRUE
+  if (!missing(print_both)) {
+    print_label <- print_both
+    print_value <- print_both
   }
   
+  
   aa <- ggplot2::ggproto(NULL, 
-                         `_inherit`=if (parsed) AxisAnnotationBquote else AxisAnnotationText,
-                         aesthetic = 'x',
-                         side = side,
-                         params = list(
-                           label = label,
-                           tick = tick,
-                           x = x,
-                           value = x,
-                           colour = colour,
-                           digits = digits,
-                           print_label = print_label,
-                           print_value = print_value,
-                           sep = sep,
-                           hjust = hjust,
-                           vjust = vjust,
-                           size = size,
-                           fontface = fontface,
-                           family = family,
-                           rot = rot,
-                           ...
-                         )
+     `_inherit`=if (parsed) AxisAnnotationBquote else AxisAnnotationText,
+     aesthetic = 'x',
+     side = side,
+     params = list(
+       label = label,
+       x = x,
+       value = x,
+       print_label = print_label,
+       print_value = print_value,      
+       ...
+     )
   )
   
   prependClass(aa, 'axis_annotation')
 }
 
-
+#' @export
+#' @keywords internal
 ggplot_add.axis_annotation <- function(object, plot, object_name) {
   plot <- as.lemon_plot(plot)
   plot$axis_annotation$add(object)
@@ -134,6 +106,7 @@ ggplot_add.axis_annotation <- function(object, plot, object_name) {
 # Modelled after Scales in ggplot2/R/scale
 
 #' @import ggplot2
+#' @importFrom plyr defaults
 AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
   side = waiver(),
   aesthetic = NULL,
@@ -153,13 +126,24 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     family = waiver(),
     rot = waiver()
   ),
+  get_param = function(self, x) {
+    mine <- self$params[x]
+    mine <- mine[!sapply(mine, is.null)]
+    if (length(x) > length(mine)) {
+      mine <- c(mine, AxisAnnotation$params[setdiff(x, names(mine))])
+    }
+    if (length(x) == 1)
+      return(mine[[1]])
+    return(mine)
+  },
   
   label = function(self) {
-    if (!self$params$print_label)
-      return(self$params$value)
-    if (!self$params$print_value)
-      return(self$params$label)
-    paste0(self$params$label, self$params$sep, round(self$params$value, self$params$digits))
+    if (!self$get_param('print_label'))
+      return(round(self$get_param('value'), self$get_param('digits')))
+    if (!self$get_param('print_value'))
+      return(self$get_param('label'))
+    paste0(self$get_param('label'), self$get_param('sep'), 
+           round(self$get_param('value'), self$get_param('digits')))
   },
   
   draw = function(self, side, range, theme) {
@@ -169,17 +153,17 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     } else if (aes == 'x') {
       vp <- grid::viewport(xscale = range, yscale=c(0,1))
     }
-    x = switch(side, top=self$params$value, bottom=self$params$value, 
+    x = switch(side, top=self$get_param('value'), bottom=self$get_param('value'), 
                left=1, right=0)
     x = grid::unit(x, 'native')
     y = switch(side, top=0, bottom=1, 
-               left=self$params$value, right=self$params$value)
+               left=self$get_param('value'), right=self$get_param('value'))
     y = grid::unit(y, 'native')
     
     # make tick
     
     tel <- ggplot2::calc_element('axis.ticks', theme)
-    if (length(tel) > 0 & self$params$tick) {
+    if (length(tel) > 0 & self$get_param('tick')) {
       tellength <- ggplot2::calc_element('axis.ticks.length', theme)
       x1 = switch(side, top=x, bottom=x, 
                   left=x-tellength, right=x+tellength)
@@ -189,7 +173,7 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
                       vp = vp,
                       #arrow = tel$arrow,
                       gp = grid::gpar(
-                        col = self$params$colour %|W|% tel$colour,
+                        col = self$get_param('colour') %|W|% tel$colour,
                         lwd = tel$size,
                         lty = tel$linetype,
                         lineend = tel$lineend
@@ -215,14 +199,14 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
       y = y,
       default.units = 'native',
       vp = vp,
-      rot = self$params$rot %|W|% el$angle,
-      hjust = self$params$hjust %|W|% el$hjust,
-      vjust = self$params$vjust %|W|% el$vjust,
+      rot = self$get_param('rot') %|W|% el$angle,
+      hjust = self$get_param('hjust') %|W|% el$hjust,
+      vjust = self$get_param('vjust') %|W|% el$vjust,
       gp = grid::gpar(
-        col = self$params$colour %|W|% el$colour,
-        fontsize = self$params$size %|W|% el$size,
-        fontfamily = self$params$family %|W|% el$family,
-        fontface = self$params$fontface %|W|% el$face
+        col = self$get_param('colour') %|W|% el$colour,
+        fontsize = self$get_param('size') %|W|% el$size,
+        fontfamily = self$get_param('family') %|W|% el$family,
+        fontface = self$get_param('fontface') %|W|% el$face
       )
     )
     grid::gList(tg, lg)
@@ -233,9 +217,9 @@ AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation)
 
 AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   label = function(self) {
-    l <- self$params$label
-    l <- gsub("\\.\\(y\\)", round(self$params$value, self$params$digits), l)
-    l <- gsub("\\.\\(val\\)", round(self$params$value, self$params$digits), l)
+    l <- self$get_param('label')
+    l <- gsub("\\.\\(y\\)", round(self$get_param('value'), self$get_param('digits')), l)
+    l <- gsub("\\.\\(val\\)", round(self$get_param('value'), self$get_param('digits')), l)
     parse(text=l)
   },
   draw = function(self, side, range, theme) {
@@ -294,6 +278,8 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     if (length(annotations) == 0)
       return(zeroGrob())
     
+    aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
+    
     temp <- AxisAnnotationText$draw(side, range, theme)
     temp.lg <- temp[[2]]
     temp <- temp[[1]]
@@ -303,14 +289,14 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       
       summed <- lapply(annotations[are_simple], function(a) {
         data.frame(label = a$label(),
-                   value = a$params$value,
-                   colour = a$params$colour %|W|% temp$gp$col,
-                   hjust = a$params$hjust %|W|% temp$hjust,
-                   vjust = a$params$vjust %|W|% temp$vjust,
-                   rot = a$params$rot %|W|% temp$rot,
-                   fontface = a$params$fontface %|W|% temp$gp$fontface,
-                   fontfamily = a$params$family %|W|% temp$gp$fontfamily,
-                   fontsize = a$params$size %|W|% temp$gp$fontsize,
+                   value = a$get_param('value'),
+                   colour = a$get_param('colour') %|W|% temp$gp$col,
+                   hjust = a$get_param('hjust') %|W|% temp$hjust,
+                   vjust = a$get_param('vjust') %|W|% temp$vjust,
+                   rot = a$get_param('rot') %|W|% temp$rot,
+                   fontface = a$get_param('fontface') %|W|% temp$gp$fontface,
+                   fontfamily = a$get_param('family') %|W|% temp$gp$fontfamily,
+                   fontsize = a$get_param('size') %|W|% temp$gp$fontsize,
                    stringsAsFactors = FALSE
                    )
       })

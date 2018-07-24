@@ -5,7 +5,7 @@ require(lemon)
 expect_lemon_plot <- function(object) expect_s3_class(object, 'lemon_plot')
 
 test_that('ggplot2 does not break lemon_plot by altering class', {
-  p <- ggplot2(data.frame(a=1:2, b=runif(2), c=letters[1:2]), aes(a, b, colour=c)) + geom_blank()
+  p <- ggplot(data.frame(a=1:2, b=runif(2), c=letters[1:2]), aes(a, b, colour=c)) + geom_blank()
   
   l <- as.lemon_plot(p)
   expect_lemon_plot(l)

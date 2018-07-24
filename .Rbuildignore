@@ -13,9 +13,11 @@
 ^README\\*$
 ^cache$
 ^lib$
+^devel$
 ^cache/$
 ^cache\$
 ^cran-comments.md$
 ^.*.lnk$
 ^LICENSE$
 ^vignettes/lemon/.*$
+^.*\.Rdata$
