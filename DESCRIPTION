@@ -41,7 +41,6 @@ Collate:
     'brackets.R'
     'coord-flex.r'
     'coord-capped.r'
-    'coord-flex2.r'
     'dot.r'
     'facet-rep-lab.r'
     'facet-wrap.r'
@@ -53,7 +52,6 @@ Collate:
     'guides-axis.r'
     'legends.r'
     'lemon.r'
-    'scales-.r'
 Suggests:
     rmarkdown,
     stringr,

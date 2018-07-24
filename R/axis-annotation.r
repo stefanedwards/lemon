@@ -11,12 +11,16 @@ NULL
 # annotated_y_axis   ## adds a label
 # annotated_y_axis_custom   ## adds a random grob
 
+#' Annotations in the axis
+#' 
+#' @rdname annotated_axis
 #' @param label Text to print
 #' @param y Position on panel's y-scale for label
 #' @param colour Colour of label
-#' @param side left or right side to print annotation
+#' @param side left or right, or top or bottom side to print annotation
 #' @param ... ???
 #' @example inst/examples/axis-annotation-ex.r
+#' @export 
 annotated_y_axis <- function(label, y, 
                              colour = waiver(), 
                              side = waiver(), 
@@ -62,6 +66,58 @@ annotated_y_axis <- function(label, y,
       rot = rot,
       ...
     )
+  )
+  
+  prependClass(aa, 'axis_annotation')
+}
+#' @rdname annotated_axis
+#' @export
+#' @inheritParams annotated_y_axis
+annotated_x_axis <- function(label, x, 
+                             colour = waiver(), 
+                             side = waiver(), 
+                             tick = TRUE,
+                             digits = 2, 
+                             parsed = FALSE,
+                             print_label = TRUE,
+                             print_value = TRUE,
+                             print_both = TRUE,
+                             sep = ' = ',
+                             hjust = waiver(),
+                             vjust = waiver(),
+                             size = waiver(),
+                             fontface = waiver(),
+                             family = waiver(),
+                             rot = waiver(),
+                             ...) {
+  
+  if (!missing(print_both) && print_both) {
+    print_label <- TRUE
+    print_value <- TRUE
+  }
+  
+  aa <- ggplot2::ggproto(NULL, 
+                         `_inherit`=if (parsed) AxisAnnotationBquote else AxisAnnotationText,
+                         aesthetic = 'x',
+                         side = side,
+                         params = list(
+                           label = label,
+                           tick = tick,
+                           x = x,
+                           value = x,
+                           colour = colour,
+                           digits = digits,
+                           print_label = print_label,
+                           print_value = print_value,
+                           sep = sep,
+                           hjust = hjust,
+                           vjust = vjust,
+                           size = size,
+                           fontface = fontface,
+                           family = family,
+                           rot = rot,
+                           ...
+                         )
   )
   
   prependClass(aa, 'axis_annotation')
@@ -197,7 +253,7 @@ axis_annotation_list <- function() {
   ggproto(NULL, AAList)
 }
 
-
+#' @rdname lemon-ggproto
 #' @import ggplot2
 #' @import grid
 AAList <- ggplot2::ggproto("AAList", NULL,
@@ -302,6 +358,7 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       }
     } else {
       textgrob <- ggplot2::zeroGrob()
+      lg <- ggplot2::zeroGrob()
     }
     
     if (sum(!are_simple) > 0) {

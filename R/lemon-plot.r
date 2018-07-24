@@ -96,6 +96,51 @@ ggplot_gtable.built_lemon <- function(data) {
     }
     
   }
+  
+  if ('axis_annotation' %in% names(data$plot) &&
+      data$plot$axis_annotation$n('x') > 0) {
+    # top
+    g <- data$plot$axis_annotation$draw(
+      side='top', 
+      is.primary=get_panel_params(data$layout, 1)$x.arrange[1] == 'primary', 
+      range=get_panel_x_range(data$layout, 1), 
+      theme=plot_theme(data$plot$theme)
+    )
+    if (!all(sapply(g$children, is.zero))) {
+      i <- which(gtable$layout$name == 'axis-t')
+      gtable <- gtable::gtable_add_grob(gtable, g, 
+                                        t = gtable$layout$t[i],
+                                        l = gtable$layout$l[i],
+                                        r = gtable$layout$l[i],
+                                        b  = gtable$layout$b[i],
+                                        name='axis2-t',
+                                        clip='off')
+      heights <- lapply(g$children, grid::grobHeight)
+      gtable$heights[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(heights, gtable$heights[gtable$layout$l[i]]))
+    }
+    
+    # bottom
+    # top
+    g <- data$plot$axis_annotation$draw(
+      side='bottom', 
+      is.primary=get_panel_params(data$layout, 1)$x.arrange[2] == 'primary', 
+      range=get_panel_x_range(data$layout, 1), 
+      theme=plot_theme(data$plot$theme)
+    )
+    if (!all(sapply(g$children, is.zero))) {
+      i <- which(gtable$layout$name == 'axis-b')
+      gtable <- gtable::gtable_add_grob(gtable, g, 
+                                        t = gtable$layout$t[i],
+                                        l = gtable$layout$l[i],
+                                        r = gtable$layout$l[i],
+                                        b  = gtable$layout$b[i],
+                                        name='axis2-b',
+                                        clip='off')
+      heights <- lapply(g$children, grid::grobHeight)
+      gtable$heights[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(heights, gtable$heights[gtable$layout$l[i]]))
+    }
+    
+  }
   gtable
 }
 
