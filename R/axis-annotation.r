@@ -20,6 +20,7 @@ NULL
 annotated_y_axis <- function(label, y, 
                              colour = waiver(), 
                              side = waiver(), 
+                             tick = TRUE,
                              digits = 2, 
                              parsed = FALSE,
                              print_label = TRUE,
@@ -45,6 +46,7 @@ annotated_y_axis <- function(label, y,
     side = side,
     params = list(
       label = label,
+      tick = tick,
       y = y,
       value = y,
       colour = colour,
@@ -86,6 +88,7 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     print_value = TRUE,
     sep = ' = ',
     digits = 2,
+    tick = TRUE,
     colour = waiver(),
     hjust = waiver(),
     vjust = waiver(),
@@ -106,20 +109,54 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
   draw = function(self, side, range, theme) {
     aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
     if (aes == 'y') {
-      vp <- grid::viewport(yscale = range)
+      vp <- grid::viewport(yscale = range, xscale=c(0,1))
     } else if (aes == 'x') {
-      vp <- grid::viewport(xscale = range)
+      vp <- grid::viewport(xscale = range, yscale=c(0,1))
+    }
+    x = switch(side, top=self$params$value, bottom=self$params$value, 
+               left=1, right=0)
+    x = grid::unit(x, 'native')
+    y = switch(side, top=0, bottom=1, 
+               left=self$params$value, right=self$params$value)
+    y = grid::unit(y, 'native')
+    
+    # make tick
+    
+    tel <- ggplot2::calc_element('axis.ticks', theme)
+    if (length(tel) > 0 & self$params$tick) {
+      tellength <- ggplot2::calc_element('axis.ticks.length', theme)
+      x1 = switch(side, top=x, bottom=x, 
+                  left=x-tellength, right=x+tellength)
+      y1 = switch(side, top=y+tellength, bottom=y-tellength,
+                  left=y, right=y)
+      lg <- grid::linesGrob(grid::unit.c(x, x1), grid::unit.c(y, y1),
+                      vp = vp,
+                      #arrow = tel$arrow,
+                      gp = grid::gpar(
+                        col = self$params$colour %|W|% tel$colour,
+                        lwd = tel$size,
+                        lty = tel$linetype,
+                        lineend = tel$lineend
+                      ))
+      
+      x = switch(side, top=x, bottom=x, 
+                  left=x-tellength*1.2, right=x+tellength*1.2)
+      y = switch(side, top=y+tellength*1.2, bottom=y-tellength*1.2,
+                  left=y, right=y)
+    } else {
+      tellength <- grid::unit(0, 'cm')
+      lg <- zeroGrob()
     }
     
+    # make label
+     
     element <- switch(side, top='.top', right='.right', '')
     el <- ggplot2::calc_element(paste0('axis.text.', aes, element), theme)
 
-    grid::textGrob(
+    tg <- grid::textGrob(
       label = self$label(),
-      x = switch(side, top=self$params$value, bottom=self$params$value, 
-                 left=1, right=0),
-      y = switch(side, top=0, bottom=1, 
-                 left=self$params$value, right=self$params$value),
+      x = x,
+      y = y,
       default.units = 'native',
       vp = vp,
       rot = self$params$rot %|W|% el$angle,
@@ -132,6 +169,7 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
         fontface = self$params$fontface %|W|% el$face
       )
     )
+    grid::gList(tg, lg)
   }
 )
 
@@ -146,7 +184,7 @@ AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   },
   draw = function(self, side, range, theme) {
     g <- ggplot2::ggproto_parent(AxisAnnotation, self)$draw(side, range, theme)
-    g$label <- self$label()
+    g[[1]]$label <- self$label()
     g
   }
 )
@@ -201,6 +239,8 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       return(zeroGrob())
     
     temp <- AxisAnnotationText$draw(side, range, theme)
+    temp.lg <- temp[[2]]
+    temp <- temp[[1]]
     # coerce to single data.frame where possible
     are_simple <- vapply(annotations, function(a) inherits(a, 'AxisAnnotationText'), logical(1))
     if (sum(are_simple) > 0) {
@@ -220,11 +260,11 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       })
       summed <- do.call(rbind, summed)
       if (aes == 'x') {
-        summed$x <- summed$value
-        summed$y <- as.numeric(temp$y)
+        summed$x <- grid::unit(summed$value, 'native')
+        summed$y <- temp$y
       } else if (aes == 'y') {
-        summed$x <- as.numeric(temp$x)
-        summed$y <- summed$value
+        summed$x <- temp$x
+        summed$y <- grid::unit(summed$value, 'native')
       }
       textgrob <- grid::textGrob(
         label = summed$label,
@@ -242,6 +282,24 @@ AAList <- ggplot2::ggproto("AAList", NULL,
         ),
         vp = temp$vp
       )
+      if (!is.zero(temp.lg)) {
+        if (aes == 'x') {
+          summed$x1 <- summed$x
+          summed$y1 <- temp.lg$y[1]
+        } else if (aes == 'y') {
+          summed$x1 <- temp.lg$x[1]
+          summed$y1 <- summed$y
+        }
+        lg <- grid::polylineGrob(
+          y = unit.c(summed$y, summed$y1),
+          x = unit.c(summed$x, summed$x1),
+          id = rep(1:2, times=nrow(summed)),
+          gp = temp.lg$gp,
+          vp = temp.lg$vp
+        )
+      } else {
+        lg <- ggplot2::zeroGrob()
+      }
     } else {
       textgrob <- ggplot2::zeroGrob()
     }
@@ -252,28 +310,9 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     } else {
       rest <- ggplot2::zeroGrob()
     }
-    grid::grobTree(textgrob, rest, vp=temp$vp, gp=temp$gp)
+    grid::grobTree(textgrob, lg, rest, vp=temp$vp, gp=temp$gp)
   },
-  # input = function(self) {
-  #   unlist(lapply(self$scales, "[[", "aesthetics"))
-  # },
-  
-  # This actually makes a descendant of self, which is functionally the same
-  # as a actually clone for most purposes.
-  # clone = function(self) {
-  #   ggproto(NULL, self, scales = lapply(self$scales, function(s) s$clone()))
-  # },
-  # 
-  # non_position_scales = function(self) {
-  #   ggproto(NULL, self, scales = self$scales[!self$find("x") & !self$find("y")])
-  # },
-  # 
-  # get_scales = function(self, output) {
-  #   scale <- self$scales[self$find(output)]
-  #   if (length(scale) == 0) return()
-  #   scale[[1]]
-  # }
-  
+
   # axis annotations can be shown on top, left, right, or bottom.
   # defaults to where the secondary axis is (i.e. not the primary)
   # the annotation itself does not need to know which side it has to be on.
