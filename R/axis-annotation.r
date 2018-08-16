@@ -107,9 +107,12 @@ ggplot_add.axis_annotation <- function(object, plot, object_name) {
 
 #' @import ggplot2
 #' @importFrom plyr defaults
+#' Property 'reducible' is set to TRUE for inherited classes for which their
+#' labels can easily be reduced to vectors. Bquote objects, not so much?
 AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
   side = waiver(),
   aesthetic = NULL,
+  reducible=FALSE,
   params = list(
     value = NA,
     label = NA,
@@ -117,7 +120,7 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     print_value = TRUE,
     sep = ' = ',
     digits = 2,
-    tick = TRUE,
+    tick = waiver(),
     colour = waiver(),
     hjust = waiver(),
     vjust = waiver(),
@@ -144,78 +147,13 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
       return(self$get_param('label'))
     paste0(self$get_param('label'), self$get_param('sep'), 
            round(self$get_param('value'), self$get_param('digits')))
-  },
-  
-  draw = function(self, side, range, theme) {
-    aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
-    if (aes == 'y') {
-      vp <- grid::viewport(yscale = range, xscale=c(0,1))
-    } else if (aes == 'x') {
-      vp <- grid::viewport(xscale = range, yscale=c(0,1))
-    }
-    x = switch(side, top=self$get_param('value'), bottom=self$get_param('value'), 
-               left=1, right=0)
-    x = grid::unit(x, 'native')
-    y = switch(side, top=0, bottom=1, 
-               left=self$get_param('value'), right=self$get_param('value'))
-    y = grid::unit(y, 'native')
-    
-    # make tick
-    
-    tel <- ggplot2::calc_element('axis.ticks', theme)
-    if (length(tel) > 0 & self$get_param('tick')) {
-      tellength <- ggplot2::calc_element('axis.ticks.length', theme)
-      x1 = switch(side, top=x, bottom=x, 
-                  left=x-tellength, right=x+tellength)
-      y1 = switch(side, top=y+tellength, bottom=y-tellength,
-                  left=y, right=y)
-      lg <- grid::linesGrob(grid::unit.c(x, x1), grid::unit.c(y, y1),
-                      vp = vp,
-                      #arrow = tel$arrow,
-                      gp = grid::gpar(
-                        col = self$get_param('colour') %|W|% tel$colour,
-                        lwd = tel$size,
-                        lty = tel$linetype,
-                        lineend = tel$lineend
-                      ))
-      
-      x = switch(side, top=x, bottom=x, 
-                  left=x-tellength*1.2, right=x+tellength*1.2)
-      y = switch(side, top=y+tellength*1.2, bottom=y-tellength*1.2,
-                  left=y, right=y)
-    } else {
-      tellength <- grid::unit(0, 'cm')
-      lg <- zeroGrob()
-    }
-    
-    # make label
-     
-    element <- switch(side, top='.top', right='.right', '')
-    el <- ggplot2::calc_element(paste0('axis.text.', aes, element), theme)
-
-    tg <- grid::textGrob(
-      label = self$label(),
-      x = x,
-      y = y,
-      default.units = 'native',
-      vp = vp,
-      rot = self$get_param('rot') %|W|% el$angle,
-      hjust = self$get_param('hjust') %|W|% el$hjust,
-      vjust = self$get_param('vjust') %|W|% el$vjust,
-      gp = grid::gpar(
-        col = self$get_param('colour') %|W|% el$colour,
-        fontsize = self$get_param('size') %|W|% el$size,
-        fontfamily = self$get_param('family') %|W|% el$family,
-        fontface = self$get_param('fontface') %|W|% el$face
-      )
-    )
-    grid::gList(tg, lg)
   }
 )
 
-AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation)
+AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation, reducible=TRUE)
 
 AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
+  reducible = TRUE,
   label = function(self) {
     l <- self$get_param('label')
     l <- gsub("\\.\\(y\\)", round(self$get_param('value'), self$get_param('digits')), l)
@@ -240,6 +178,7 @@ axis_annotation_list <- function() {
 #' @rdname lemon-ggproto
 #' @import ggplot2
 #' @import grid
+#' @import scales
 AAList <- ggplot2::ggproto("AAList", NULL,
   annotations = list(),
   
@@ -273,87 +212,65 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     vapply(aesthetic, function(x) length(self$annotations[[x]]), integer(1))
   },
   
+  
   draw = function(self, side, is.primary=FALSE, range, theme) {
     annotations <- self$get_annotations(side, is.primary)
     if (length(annotations) == 0)
       return(zeroGrob())
     
-    aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
+    #aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
     
-    temp <- AxisAnnotationText$draw(side, range, theme)
-    temp.lg <- temp[[2]]
-    temp <- temp[[1]]
-    # coerce to single data.frame where possible
-    are_simple <- vapply(annotations, function(a) inherits(a, 'AxisAnnotationText'), logical(1))
+    label_render <- switch(side,
+       top = "axis.text.x.top", bottom = "axis.text.x",
+       left = "axis.text.y", right = "axis.text.y.right"
+    )
+    tick_render <- switch(side,
+       top = 'axis.ticks.x.top', bottom = 'axis.ticks.x', 
+       left = 'axis.ticks.y', right = 'axis.ticks.y.right'
+    )
+    
+    default <- ggplot2::calc_element(label_render, theme)
+    tick = is.null(render_gpar(theme, tick_render))
+    
+    # coerce to single data.frame where possible # inherits(a, 'AxisAnnotationText')
+    are_reducible <- vapply(annotations, function(a) a$reducible %||% FALSE, logical(1))
     if (sum(are_simple) > 0) {
-      
-      summed <- lapply(annotations[are_simple], function(a) {
-        data.frame(label = a$label(),
-                   value = a$get_param('value'),
-                   colour = a$get_param('colour') %|W|% temp$gp$col,
-                   hjust = a$get_param('hjust') %|W|% temp$hjust,
-                   vjust = a$get_param('vjust') %|W|% temp$vjust,
-                   rot = a$get_param('rot') %|W|% temp$rot,
-                   fontface = a$get_param('fontface') %|W|% temp$gp$fontface,
-                   fontfamily = a$get_param('family') %|W|% temp$gp$fontfamily,
-                   fontsize = a$get_param('size') %|W|% temp$gp$fontsize,
-                   stringsAsFactors = FALSE
-                   )
+
+      labels <- lapply(annotations[are_reducible], function(a) {
+        a$label()
       })
-      summed <- do.call(rbind, summed)
-      if (aes == 'x') {
-        summed$x <- grid::unit(summed$value, 'native')
-        summed$y <- temp$y
-      } else if (aes == 'y') {
-        summed$x <- temp$x
-        summed$y <- grid::unit(summed$value, 'native')
-      }
-      textgrob <- grid::textGrob(
-        label = summed$label,
-        x = summed$x,
-        y = summed$y,
-        default.units = 'native',
-        hjust = summed$hjust,
-        vjust = summed$vjust,
-        rot = summed$rot,
-        gp = grid::gpar(
-          col = summed$colour,
-          fontface = summed$fontface,
-          fontsize = summed$fontsize,
-          fontfamily = summed$fontfamily
-        ),
-        vp = temp$vp
-      )
-      if (!is.zero(temp.lg)) {
-        if (aes == 'x') {
-          summed$x1 <- summed$x
-          summed$y1 <- temp.lg$y[1]
-        } else if (aes == 'y') {
-          summed$x1 <- temp.lg$x[1]
-          summed$y1 <- summed$y
-        }
-        lg <- grid::polylineGrob(
-          y = unit.c(summed$y, summed$y1),
-          x = unit.c(summed$x, summed$x1),
-          id = rep(1:2, times=nrow(summed)),
-          gp = temp.lg$gp,
-          vp = temp.lg$vp
+      
+      params <- lapply(annotations[are_reducible], function(a) {
+        data.frame(
+          values = a$get_param('value'),
+          colour = a$get_param('colour') %|W|% default$colour,
+          hjust = a$get_param('hjust') %|W|% default$hjust,
+          vjust = a$get_param('vjust') %|W|% default$vjust,
+          rot = a$get_param('rot') %|W|% default$angle,
+          face = a$get_param('fontface') %|W|% default$face,
+          family = a$get_param('family') %|W|% default$family,
+          size = a$get_param('size') %|W|% default$size,
+          tick = a$get_param('tick') %|W|% tick,
+          stringsAsFactors = FALSE
         )
-      } else {
-        lg <- ggplot2::zeroGrob()
-      }
+      }) 
+      params <- do.call(rbind, params)
+      
+      params$tickcolour <- ifelse(params$tick, params$colour, NA)
+      
+      axisgrob <- guide_axis(scales::rescale(params$values, from=range), labels, side, theme, range, default, params)
     } else {
-      textgrob <- ggplot2::zeroGrob()
-      lg <- ggplot2::zeroGrob()
+      axisgrob <- guide_axis(0, NA, side, theme, element_blank(), data.frame(tickcolour=NA))
     }
     
-    if (sum(!are_simple) > 0) {
-      rest <- do.call(grid::gList,
-        lapply(annotations[!are_simple], function(a) a$draw(side, range, theme)))
-    } else {
-      rest <- ggplot2::zeroGrob()
-    }
-    grid::grobTree(textgrob, lg, rest, vp=temp$vp, gp=temp$gp)
+    axisgrob
+    #if (sum(!are_simple) > 0) {
+    #  rest <- do.call(grid::gList,
+    #    lapply(annotations[!are_simple], function(a) a$draw(side, range, theme)))
+    #} else {
+    #  rest <- ggplot2::zeroGrob()
+    #}
+    #grid::grobTree(textgrob, lg, rest, vp=temp$vp, gp=temp$gp)
   },
 
   # axis annotations can be shown on top, left, right, or bottom.
