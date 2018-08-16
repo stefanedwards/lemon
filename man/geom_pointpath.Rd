@@ -75,7 +75,7 @@ this colour instead of that set by aesthetic \code{colour}.}
 both lines and points stay connected, and b) provides a visual effect
 by adding a small gap between the point and the end of line.
 \code{geom_pointline} combines \code{\link[ggplot2]{geom_point}} and
-\code{\link[ggplot2]{geom_line}}.
+\code{\link[ggplot2]{geom_path}}.
 }
 \details{
 \code{geom_pointpath} connects the observations in the same order in which

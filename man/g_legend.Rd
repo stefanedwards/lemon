@@ -30,7 +30,7 @@ An alternative method for extracting the legend is using
 This method however returns a \code{gtable} object which encapsulates
 the entire legend. The legend itself may be a collection of \code{gtable}.
 We have only noticed a problem with this extra layer when using the returned
-legend with \code{\link[gridExtra]{grid.arrange}} (see examples).
+legend with \code{\link[gridExtra]{arrangeGrob}} (see examples).
 }
 \examples{
 library(ggplot2)

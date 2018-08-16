@@ -30,7 +30,7 @@ gtable of combined plot, invisibly.
 }
 \description{
 Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} / 
-\code{\link[gridExtra]{grid.arrange}},
+\code{grid.arrange},
 and places legend in a margin.
 }
 \examples{

@@ -30,13 +30,13 @@ element_render <- function(theme, element, ..., name = NULL) {
 #' 
 #' Helps add the ggplot2-theme's look-and-feel to \code{grid}'s grob objects.
 #' \code{render_gpar} returns a \code{\link[grid]{gpar}}-object,
-#' \code{element_render} returns a \code{\link[grid]{grob}}-object.
+#' \code{element_render} returns a \code{\link[grid]{grid.grob}}-object.
 #' 
 #' @param theme A ggplot2 \link[ggplot2]{theme}
 #' @param element The name of an element in the theme, e.g. "axis.text".
 #' @param ... Additional arguments sent to grobs (e.g. \code{x} or \code{y}).
 #' @param name Returned grob's name..
-#' @return A \code{\link[grid]{grob}} or \code{\link[grid]{gpar}} object.
+#' @return A \code{\link[grid]{grid.grob}} or \code{\link[grid]{gpar}} object.
 #' @seealso \code{\link[ggplot2]{theme}}
 #' @rdname element_render
 render_gpar <- function(theme, element, ...) {

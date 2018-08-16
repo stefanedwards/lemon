@@ -19,12 +19,12 @@ render_gpar(theme, element, ...)
 \item{name}{Returned grob's name..}
 }
 \value{
-A \code{\link[grid]{grob}} or \code{\link[grid]{gpar}} object.
+A \code{\link[grid]{grid.grob}} or \code{\link[grid]{gpar}} object.
 }
 \description{
 Helps add the ggplot2-theme's look-and-feel to \code{grid}'s grob objects.
 \code{render_gpar} returns a \code{\link[grid]{gpar}}-object,
-\code{element_render} returns a \code{\link[grid]{grob}}-object.
+\code{element_render} returns a \code{\link[grid]{grid.grob}}-object.
 }
 \seealso{
 \code{\link[ggplot2]{theme}}
