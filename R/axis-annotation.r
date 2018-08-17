@@ -94,13 +94,6 @@ annotated_x_axis <- function(label, x,
   prependClass(aa, 'axis_annotation')
 }
 
-#' @export
-#' @keywords internal
-ggplot_add.axis_annotation <- function(object, plot, object_name) {
-  plot <- as.lemon_plot(plot)
-  plot$axis_annotation$add(object)
-  plot
-}
 
 # Axis_annotation base class ------
 # Modelled after Scales in ggplot2/R/scale
@@ -153,7 +146,7 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
 AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation, reducible=TRUE)
 
 AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
-  reducible = TRUE,
+  reducible = FALSE,
   label = function(self) {
     l <- self$get_param('label')
     l <- gsub("\\.\\(y\\)", round(self$get_param('value'), self$get_param('digits')), l)
@@ -167,6 +160,16 @@ AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   }
 )
 
+
+#' @export
+#' @keywords internal
+ggplot_add.axis_annotation <- function(object, plot, object_name) {
+  plot <- as.lemon_plot(plot)
+  plot$axis_annotation <- plot$axis_annotation$clone()
+  plot$axis_annotation$add(object)
+  plot
+}
+
 # Annotation "slot" in the plot ----------------
 # Modelled after ScalesList in ggplot2/R/scales-.r
 
@@ -175,12 +178,24 @@ axis_annotation_list <- function() {
   ggproto(NULL, AAList)
 }
 
+as.is <- function(x) {x}
+
+
+#' @export
+#' @keywords internal
+ggplot_add.axis_annotation <- function(object, plot, object_name) {
+  plot <- as.lemon_plot(plot)
+  plot$axis_annotation <- plot$axis_annotation$clone()
+  plot$axis_annotation$add(object)
+  plot
+}
+
 #' @rdname lemon-ggproto
 #' @import ggplot2
 #' @import grid
 #' @import scales
 AAList <- ggplot2::ggproto("AAList", NULL,
-  annotations = list(),
+  annotations = NULL,
   
   # self.annotations holds a heriachical list of all annotations, i.e.
   # self.annotations$x = list(...)
@@ -197,19 +212,36 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     if (is.null(new_aes)) 
       stop('Adding a axis annotation requires an annotation class with either "x" or "y" as aesthetic.')
 
-    if (is.null(self$annotations[[new_aes]])) {
-      self$annotations[[new_aes]] <- list(new_annotation)
-    } else {
-      n <- length(self$annotations[[new_aes]])
-      self$annotations[[new_aes]][n+1] <- list(new_annotation)
-    }
+    #if (is.null(self$annotations[[new_aes]])) {
+    #  self$annotations[[new_aes]] <- list(new_annotation)
+    #} else {
+    #  n <- length(self$annotations[[new_aes]])
+    #  self$annotations[[new_aes]][n+1] <- list(new_annotation)
+    #}
+    #if (is.null(self$annotations)) {
+    #  self$annotations <- list(list(new_annotation))
+    #  names(self$annotations) <- new_aes
+    #} else {
+    #  
+    #  self$annotations[[new_aes]] <- c(self$annotations[[new_aes]], list(new_annotation))
+    #}
+    self$annotations <- c(self$annotations, list(new_annotation))
+  },
+  
+  # See ggplot2/R/scales-.r for cloning. 
+  # Might be necessary to avoid updating a referenced object.
+  clone = function(self) {
+    ggproto(NULL, self, annotations=lapply(self$annotations, as.is))
   },
   
   n = function(self, aesthetic=NULL) {
     if (is.null(aesthetic))
-      return(sum(vapply(self$annotations, length, integer(1))))
+      return(length(self$annotations))
     
-    vapply(aesthetic, function(x) length(self$annotations[[x]]), integer(1))
+    res <- table(vapply(self$annotations, function(a) a$aesthetic, character(1)))[aesthetic]
+    names(res) <- aesthetic
+    res[is.na(res)] <- 0
+    res
   },
   
   
@@ -282,21 +314,32 @@ AAList <- ggplot2::ggproto("AAList", NULL,
   get_annotations = function(self, side, is.primary=FALSE) {
     aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
     
-    if (self$n(aes) == 0)
-      return()
+    #if (self$n(aes) == 0)
+    #  return()
+    
+    #if (is.primary) {
+    #  # only those with side as set
+    #  i <- which(vapply(self$annotations[[aes]], function(a) {
+    #    !is.waive(a$side) && a$side == side
+    #  }, logical(1)))
+    #} else {
+    #  i <- which(vapply(self$annotations[[aes]], function(a) {
+    #    is.waive(a$side) || a$side == side
+    #  }, logical(1)))
+    #}
+    #self$annotations[[aes]][i]
     
     if (is.primary) {
-      # only those with side as set
-      i <- which(vapply(self$annotations[[aes]], function(a) {
-        !is.waive(a$side) && a$side == side
-      }, logical(1)))
+      get <- vapply(self$annotations, function(a) {
+        a$aesthetic == aes && (!is.waive(a$side) && a$side == side)
+      }, logical(1))
     } else {
-      i <- which(vapply(self$annotations[[aes]], function(a) {
-        is.waive(a$side) || a$side == side
-      }, logical(1)))
-    }
+      get <- vapply(self$annotations, function(a) {
+        a$aesthetic == aes && (is.waive(a$side) || a$side == side)
+      }, logical(1))
+    }    
     
-    self$annotations[[aes]][i]
+    self$annotations[get]
   }
 
 )
