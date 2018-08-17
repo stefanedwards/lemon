@@ -70,7 +70,7 @@ ggplot_gtable.built_lemon <- function(data) {
                                         b  = gtable$layout$b[i],
                                         name='axis2-r',
                                         clip='off')
-      widths <- lapply(g$children, grid::grobWidth)
+      widths <- lapply(g$children[[2]]$grobs, grid::grobWidth)
       gtable$widths[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(widths, gtable$widths[gtable$layout$l[i]]))
     }
     
@@ -90,7 +90,7 @@ ggplot_gtable.built_lemon <- function(data) {
                                         b  = gtable$layout$b[i],
                                         name='axis2-l',
                                         clip='off')
-      widths <- lapply(g$children, grid::grobWidth)
+      widths <- lapply(g$children[[2]]$grobs, grid::grobWidth)
       gtable$widths[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(widths, gtable$widths[gtable$layout$l[i]]))
     }
     
@@ -114,12 +114,11 @@ ggplot_gtable.built_lemon <- function(data) {
                                         b  = gtable$layout$b[i],
                                         name='axis2-t',
                                         clip='off')
-      heights <- lapply(g$children, grid::grobHeight)
+      heights <- lapply(g$children[[2]]$grobs, grid::grobHeight)
       gtable$heights[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(heights, gtable$heights[gtable$layout$l[i]]))
     }
     
     # bottom
-    # top
     g <- data$plot$axis_annotation$draw(
       side='bottom', 
       is.primary=get_panel_params(data$layout, 1)$x.arrange[2] == 'primary', 
@@ -135,7 +134,7 @@ ggplot_gtable.built_lemon <- function(data) {
                                         b  = gtable$layout$b[i],
                                         name='axis2-b',
                                         clip='off')
-      heights <- lapply(g$children, grid::grobHeight)
+      heights <- lapply(g$children[[2]]$grobs, grid::grobHeight)
       gtable$heights[[gtable$layout$l[i]]] <- do.call(grid::unit.pmax, c(heights, gtable$heights[gtable$layout$l[i]]))
     }
     

@@ -98,6 +98,7 @@ annotated_x_axis <- function(label, x,
 # Axis_annotation base class ------
 # Modelled after Scales in ggplot2/R/scale
 
+#' @import grid
 #' @import ggplot2
 #' @importFrom plyr defaults
 #' Property 'reducible' is set to TRUE for inherited classes for which their
@@ -122,6 +123,38 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     family = waiver(),
     rot = waiver()
   ),
+  
+  # draw_tick = function(self, range, theme) {
+  # 
+  #   zero <- grid::unit(0, "npc")
+  #   one <- grid::unit(1, "npc")
+  #   
+  #   at <- scales::rescale(self$get_param('value'), from=range)
+  #   
+  #   ticks <- switch(position,
+  #     top = element_render(theme, "axis.ticks.x",
+  #        x          = c(at, at),
+  #        y          = unit.c(zero, theme$axis.ticks.length),
+  #        id.lengths = rep(2),
+  #        colour = gp_df$tickcolour),
+  #     bottom = element_render(theme, "axis.ticks.x",
+  #                             x          = rep(at, each = 2),
+  #                             y          = rep(unit.c(one - theme$axis.ticks.length, one), nticks),
+  #                             id.lengths = rep(2, nticks),
+  #                             colour = gp_df$tickcolour),
+  #     right = element_render(theme, "axis.ticks.y",
+  #                            x          = rep(unit.c(zero, theme$axis.ticks.length), nticks),
+  #                            y          = rep(at, each = 2),
+  #                            id.lengths = rep(2, nticks),
+  #                            colour = gp_df$tickcolour),
+  #     left = element_render(theme, "axis.ticks.y",
+  #                           x          = rep(unit.c(one - theme$axis.ticks.length, one), nticks),
+  #                           y          = rep(at, each = 2),
+  #                           id.lengths = rep(2, nticks),
+  #                           colour = gp_df$tickcolour)
+  #   )
+  # }
+  # 
   get_param = function(self, x) {
     mine <- self$params[x]
     mine <- mine[!sapply(mine, is.null)]
@@ -147,6 +180,9 @@ AxisAnnotationText <- ggplot2::ggproto('AxisAnnotationText', AxisAnnotation, red
 
 AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   reducible = FALSE,
+  params = list(
+    print_value = FALSE
+  ), 
   label = function(self) {
     l <- self$get_param('label')
     l <- gsub("\\.\\(y\\)", round(self$get_param('value'), self$get_param('digits')), l)
@@ -212,19 +248,6 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     if (is.null(new_aes)) 
       stop('Adding a axis annotation requires an annotation class with either "x" or "y" as aesthetic.')
 
-    #if (is.null(self$annotations[[new_aes]])) {
-    #  self$annotations[[new_aes]] <- list(new_annotation)
-    #} else {
-    #  n <- length(self$annotations[[new_aes]])
-    #  self$annotations[[new_aes]][n+1] <- list(new_annotation)
-    #}
-    #if (is.null(self$annotations)) {
-    #  self$annotations <- list(list(new_annotation))
-    #  names(self$annotations) <- new_aes
-    #} else {
-    #  
-    #  self$annotations[[new_aes]] <- c(self$annotations[[new_aes]], list(new_annotation))
-    #}
     self$annotations <- c(self$annotations, list(new_annotation))
   },
   
@@ -263,10 +286,11 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     
     default <- ggplot2::calc_element(label_render, theme)
     tick = is.null(render_gpar(theme, tick_render))
+    if (side == 'left') browser()
     
     # coerce to single data.frame where possible # inherits(a, 'AxisAnnotationText')
     are_reducible <- vapply(annotations, function(a) a$reducible %||% FALSE, logical(1))
-    if (sum(are_simple) > 0) {
+    if (sum(are_reducible) > 0) {
 
       labels <- lapply(annotations[are_reducible], function(a) {
         a$label()
@@ -292,9 +316,38 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       
       axisgrob <- guide_axis(scales::rescale(params$values, from=range), labels, side, theme, range, default, params)
     } else {
-      axisgrob <- guide_axis(0, NA, side, theme, element_blank(), data.frame(tickcolour=NA))
+      axisgrob <- guide_axis(0, NA, side, theme, range, element_blank(), data.frame(tickcolour=NA))
     }
     
+    gt_index <- which(axisgrob$childrenOrder == 'axis')
+    if (sum(!are_reducible) > 0) {
+      for (i in which(!are_reducible)) {
+        a <- annotations[[i]]
+        gp_df <- data.frame(
+          values = a$get_param('value'),
+          colour = a$get_param('colour') %|W|% default$colour,
+          hjust = a$get_param('hjust') %|W|% default$hjust,
+          vjust = a$get_param('vjust') %|W|% default$vjust,
+          rot = a$get_param('rot') %|W|% default$angle,
+          face = a$get_param('fontface') %|W|% default$face,
+          family = a$get_param('family') %|W|% default$family,
+          size = a$get_param('size') %|W|% default$size,
+          tick = a$get_param('tick') %|W|% tick,
+          stringsAsFactors = FALSE
+        )
+        
+        next_grobs <- guide_axis(
+          scales::rescale(a$get_param('value'), from=range), 
+          a$label(), side, theme, range, default, gp_df)
+       ## to do: discern sides.
+        axisgrob$children[[gt_index]] <- gtable_add_grob(
+          x = axisgrob$children[[gt_index]],
+          grobs = next_grobs$children[[gt_index]]$grobs[1:2],
+          t=c(1,1), l=c(1,2), b=c(1,1), r=c(1,2), clip='off',
+          name=paste(c('tick','label'), i, sep='-')
+        )
+      }
+    }
     axisgrob
     #if (sum(!are_simple) > 0) {
     #  rest <- do.call(grid::gList,
