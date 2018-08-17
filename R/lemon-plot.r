@@ -22,7 +22,7 @@ object
 #' Lemon plots; ggplots with extended functionality.
 #' 
 #' Lemon plot basically hijacks ggplot2's building process and allows us
-#' to change some things.
+#' to change some things. Used by \code{\link{annotate_y_axis}}.
 #' 
 #' @param plot ggplot object
 #' @keywords internal

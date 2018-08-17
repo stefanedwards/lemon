@@ -16,7 +16,7 @@ NULL
 #' @section: Showing values:
 #' See
 #' 
-#' @rdname annotated_axis
+#' @rdname annotate_axis
 #' @param label Text to print
 #' @param y,x Position of the annotation.
 #' @param side left or right, or top or bottom side to print annotation
@@ -30,7 +30,7 @@ NULL
 #' @param ... ???
 #' @example inst/examples/axis-annotation-ex.r
 #' @export 
-annotated_y_axis <- function(label, y, 
+annotate_y_axis <- function(label, y, 
                              side = waiver(), 
                              print_label = TRUE,
                              print_value = TRUE,
@@ -60,10 +60,10 @@ annotated_y_axis <- function(label, y,
   
   prependClass(aa, 'axis_annotation')
 }
-#' @rdname annotated_axis
+#' @rdname annotate_axis
 #' @export
-#' @inheritParams annotated_y_axis
-annotated_x_axis <- function(label, x, 
+#' @inheritParams annotate_y_axis
+annotate_x_axis <- function(label, x, 
                              side = waiver(), 
                              print_label = TRUE,
                              print_value = TRUE,
