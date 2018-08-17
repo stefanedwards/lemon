@@ -14,7 +14,10 @@ NULL
 #' Annotations in the axis
 #' 
 #' @section: Showing values:
-#' See
+#' See \link[grDevices]{plotmath} for using mathematical expressions.
+#' The function uses a simple replacement strategy where the literal strings
+#' \code{.(y)} and \code{.(val)} are replaced by the value after round of to
+#' a number of digits, as given by argument \code{digits}.
 #' 
 #' @rdname annotate_axis
 #' @param label Text to print
@@ -26,8 +29,12 @@ NULL
 #' @param print_label,print_value,print_both
 #'   Logical; what to show on annotation. Label and/or value.
 #'   \code{print_both} is shortcut for setting both \code{print_label} and
-#'   \code{print_value}.
-#' @param ... ???
+#'   \code{print_value}. When both is TRUE, uses argument \code{sep} to 
+#'   separate the label and value.
+#' @param ... Style settings for label and tick: 
+#'   colour, hjust, vjust, size, fontface, family, rot. 
+#'   When \code{waiver()} (default),
+#'   the relevant theme element is used.
 #' @example inst/examples/axis-annotation-ex.r
 #' @export 
 annotate_y_axis <- function(label, y, 
@@ -100,9 +107,8 @@ annotate_x_axis <- function(label, x,
 
 #' @import grid
 #' @import ggplot2
-#' @importFrom plyr defaults
-#' Property 'reducible' is set to TRUE for inherited classes for which their
-#' labels can easily be reduced to vectors. Bquote objects, not so much?
+# Property 'reducible' is set to TRUE for inherited classes for which their
+# labels can easily be reduced to vectors. Bquote objects, not so much?
 AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
   side = waiver(),
   aesthetic = NULL,
@@ -124,37 +130,6 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     rot = waiver()
   ),
   
-  # draw_tick = function(self, range, theme) {
-  # 
-  #   zero <- grid::unit(0, "npc")
-  #   one <- grid::unit(1, "npc")
-  #   
-  #   at <- scales::rescale(self$get_param('value'), from=range)
-  #   
-  #   ticks <- switch(position,
-  #     top = element_render(theme, "axis.ticks.x",
-  #        x          = c(at, at),
-  #        y          = unit.c(zero, theme$axis.ticks.length),
-  #        id.lengths = rep(2),
-  #        colour = gp_df$tickcolour),
-  #     bottom = element_render(theme, "axis.ticks.x",
-  #                             x          = rep(at, each = 2),
-  #                             y          = rep(unit.c(one - theme$axis.ticks.length, one), nticks),
-  #                             id.lengths = rep(2, nticks),
-  #                             colour = gp_df$tickcolour),
-  #     right = element_render(theme, "axis.ticks.y",
-  #                            x          = rep(unit.c(zero, theme$axis.ticks.length), nticks),
-  #                            y          = rep(at, each = 2),
-  #                            id.lengths = rep(2, nticks),
-  #                            colour = gp_df$tickcolour),
-  #     left = element_render(theme, "axis.ticks.y",
-  #                           x          = rep(unit.c(one - theme$axis.ticks.length, one), nticks),
-  #                           y          = rep(at, each = 2),
-  #                           id.lengths = rep(2, nticks),
-  #                           colour = gp_df$tickcolour)
-  #   )
-  # }
-  # 
   get_param = function(self, x) {
     mine <- self$params[x]
     mine <- mine[!sapply(mine, is.null)]
@@ -313,9 +288,9 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       
       params$tickcolour <- ifelse(params$tick, params$colour, NA)
       
-      axisgrob <- guide_axis(scales::rescale(params$values, from=range), labels, side, theme, range, default, params)
+      axisgrob <- guide_axis(scales::rescale(params$values, from=range), labels, side, theme, default, params)
     } else {
-      axisgrob <- guide_axis(NA, NA, side, theme, range, element_blank(), data.frame(tickcolour=NA))
+      axisgrob <- guide_axis(NA, NA, side, theme, element_blank(), data.frame(tickcolour=NA))
     }
     
     gt_index <- which(axisgrob$childrenOrder == 'axis')
@@ -345,7 +320,7 @@ AAList <- ggplot2::ggproto("AAList", NULL,
         
         next_grobs <- guide_axis(
           scales::rescale(a$get_param('value'), from=range), 
-          a$label(), side, theme, range, default, gp_df)
+          a$label(), side, theme, default, gp_df)
         
         axisgrob$children[[gt_index]] <- gtable_add_grob(
           x = axisgrob$children[[gt_index]],

@@ -17,7 +17,7 @@ a \%|W|\% b
 
 a \%||\% b
 
-guide_axis(at, labels, position = "right", theme)
+guide_axis(at, labels, position = "right", theme, label_element, gp_df)
 }
 \arguments{
 \item{x}{The object to inquery is a \code{waiver}.}

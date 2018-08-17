@@ -29,7 +29,8 @@ Imports:
     gridExtra,
     gtable,
     knitr (>= 1.12),
-    lattice
+    lattice,
+    scales
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -14,7 +14,7 @@
 \alias{GeomPointLine}
 \alias{GeomSideRange}
 \title{ggproto classes used in lemon!}
-\format{An object of class \code{AAList} (inherits from \code{ggproto}, \code{gg}) of length 5.}
+\format{An object of class \code{AAList} (inherits from \code{ggproto}, \code{gg}) of length 6.}
 \usage{
 AAList
 }

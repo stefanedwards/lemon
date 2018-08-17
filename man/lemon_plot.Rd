@@ -17,6 +17,6 @@ as.lemon_plot(plot)
 }
 \description{
 Lemon plot basically hijacks ggplot2's building process and allows us
-to change some things.
+to change some things. Used by \code{\link{annotate_y_axis}}.
 }
 \keyword{internal}
