@@ -5,20 +5,15 @@ p <- ggplot(mtcars, aes(mpg, hp, colour=disp)) + geom_point()
 l <- p + annotated_y_axis('mark at', y=200, tick=TRUE)
 l
 
-(l + annotated_x_axis('| good economy ->', x=25, print_value=FALSE, hjust=0))
+(l + annotated_x_axis('| good economy ->', x=25, print_value=FALSE, hjust=0, tick=TRUE))
 
-l + annotated_y_axis("x^2 == .(y)", y=150, parsed=FALSE,  tick=TRUE) +
-    annotated_y_axis("x^2 == .(y)", y=100, parsed=TRUE, tick=TRUE)
+l + annotated_y_axis("x^2 == .(y)", y=150, parsed=FALSE,  tick=FALSE) +
+    annotated_y_axis("x^2 + bar(x) == .(y)", y=mean(mtcars$hp), parsed=TRUE, tick=TRUE)
 
-l + annotated_y_axis("bar(x) = .(y)", y = mean(mtcars$hp), side='left', parsed=TRUE)
+p + annotated_y_axis("bar(x) == .(y)", y = mean(mtcars$hp),  parsed=TRUE, tick=FALSE)
+# use double equal signs, or the output becomes '=(...)' for some reason.
 
-l$axis_annotation$draw('right', is.primary=FALSE, c(52, 335), theme_get())
-
-p + annotated_y_axis('hello', y=0.5, tick=TRUE)
-
-l + annotated_y_axis('nah', y=300,  tick=TRUE)
-l$axis_annotation$annotations
-
+l + annotated_y_axis('this is midway', y=sum(range(mtcars$hp))/2, print_value = FALSE, side='left')
 
 
 l <- l + annotated_y_axis('nah', y=300,  tick=TRUE) +

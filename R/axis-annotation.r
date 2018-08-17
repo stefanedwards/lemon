@@ -286,9 +286,8 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     
     default <- ggplot2::calc_element(label_render, theme)
     tick = is.null(render_gpar(theme, tick_render))
-    if (side == 'left') browser()
     
-    # coerce to single data.frame where possible # inherits(a, 'AxisAnnotationText')
+    # coerce to single data.frame where possible 
     are_reducible <- vapply(annotations, function(a) a$reducible %||% FALSE, logical(1))
     if (sum(are_reducible) > 0) {
 
@@ -316,11 +315,19 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       
       axisgrob <- guide_axis(scales::rescale(params$values, from=range), labels, side, theme, range, default, params)
     } else {
-      axisgrob <- guide_axis(0, NA, side, theme, range, element_blank(), data.frame(tickcolour=NA))
+      axisgrob <- guide_axis(NA, NA, side, theme, range, element_blank(), data.frame(tickcolour=NA))
     }
     
     gt_index <- which(axisgrob$childrenOrder == 'axis')
     if (sum(!are_reducible) > 0) {
+      
+      order <- switch(side,
+        top = list(names=c('label','tick'), t=c(1,2), l=c(1,1), r=c(1,1), b=c(1,2)),
+        bottom = list(names=c('tick','label'), t=c(1,2), l=c(1,1), r=c(1,1), b=c(1,2)),
+        right = list(names=c('tick','label'), t=c(1,1), l=c(1,2), r=c(1,2), b=c(1,1)),
+        left = list(names=c('label','tick'), t=c(1,1), l=c(1,2), r=c(1,2), b=c(1,1))
+      )
+      
       for (i in which(!are_reducible)) {
         a <- annotations[[i]]
         gp_df <- data.frame(
@@ -339,12 +346,12 @@ AAList <- ggplot2::ggproto("AAList", NULL,
         next_grobs <- guide_axis(
           scales::rescale(a$get_param('value'), from=range), 
           a$label(), side, theme, range, default, gp_df)
-       ## to do: discern sides.
+        
         axisgrob$children[[gt_index]] <- gtable_add_grob(
           x = axisgrob$children[[gt_index]],
           grobs = next_grobs$children[[gt_index]]$grobs[1:2],
-          t=c(1,1), l=c(1,2), b=c(1,1), r=c(1,2), clip='off',
-          name=paste(c('tick','label'), i, sep='-')
+          t=order$t, l=order$l, r=order$l, b=order$b, clip='off',
+          name=paste(order$names, i, sep='-')
         )
       }
     }
