@@ -268,7 +268,12 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     grid::gList(gr_points, gr_distant, gr_short)
   },
   
-  draw_key = ggplot2::draw_key_point
+  draw_key = function(data, params, size) {
+    p <- ggplot2::draw_key_point(data, params, size)
+    data$size <- params$linesize
+    a <- ggplot2::draw_key_path(data, params, size)
+    grid::grobTree(a, p)
+  }
 )
 
 
