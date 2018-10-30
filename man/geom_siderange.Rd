@@ -6,8 +6,8 @@
 \usage{
 geom_siderange(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", ..., distance = 3, arrow = NULL,
-  lineend = "butt", sides = "bl", start = NA, end = NA, na.rm = FALSE,
-  show.legend = NA, inherit.aes = TRUE)
+  lineend = "butt", sides = "bl", start = NA, end = NA,
+  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
@@ -49,7 +49,7 @@ If \code{TRUE}, missing values are silently removed.}
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetic, rather
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the 
-default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
+default plot specification.}
 }
 \description{
 Projects data onto horizontal or vertical edge of panels.

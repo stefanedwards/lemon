@@ -25,7 +25,7 @@ guide_axis(at, labels, position = "right", theme, label_element, gp_df)
 \description{
 The waivers are from \file{ggplot2/R/utilities.r}.
 
-From R/guide-axes.r
+From R/guide-axis.r
 }
 \seealso{
 \code{\link[ggplot2]{waiver}}

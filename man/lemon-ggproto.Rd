@@ -12,6 +12,7 @@
 \alias{FacetWrapRepeatLabels}
 \alias{GeomPointPath}
 \alias{GeomPointLine}
+\alias{GeomPointRangeLine}
 \alias{GeomSideRange}
 \title{ggproto classes used in lemon!}
 \format{An object of class \code{AAList} (inherits from \code{ggproto}, \code{gg}) of length 6.}

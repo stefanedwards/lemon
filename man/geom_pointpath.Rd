@@ -3,21 +3,28 @@
 \name{geom_pointpath}
 \alias{geom_pointpath}
 \alias{geom_pointline}
+\alias{geom_pointrangeline}
 \title{Connected points}
 \usage{
 geom_pointpath(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, distance = unit(3, "pt"), shorten = 0.5,
-  threshold = 0.1, lineend = "butt", linejoin = "round", linemitre = 1,
-  linesize = 0.5, linecolour = waiver(), linecolor = waiver(),
-  arrow = NULL, ...)
+  threshold = 0.1, lineend = "butt", linejoin = "round",
+  linemitre = 1, linesize = 0.5, linecolour = waiver(),
+  linecolor = waiver(), arrow = NULL, ...)
 
 geom_pointline(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, distance = unit(3, "pt"), shorten = 0.5,
-  threshold = 0.1, lineend = "butt", linejoin = "round", linemitre = 1,
-  linesize = 0.5, linecolour = waiver(), linecolor = waiver(),
-  arrow = NULL, ...)
+  threshold = 0.1, lineend = "butt", linejoin = "round",
+  linemitre = 1, linesize = 0.5, linecolour = waiver(),
+  linecolor = waiver(), arrow = NULL, ...)
+
+geom_pointrangeline(mapping = NULL, data = NULL, stat = "identity",
+  position = "identity", na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
+  linejoin = "round", linemitre = 1, linesize = 0.5,
+  linecolour = waiver(), linecolor = waiver(), arrow = NULL, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
@@ -44,15 +51,16 @@ If \code{TRUE}, missing values are silently removed.}
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetic, rather
 than combining with them. This is most useful for helper functions that
 define both data and aesthetics and shouldn't inherit behaviour from the 
-default plot specification, e.g. \code{\link[ggplot2]{borders}}.}
+default plot specification.}
 
-\item{distance}{Gap size between point and end of lines when the distance
-between points exceeds \code{threshold};
-use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.}
+\item{distance}{Gap size between point and end of lines;
+use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
+When \code{NULL} or \code{NA}, gapping and \code{shorten}/\code{treshold}
+is disabled. To keep the latter, set to 0.}
 
-\item{threshold, shorten}{Use \code{threshold} to adjust when the line between
-two points should be drawn with a gap (per argument above) or shortened by
-the proportion given by \code{shorten}.}
+\item{shorten, threshold}{When points are closer than \code{threshold},
+shorten the line by the proportion in \code{shorten} instead of adding
+a gap by \code{distance}.}
 
 \item{lineend}{Line end style (round, butt, square).}
 
@@ -86,9 +94,6 @@ Both \code{geom_pointpath} and \code{geom_pointline} will only
 connect observations within the same group! However,
 if \code{linecolour} is \emph{not} \code{waiver()}, connections
 will be made between groups, but possible in an incorrect order.
-\strong{Note!} If the x-variable is a factor, the `group' aesthetic will
-\emph{also} use this, thus lines between x-values are not grouped.
-Use \code{aes(group=...)} to enforce a group across x-values.
 }
 \section{Aesthetics}{
 

@@ -35,7 +35,7 @@ and places legend in a margin.
 }
 \examples{
 library(ggplot2)
-dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+dsamp <- diamonds[sample(nrow(diamonds), 300), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)
 p3 <- qplot(color, price, data = dsamp, colour = clarity)

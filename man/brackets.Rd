@@ -6,8 +6,8 @@
 \alias{brackets_vertical}
 \title{Axis brackets instead of axis ticks and lines}
 \usage{
-brackets_horizontal(direction = c("up", "down"), length = unit(0.05, "npc"),
-  tick.length = waiver())
+brackets_horizontal(direction = c("up", "down"), length = unit(0.05,
+  "npc"), tick.length = waiver())
 
 brackets_vertical(direction = c("left", "right"), length = unit(0.05,
   "npc"), tick.length = waiver())

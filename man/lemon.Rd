@@ -4,7 +4,6 @@
 \name{lemon}
 \alias{lemon}
 \alias{lemon-package}
-\alias{lemon-package}
 \title{Freshing up your ggplots}
 \source{
 \url{https://github.com/stefanedwards/lemon}

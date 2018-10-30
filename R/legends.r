@@ -174,7 +174,7 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
 #' @seealso \code{\link{g_legend}}, \code{\link{reposition_legend}}
 #' @examples
 #' library(ggplot2)
-#' dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+#' dsamp <- diamonds[sample(nrow(diamonds), 300), ]
 #' p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 #' p2 <- qplot(cut, price, data = dsamp, colour = clarity)
 #' p3 <- qplot(color, price, data = dsamp, colour = clarity)

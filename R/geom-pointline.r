@@ -8,7 +8,7 @@ NULL
 #' both lines and points stay connected, and b) provides a visual effect
 #' by adding a small gap between the point and the end of line.
 #' \code{geom_pointline} combines \code{\link[ggplot2]{geom_point}} and
-#' \code{\link[ggplot2]{geom_line}}.
+#' \code{\link[ggplot2]{geom_path}}.
 #' 
 #' \code{geom_pointpath} connects the observations in the same order in which
 #' they appear in the data.
@@ -40,7 +40,7 @@ NULL
 #'         \code{linesize} and cannot be linked to an aesthetic.
 #' }
 #' @param mapping Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
-#'   or \code{\link[ggpot2]{aes_}}.
+#'   or \code{\link[ggplot2]{aes_}}.
 #' @param data The data to be displayed in this layer.
 #' @param stat The statistical transformation to use on the data for this layer, 
 #'   as a string.
@@ -53,7 +53,7 @@ NULL
 #' @param lineend Line end style (round, butt, square).
 #' @param linejoin Line join style (round, mintre, bevel).
 #' @param linemitre Line mitre limit (number greater than 1).
-#' @param arraow Arrow specification, as created by \code{\link[grid]{arrow}}.
+#' @param arrow Arrow specification, as created by \code{\link[grid]{arrow}}.
 #' @param na.rm If \code{FALSE} (default), missing values are removed with a warning.
 #'   If \code{TRUE}, missing values are silently removed.
 #' @param show.legend Logical. Should this layer be included in the legends?
@@ -62,7 +62,7 @@ NULL
 #' @param inherit.aes If \code{FALSE}, overrides the default aesthetic, rather
 #'   than combining with them. This is most useful for helper functions that
 #'   define both data and aesthetics and shouldn't inherit behaviour from the 
-#'   default plot specification, e.g. \code{\link[ggplot2]{border}}.
+#'   default plot specification.
 #' @param linesize Width of of line.
 #' @param distance Gap size between point and end of lines;
 #'   use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.

@@ -4,9 +4,10 @@
 \alias{reposition_legend}
 \title{Reposition a legend onto a panel}
 \usage{
-reposition_legend(aplot, position = NULL, legend = NULL, panel = "panel",
-  x = NULL, y = NULL, just = NULL, name = "guide-box", clip = "on",
-  offset = c(0, 0), z = Inf, plot = TRUE)
+reposition_legend(aplot, position = NULL, legend = NULL,
+  panel = "panel", x = NULL, y = NULL, just = NULL,
+  name = "guide-box", clip = "on", offset = c(0, 0), z = Inf,
+  plot = TRUE)
 }
 \arguments{
 \item{aplot}{a ggplot2 or gtable object.}

@@ -9,16 +9,18 @@
 \title{Cartesian coordinates with capped axis lines.}
 \usage{
 coord_capped_cart(xlim = NULL, ylim = NULL, expand = TRUE,
-  top = waiver(), left = waiver(), bottom = waiver(), right = waiver(),
-  gap = 0.01)
+  top = waiver(), left = waiver(), bottom = waiver(),
+  right = waiver(), gap = 0.01)
 
 coord_capped_flip(xlim = NULL, ylim = NULL, expand = TRUE,
-  top = waiver(), left = waiver(), bottom = waiver(), right = waiver(),
+  top = waiver(), left = waiver(), bottom = waiver(),
+  right = waiver(), gap = 0.01)
+
+capped_horizontal(capped = c("both", "left", "right", "none"),
   gap = 0.01)
 
-capped_horizontal(capped = c("both", "left", "right", "none"), gap = 0.01)
-
-capped_vertical(capped = c("top", "bottom", "both", "none"), gap = 0.01)
+capped_vertical(capped = c("top", "bottom", "both", "none"),
+  gap = 0.01)
 }
 \arguments{
 \item{xlim, ylim}{Limits for the x and y axes.}

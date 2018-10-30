@@ -40,11 +40,6 @@ A function that returns file paths constructed from
 \description{
 The \code{.dot} functions creates functions that allows relative-like 
 specification of paths, but are safe from changing working directory.
-
-\code{.dot2} allows specification of multiple .dot functions while 
-broadcasting the functions' names and target.
-This function also pushes the function into the calling environment,
-potentially overwriting previous funtions with same name.
 }
 \examples{
 

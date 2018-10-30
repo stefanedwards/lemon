@@ -5,13 +5,15 @@
 \alias{facet_rep_wrap}
 \title{Repeat axis lines and labels across all facet panels}
 \usage{
-facet_rep_grid(..., repeat.tick.labels = FALSE)
+facet_rep_grid(..., scales = "fixed", repeat.tick.labels = FALSE)
 
-facet_rep_wrap(..., repeat.tick.labels = FALSE)
+facet_rep_wrap(..., scales = "fixed", repeat.tick.labels = FALSE)
 }
 \arguments{
 \item{...}{Arguments used for \code{\link[ggplot2]{facet_grid}} or
 \code{\link[ggplot2]{facet_wrap}}.}
+
+\item{scales}{As for \code{facet_grid}, but alters behaviour of \code{repeat.tick.labels}.}
 
 \item{repeat.tick.labels}{When \code{FALSE} (default), axes on inner panels
 have their tick labels (i.e. the numbers) removed.
