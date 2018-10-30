@@ -70,8 +70,10 @@ p + facet_wrap(~ interaction(cyl, drv), scales='free') +
 ```
 
 We can specify which labels to keep with `facet_rep_wrap`. 
-Default is `repeat.tick.labels=FALSE`
-which removes tick labels on all axes (shown in earlier).
+Default is `repeat.tick.labels=FALSE` when `scales='fixed'`
+which removes tick labels on all axes (shown in earlier figure).
+When using free scales on `facet_rep_wrap`, the appropiate 
+labels are drawn.
 
 ```{r facet_rep_wrap_left,fig.cap='With `repeat.tick.labels` we are free to specify which sides to keep.'}
 p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'left')

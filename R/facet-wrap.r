@@ -3,6 +3,7 @@ NULL
 
 #' @rdname facet_rep
 #' @inheritParams facet_rep_grid
+#' @param scales As for \code{facet_grid}, but alters behaviour of \code{repeat.tick.labels}.
 #' @import ggplot2
 #' @export
 facet_rep_wrap <- function(..., scales = 'fixed', repeat.tick.labels=FALSE) {

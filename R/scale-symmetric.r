@@ -54,7 +54,7 @@ scale_x_symmetric <- function(mid=0, ...) {
 #' @export
 #' @inheritParams scale_x_symmetric
 scale_y_symmetric <- function(mid=0, ...) {
-  set_symmetric_scale(ggplot2::scale_x_continuous(...), mid=mid)
+  set_symmetric_scale(ggplot2::scale_y_continuous(...), mid=mid)
 }
 
 #' #' @rdname lemon-ggproto

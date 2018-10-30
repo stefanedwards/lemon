@@ -16,6 +16,9 @@
   The command extends the ggplot2 object to a 'lemon_plot'-class, which 
   allows the object to have additional plotting routines. See `?lemon_plot`.
 
+* More axes! `scale_x_symmetric` and `scale_y_symmetric` to ensure
+  your axis is symmetric around some value.
+
 # lemon 0.4.1
 
 * `guidebox_as_column`: Reorders the keys and labels in a legend to a 
