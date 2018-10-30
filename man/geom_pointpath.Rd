@@ -3,15 +3,24 @@
 \name{geom_pointpath}
 \alias{geom_pointpath}
 \alias{geom_pointline}
+\alias{geom_pointrangeline}
 \title{Connected points}
 \usage{
 geom_pointpath(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
-  linejoin = "round", linemitre = 1, linesize = 0.5,
-  linecolour = waiver(), linecolor = waiver(), arrow = NULL, ...)
+  inherit.aes = TRUE, distance = unit(3, "pt"), shorten = 0.5,
+  threshold = 0.1, lineend = "butt", linejoin = "round",
+  linemitre = 1, linesize = 0.5, linecolour = waiver(),
+  linecolor = waiver(), arrow = NULL, ...)
 
 geom_pointline(mapping = NULL, data = NULL, stat = "identity",
+  position = "identity", na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE, distance = unit(3, "pt"), shorten = 0.5,
+  threshold = 0.1, lineend = "butt", linejoin = "round",
+  linemitre = 1, linesize = 0.5, linecolour = waiver(),
+  linecolor = waiver(), arrow = NULL, ...)
+
+geom_pointrangeline(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
   linejoin = "round", linemitre = 1, linesize = 0.5,
@@ -45,7 +54,13 @@ define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification, e.g. \code{\link[ggplot2]{border}}.}
 
 \item{distance}{Gap size between point and end of lines;
-use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.}
+use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
+When \code{NULL} or \code{NA}, gapping and \code{shorten}/\code{treshold}
+is disabled. To keep the latter, set to 0.}
+
+\item{shorten, threshold}{When points are closer than \code{threshold},
+shorten the line by the proportion in \code{shorten} instead of adding
+a gap by \code{distance}.}
 
 \item{lineend}{Line end style (round, butt, square).}
 
@@ -105,8 +120,11 @@ aesthetics (required aesthetics are in bold):
 p <- ggplot(mtcars, aes(wt, mpg))
 p + geom_point() + geom_line()
 p + geom_pointline()
+
 p + geom_pointline(linecolour='brown')
 p + geom_pointline(colour='green')
+
+p + geom_pointpath()
 
 # Add aesthetic mappings
 p + geom_pointline(aes(colour = factor(cyl)))

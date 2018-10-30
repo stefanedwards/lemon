@@ -19,15 +19,8 @@ NULL
 #' if \code{linecolour} is \emph{not} \code{waiver()}, connections
 #' will be made between groups, but possible in an incorrect order.
 #' 
-#' The \strong{tweak} parameter can be used to fine adjust the slope of a line.
-#' If two points are very close horizontally or vertically, something happens
-#' and the line may appear to be pointing in the wrong direction 
-#' (e.g. upwards when the point indicates it should be downwards). I have no
-#' explanation for this, other than it could be a rounding error.
-#' The size of this weaking parameter depends on the physical size of the output.
-#' Good values could be \code{c(0.02, 0.02)} for very small graphs,
-#' \code{c(0.02, 0.06)} for a low, but wide graph, or \code{c(0.06, 0.06)} for
-#' a larger graph.
+#' 
+#' 
 #' 
 #' 
 #' @section Aesthetics:
@@ -73,10 +66,13 @@ NULL
 #' @param linesize Width of of line.
 #' @param distance Gap size between point and end of lines;
 #'   use \code{\link[grid]{unit}}. Is converted to 'pt' if given as simple numeric.
+#'   When \code{NULL} or \code{NA}, gapping and \code{shorten}/\code{treshold}
+#'   is disabled. To keep the latter, set to 0.
+#' @param shorten,threshold When points are closer than \code{threshold},
+#'   shorten the line by the proportion in \code{shorten} instead of adding
+#'   a gap by \code{distance}.
 #' @param linecolour,linecolor When not \code{waiver()}, the line is drawn with 
 #'   this colour instead of that set by aesthetic \code{colour}.
-#' @param tweak Numeric vector for x or y tweaking parameter.
-#'   When \code{NULL} and \code{NA}, \code{tweak = c(0,0).}
 #' 
 #' @example inst/examples/geom-pointline-ex.r
 #' @export
@@ -147,9 +143,12 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
+
     # Test input parameters
-    if (is.null(distance) || is.na(distance)) 
+    if (is.null(distance) || is.na(distance)) {
       distance=grid::unit(0, 'pt')
+      threshold = 0
+    }
     if (!grid::is.unit(distance) && is.numeric(distance)) 
       distance <- grid::unit(distance, 'pt')
     
@@ -215,7 +214,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       length <- sqrt(deltax**2 + deltay**2);
     })
     
-    if (any(munched$length > threshold)) {
+    if (any(munched$length > threshold, na.rm=TRUE)) {
       # Calculate angle between each pair of points and move endpoints:
       if (as.numeric(distance) != 0) {
         df <- within(munched[munched$length > threshold,], {
@@ -226,13 +225,20 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
           y = grid::unit(y, 'native') + size*sin(theta) + distance*sin(theta);
           y1 = grid::unit(y1, 'native') - size*sin(theta) - distance*sin(theta);
         })
+      } else {
+        df <- within(munched[munched$length > threshold,], {
+          x = grid::unit(x, 'native');
+          x1 = grid::unit(x1, 'native');
+          y = grid::unit(y, 'native');
+          y1 = grid::unit(y1, 'native');
+        })
       }
       
       gr_distant <- with(df, grid::segmentsGrob(
         x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
         arrow = arrow,
         gp = grid::gpar(
-          col = 'green', #ggplot2::alpha(colour, alpha)[!end],
+          col = ggplot2::alpha(colour, alpha)[!end],
           fill = ggplot2::alpha(colour, alpha)[!end],
           lwd = linesize * .pt,
           lty = linetype[!end],
@@ -243,9 +249,11 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       ))
       if (!is.waive(linecolour)) 
         gr_distant$gp$col <- linecolour
+    } else {
+      gr_distant <- zeroGrob()
     }
-    
-    if (any(munched$length <= threshold)) {
+
+    if (threshold > 0 && any(munched$length <= threshold, na.rm=TRUE)) {
       df <- within(munched[munched$length <= threshold,], {
         x  = x + shorten/2 * deltax; x = grid::unit(x, 'native');
         y  = y + shorten/2 * deltay; y = grid::unit(y, 'native');
@@ -257,7 +265,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
         arrow = arrow,
         gp = grid::gpar(
-          col = 'red', #ggplot2::alpha(colour, alpha)[!end],
+          col = ggplot2::alpha(colour, alpha)[!end],
           fill = ggplot2::alpha(colour, alpha)[!end],
           lwd = linesize * .pt,
           lty = linetype[!end],
@@ -268,11 +276,13 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       ))
       if (!is.waive(linecolour)) 
         gr_short$gp$col <- linecolour
+    } else {
+      gr_short <- zeroGrob()
     }
 
     
     
-    saveRDS(munched, 'munced.rds')
+    #saveRDS(munched, 'munced.rds')
     
     
     
@@ -290,6 +300,8 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            position = "identity", na.rm = FALSE,
                            show.legend = NA, inherit.aes = TRUE, 
                            distance = unit(3, 'pt'), 
+                           shorten = 0.5,
+                           threshold = 0.1,                           
                            lineend = "butt",
                            linejoin = "round",
                            linemitre = 1,
@@ -297,7 +309,6 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linecolour = waiver(),
                            linecolor = waiver(),
                            arrow = NULL,
-                           tweak = c(0.02, 0.03), 
                            ...) {
   
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
@@ -313,13 +324,14 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
     params = list(
       na.rm = na.rm,
       distance = distance,
+      shorten = shorten,
+      threshold = threshold,      
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
       linesize = 0.5,
       linecolour = linecolour,
       arrow = arrow,    
-      tweak = tweak,
       ...
     )
   )
@@ -384,7 +396,7 @@ geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @keywords internal
 #' @format NULL
 #' @usage NULL
-#' @export
+#  @export
 #' @import ggplot2
 #' @import gtable
 GeomPointRangeLine <- ggproto("GeomPointRangeLine", GeomPointLine,
