@@ -5,10 +5,16 @@ NULL
 #' @inheritParams facet_rep_grid
 #' @import ggplot2
 #' @export
-facet_rep_wrap <- function(..., repeat.tick.labels=FALSE) {
-  f <- facet_wrap(...)
+facet_rep_wrap <- function(..., scales = 'fixed', repeat.tick.labels=FALSE) {
+  f <- facet_wrap(scales=scales, ...)
 
-  params <- append(f$params, list(repeat.tick.labels=reduce.ticks.labels.settings(repeat.tick.labels)))
+  rtl <- reduce.ticks.labels.settings(repeat.tick.labels)
+  if (scales %in% c('free','free_y') && !any(c('left','right') %in% rtl))
+    rtl <- c(rtl, 'left')
+  if (scales %in% c('free','free_x') && !any(c('top','bottom') %in% rtl))
+    rtl <- c(rtl, 'bottom')
+
+  params <- append(f$params, list(repeat.tick.labels=rtl))
   ggplot2::ggproto(NULL, FacetWrapRepeatLabels,
           shrink=f$shrink,
           params=params)

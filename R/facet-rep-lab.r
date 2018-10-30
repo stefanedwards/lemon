@@ -14,6 +14,7 @@ NULL
 #'
 #' @param ... Arguments used for \code{\link[ggplot2]{facet_grid}} or
 #'            \code{\link[ggplot2]{facet_wrap}}.
+#' @param scales As for \code{facet_grid}, but alters behaviour of \code{repeat.tick.labels}.
 #' @param repeat.tick.labels When \code{FALSE} (default), axes on inner panels
 #'                           have their tick labels (i.e. the numbers) removed.
 #'                           Set this to \code{TRUE} to keep all labels,
@@ -21,10 +22,16 @@ NULL
 #'                           keep only those specified. Also acceps 'x' and 'y'.
 #' @rdname facet_rep
 #' @export
-facet_rep_grid <- function(..., repeat.tick.labels=FALSE) {
-  f <- ggplot2::facet_grid(...)
+facet_rep_grid <- function(..., scales='fixed', repeat.tick.labels=FALSE) {
+  f <- ggplot2::facet_grid(scales=scales, ...)
   
-  params <- append(f$params, list(repeat.tick.labels=reduce.ticks.labels.settings(repeat.tick.labels)))
+  rtl <- reduce.ticks.labels.settings(repeat.tick.labels)
+  if (scales %in% c('free','free_y') && !any(c('left','right') %in% rtl))
+    rtl <- c(rtl, 'left')
+  if (scales %in% c('free','free_x') && !any(c('top','bottom') %in% rtl))
+    rtl <- c(rtl, 'bottom')
+  
+  params <- append(f$params, list(repeat.tick.labels=rtl))
   ggplot2::ggproto(NULL, FacetGridRepeatLabels,
           shrink=f$shrink,
           params=params)
