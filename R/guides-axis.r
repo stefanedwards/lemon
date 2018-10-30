@@ -5,15 +5,17 @@
 # @param labels at ticks
 # @param position of axis (top, bottom, left or right)
 # @param range of data values
-guide_axis <- function(at, labels, position = "right", theme) {
+#' @import grid
+#' @import gtable
+guide_axis <- function(at, labels, position = "right", theme, label_element, gp_df) {
   if (length(at) == 0)
     return(zeroGrob())
-
-  at <- unit(at, "native")
+  
+  at <- grid::unit(at, "native")
   position <- match.arg(position, c("top", "bottom", "right", "left"))
 
-  zero <- unit(0, "npc")
-  one <- unit(1, "npc")
+  zero <- grid::unit(0, "npc")
+  one <- grid::unit(1, "npc")
 
   label_render <- switch(position,
     top = "axis.text.x.top", bottom = "axis.text.x.bottom",
@@ -41,12 +43,32 @@ guide_axis <- function(at, labels, position = "right", theme) {
     }
   }
 
-  labels <- switch(position,
-    top = ,
-    bottom = element_render(theme, label_render, labels, x = label_x, margin_y = TRUE),
-    right = ,
-    left =  element_render(theme, label_render, labels, y = label_y, margin_x = TRUE))
-
+  if (missing(gp_df)) {
+    label_render <- switch(position,
+       top = "axis.text.x.top", bottom = "axis.text.x",
+       left = "axis.text.y", right = "axis.text.y.right"
+    )
+    
+    labels <- switch(position, 
+      top = ,
+      bottom = element_render(theme, label_render, labels, x = label_x, expand_y = TRUE),
+      right = ,
+      left =  element_render(theme, label_render, labels, y = label_y, expand_x = TRUE)
+    )
+    gp_df <- list(tickcolour = NULL)
+  } else {
+    labels <- switch(position,
+      top = ,
+      bottom = element_grob(label_element, label = labels, x = label_x, margin_y = TRUE,
+                            family=gp_df$family, face=gp_df$face, colour=gp_df$colour, size=gp_df$size, 
+                            hjust=gp_df$hjust, vjust=gp_df$vjust, angle=gp_df$angle),
+      right = ,
+      left = element_grob(label_element, label = labels, y = label_y, margin_x = TRUE,
+                          family=gp_df$family, face=gp_df$face, colour=gp_df$colour, size=gp_df$size, 
+                          hjust=gp_df$hjust, vjust=gp_df$vjust, angle=gp_df$angle)
+    )
+  }
+  
   line <- switch(position,
     top =    element_render(theme, "axis.line.x.top", c(0, 1), c(0, 0), id.lengths = 2),
     bottom = element_render(theme, "axis.line.x.bottom", c(0, 1), c(1, 1), id.lengths = 2),
@@ -72,45 +94,46 @@ guide_axis <- function(at, labels, position = "right", theme) {
     left = element_render(theme, "axis.ticks.y.left",
       x          = rep(unit.c(one - theme$axis.ticks.length, one), nticks),
       y          = rep(at, each = 2),
-      id.lengths = rep(2, nticks))
+      id.lengths = rep(2, nticks),
+      colour = gp_df$tickcolour)
   )
 
   # Create the gtable for the ticks + labels
   gt <- switch(position,
-    top    = gtable_col("axis",
+    top    = gtable::gtable_col("axis",
       grobs   = list(labels, ticks),
       width   = one,
-      heights = unit.c(grobHeight(labels), theme$axis.ticks.length)
+      heights = grid::unit.c(grobHeight(labels), theme$axis.ticks.length)
     ),
-    bottom = gtable_col("axis",
+    bottom = gtable::gtable_col("axis",
       grobs   = list(ticks, labels),
       width   = one,
-      heights = unit.c(theme$axis.ticks.length, grobHeight(labels))
+      heights = grid::unit.c(theme$axis.ticks.length, grobHeight(labels))
     ),
-    right  = gtable_row("axis",
+    right  = gtable::gtable_row("axis",
       grobs   = list(ticks, labels),
-      widths  = unit.c(theme$axis.ticks.length, grobWidth(labels)),
+      widths  = grid::unit.c(theme$axis.ticks.length, grobWidth(labels)),
       height  = one
     ),
-    left   = gtable_row("axis",
+    left   = gtable::gtable_row("axis",
       grobs   = list(labels, ticks),
-      widths  = unit.c(grobWidth(labels), theme$axis.ticks.length),
+      widths  = grid::unit.c(grobWidth(labels), theme$axis.ticks.length),
       height  = one
     )
   )
 
   # Viewport for justifying the axis grob
   justvp <- switch(position,
-    top    = viewport(y = 0, just = "bottom", height = gtable_height(gt)),
-    bottom = viewport(y = 1, just = "top",    height = gtable_height(gt)),
-    right  = viewport(x = 0, just = "left",   width  = gtable_width(gt)),
-    left   = viewport(x = 1, just = "right",  width  = gtable_width(gt))
+    top    = grid::viewport(y = 0, just = "bottom", height = gtable::gtable_height(gt)),
+    bottom = grid::viewport(y = 1, just = "top",    height = gtable::gtable_height(gt)),
+    right  = grid::viewport(x = 0, just = "left",   width  = gtable::gtable_width(gt)),
+    left   = grid::viewport(x = 1, just = "right",  width  = gtable::gtable_width(gt))
   )
-
+  
   absoluteGrob(
-    gList(line, gt),
-    width = gtable_width(gt),
-    height = gtable_height(gt),
+    grid::gList(line, gt),
+    width = gtable::gtable_width(gt),
+    height = gtable::gtable_height(gt),
     vp = justvp
   )
 }

@@ -11,6 +11,11 @@
 
 * Exports the function `%||%` which is simply a "x if not null else y" operator.
 
+* Added axis annotations, simple commands that can annotate on the axis areas.
+  See `annotate_x_axis` and `annotate_y_axis`.
+  The command extends the ggplot2 object to a 'lemon_plot'-class, which 
+  allows the object to have additional plotting routines. See `?lemon_plot`.
+
 # lemon 0.4.1
 
 * `guidebox_as_column`: Reorders the keys and labels in a legend to a 

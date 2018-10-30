@@ -29,13 +29,16 @@ Imports:
     gridExtra,
     gtable,
     knitr (>= 1.12),
-    lattice
+    lattice,
+    scales
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0.9000
 Collate: 
     'ggplot2.r'
+    'lemon-plot.r'
+    'axis-annotation.r'
     'brackets.R'
     'coord-flex.r'
     'coord-capped.r'
