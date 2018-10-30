@@ -1,8 +1,8 @@
 # Rproject
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^devel/$
-^devel\$
+^/devel/$
+^\devel\$
 ^lib/$
 ^lib\$
 .Rprofile
