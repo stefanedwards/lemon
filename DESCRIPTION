@@ -33,7 +33,7 @@ Imports:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Collate: 
     'ggplot2.r'
     'brackets.R'
@@ -50,6 +50,7 @@ Collate:
     'guides-axis.r'
     'legends.r'
     'lemon.r'
+    'scale-symmetric.r'
 Suggests:
     rmarkdown,
     stringr,

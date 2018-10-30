@@ -6,5 +6,5 @@ if (TRUE) {
   test_check("lemon")
 } #else {
 #  test_path <- file.path(getwd(), 'tests', 'testthat')
-#  testthat:::run_tests('Siccuracy', test_path, filter='test_auxil.R', reporter='summary')
+#  testthat:::test_package_dir('lemon', test_path, filter='test_brackets.R', reporter='summary')
 #}
