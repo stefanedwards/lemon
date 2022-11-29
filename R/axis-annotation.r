@@ -7,50 +7,50 @@ NULL
 
 
 
-  
+
 # annotated_y_axis   ## adds a label
 # annotated_y_axis_custom   ## adds a random grob
 
-#' Annotations in the axis
-#' 
+#' Annotations on the axis
+#'
 #' @section: Showing values:
 #' See \link[grDevices]{plotmath} for using mathematical expressions.
 #' The function uses a simple replacement strategy where the literal strings
 #' \code{.(y)} and \code{.(val)} are replaced by the value after round of to
 #' a number of digits, as given by argument \code{digits}.
-#' 
+#'
 #' @rdname annotate_axis
 #' @param label Text to print
 #' @param y,x Position of the annotation.
 #' @param side left or right, or top or bottom side to print annotation
-#' @param parsed Logical (default \code{FALSE}), 
-#'   when \code{TRUE}, uses mathplot for outputting expressions. 
+#' @param parsed Logical (default \code{FALSE}),
+#'   when \code{TRUE}, uses mathplot for outputting expressions.
 #'   See section "Showing values".
 #' @param print_label,print_value,print_both
 #'   Logical; what to show on annotation. Label and/or value.
 #'   \code{print_both} is shortcut for setting both \code{print_label} and
-#'   \code{print_value}. When both is TRUE, uses argument \code{sep} to 
+#'   \code{print_value}. When both is TRUE, uses argument \code{sep} to
 #'   separate the label and value.
-#' @param ... Style settings for label and tick: 
-#'   colour, hjust, vjust, size, fontface, family, rot. 
+#' @param ... Style settings for label and tick:
+#'   colour, hjust, vjust, size, fontface, family, rot.
 #'   When \code{waiver()} (default),
 #'   the relevant theme element is used.
 #' @example inst/examples/axis-annotation-ex.r
-#' @export 
-annotate_y_axis <- function(label, y, 
-                             side = waiver(), 
+#' @export
+annotate_y_axis <- function(label, y,
+                             side = waiver(),
                              print_label = TRUE,
                              print_value = TRUE,
                              print_both = TRUE,
                              parsed = FALSE,
                              ...) {
-  
+
   if (!missing(print_both)) {
     print_label <- print_both
     print_value <- print_both
   }
-  
-  aa <- ggplot2::ggproto(NULL, 
+
+  aa <- ggplot2::ggproto(NULL,
     `_inherit`=if (parsed) AxisAnnotationBquote else AxisAnnotationText,
     aesthetic = 'y',
     side = side,
@@ -59,32 +59,32 @@ annotate_y_axis <- function(label, y,
       y = y,
       value = y,
       print_label = print_label,
-      print_value = print_value,      
+      print_value = print_value,
       ...
     )
   )
-  
-  
+
+
   prependClass(aa, 'axis_annotation')
 }
 #' @rdname annotate_axis
 #' @export
-#' @inheritParams annotate_y_axis
-annotate_x_axis <- function(label, x, 
-                             side = waiver(), 
+#  @inheritParams annotate_y_axis
+annotate_x_axis <- function(label, x,
+                             side = waiver(),
                              print_label = TRUE,
                              print_value = TRUE,
                              print_both = TRUE,
                              parsed = FALSE,
                              ...) {
-  
+
   if (!missing(print_both)) {
     print_label <- print_both
     print_value <- print_both
   }
-  
-  
-  aa <- ggplot2::ggproto(NULL, 
+
+
+  aa <- ggplot2::ggproto(NULL,
      `_inherit`=if (parsed) AxisAnnotationBquote else AxisAnnotationText,
      aesthetic = 'x',
      side = side,
@@ -93,11 +93,11 @@ annotate_x_axis <- function(label, x,
        x = x,
        value = x,
        print_label = print_label,
-       print_value = print_value,      
+       print_value = print_value,
        ...
      )
   )
-  
+
   prependClass(aa, 'axis_annotation')
 }
 
@@ -129,7 +129,7 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
     family = waiver(),
     rot = waiver()
   ),
-  
+
   get_param = function(self, x) {
     mine <- self$params[x]
     mine <- mine[!sapply(mine, is.null)]
@@ -140,13 +140,13 @@ AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
       return(mine[[1]])
     return(mine)
   },
-  
+
   label = function(self) {
     if (!self$get_param('print_label'))
       return(round(self$get_param('value'), self$get_param('digits')))
     if (!self$get_param('print_value'))
       return(self$get_param('label'))
-    paste0(self$get_param('label'), self$get_param('sep'), 
+    paste0(self$get_param('label'), self$get_param('sep'),
            round(self$get_param('value'), self$get_param('digits')))
   }
 )
@@ -157,7 +157,7 @@ AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
   reducible = FALSE,
   params = list(
     print_value = FALSE
-  ), 
+  ),
   label = function(self) {
     l <- self$get_param('label')
     l <- gsub("\\.\\(y\\)", round(self$get_param('value'), self$get_param('digits')), l)
@@ -207,7 +207,7 @@ ggplot_add.axis_annotation <- function(object, plot, object_name) {
 #' @import scales
 AAList <- ggplot2::ggproto("AAList", NULL,
   annotations = NULL,
-  
+
   # self.annotations holds a heriachical list of all annotations, i.e.
   # self.annotations$x = list(...)
   # self.annotations$y = list(...)
@@ -218,58 +218,58 @@ AAList <- ggplot2::ggproto("AAList", NULL,
     }
     if (!inherits(new_annotation, 'AxisAnnotation'))
       stop('Not sure what to do with an object of type',class(new_annotation),'.')
-    
+
     new_aes <- new_annotation$aesthetic[1]
-    if (is.null(new_aes)) 
+    if (is.null(new_aes))
       stop('Adding a axis annotation requires an annotation class with either "x" or "y" as aesthetic.')
 
     self$annotations <- c(self$annotations, list(new_annotation))
   },
-  
-  # See ggplot2/R/scales-.r for cloning. 
+
+  # See ggplot2/R/scales-.r for cloning.
   # Might be necessary to avoid updating a referenced object.
   clone = function(self) {
     ggproto(NULL, self, annotations=lapply(self$annotations, as.is))
   },
-  
+
   n = function(self, aesthetic=NULL) {
     if (is.null(aesthetic))
       return(length(self$annotations))
-    
+
     res <- table(vapply(self$annotations, function(a) a$aesthetic, character(1)))[aesthetic]
     names(res) <- aesthetic
     res[is.na(res)] <- 0
     res
   },
-  
-  
+
+
   draw = function(self, side, is.primary=FALSE, range, theme) {
     annotations <- self$get_annotations(side, is.primary)
     if (length(annotations) == 0)
       return(zeroGrob())
-    
+
     #aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
-    
+
     label_render <- switch(side,
        top = "axis.text.x.top", bottom = "axis.text.x",
        left = "axis.text.y", right = "axis.text.y.right"
     )
     tick_render <- switch(side,
-       top = 'axis.ticks.x.top', bottom = 'axis.ticks.x', 
+       top = 'axis.ticks.x.top', bottom = 'axis.ticks.x',
        left = 'axis.ticks.y', right = 'axis.ticks.y.right'
     )
-    
+
     default <- ggplot2::calc_element(label_render, theme)
     tick = is.null(render_gpar(theme, tick_render))
-    
-    # coerce to single data.frame where possible 
+
+    # coerce to single data.frame where possible
     are_reducible <- vapply(annotations, function(a) a$reducible %||% FALSE, logical(1))
     if (sum(are_reducible) > 0) {
 
       labels <- lapply(annotations[are_reducible], function(a) {
         a$label()
       })
-      
+
       params <- lapply(annotations[are_reducible], function(a) {
         data.frame(
           values = a$get_param('value'),
@@ -283,26 +283,26 @@ AAList <- ggplot2::ggproto("AAList", NULL,
           tick = a$get_param('tick') %|W|% tick,
           stringsAsFactors = FALSE
         )
-      }) 
+      })
       params <- do.call(rbind, params)
-      
+
       params$tickcolour <- ifelse(params$tick, params$colour, NA)
-      
+
       axisgrob <- guide_axis(scales::rescale(params$values, from=range), labels, side, theme, default, params)
     } else {
       axisgrob <- guide_axis(NA, NA, side, theme, element_blank(), data.frame(tickcolour=NA))
     }
-    
+
     gt_index <- which(axisgrob$childrenOrder == 'axis')
     if (sum(!are_reducible) > 0) {
-      
+
       order <- switch(side,
         top = list(names=c('label','tick'), t=c(1,2), l=c(1,1), r=c(1,1), b=c(1,2)),
         bottom = list(names=c('tick','label'), t=c(1,2), l=c(1,1), r=c(1,1), b=c(1,2)),
         right = list(names=c('tick','label'), t=c(1,1), l=c(1,2), r=c(1,2), b=c(1,1)),
         left = list(names=c('label','tick'), t=c(1,1), l=c(1,2), r=c(1,2), b=c(1,1))
       )
-      
+
       for (i in which(!are_reducible)) {
         a <- annotations[[i]]
         gp_df <- data.frame(
@@ -317,11 +317,11 @@ AAList <- ggplot2::ggproto("AAList", NULL,
           tick = a$get_param('tick') %|W|% tick,
           stringsAsFactors = FALSE
         )
-        
+
         next_grobs <- guide_axis(
-          scales::rescale(a$get_param('value'), from=range), 
+          scales::rescale(a$get_param('value'), from=range),
           a$label(), side, theme, default, gp_df)
-        
+
         axisgrob$children[[gt_index]] <- gtable_add_grob(
           x = axisgrob$children[[gt_index]],
           grobs = next_grobs$children[[gt_index]]$grobs[1:2],
@@ -348,22 +348,7 @@ AAList <- ggplot2::ggproto("AAList", NULL,
   #'   side. When FALSE (default), also get those that are waiver.
   get_annotations = function(self, side, is.primary=FALSE) {
     aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
-    
-    #if (self$n(aes) == 0)
-    #  return()
-    
-    #if (is.primary) {
-    #  # only those with side as set
-    #  i <- which(vapply(self$annotations[[aes]], function(a) {
-    #    !is.waive(a$side) && a$side == side
-    #  }, logical(1)))
-    #} else {
-    #  i <- which(vapply(self$annotations[[aes]], function(a) {
-    #    is.waive(a$side) || a$side == side
-    #  }, logical(1)))
-    #}
-    #self$annotations[[aes]][i]
-    
+
     if (is.primary) {
       get <- vapply(self$annotations, function(a) {
         a$aesthetic == aes && (!is.waive(a$side) && a$side == side)
@@ -372,8 +357,8 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       get <- vapply(self$annotations, function(a) {
         a$aesthetic == aes && (is.waive(a$side) || a$side == side)
       }, logical(1))
-    }    
-    
+    }
+
     self$annotations[get]
   }
 

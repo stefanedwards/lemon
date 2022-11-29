@@ -103,7 +103,7 @@ reposition_legend(d, 'top left')
 
 Scavenging the Internet, we have found some functions that help work with legends.
 
-Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring you `g_legend`:
+Frequently appearing on [Stack Overflow](https://stackoverflow.com), we bring you `g_legend`:
 
 ``` r
 library(grid)

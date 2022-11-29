@@ -3,13 +3,29 @@
 \name{annotate_y_axis}
 \alias{annotate_y_axis}
 \alias{annotate_x_axis}
-\title{Annotations in the axis}
+\title{Annotations on the axis}
 \usage{
-annotate_y_axis(label, y, side = waiver(), print_label = TRUE,
-  print_value = TRUE, print_both = TRUE, parsed = FALSE, ...)
+annotate_y_axis(
+  label,
+  y,
+  side = waiver(),
+  print_label = TRUE,
+  print_value = TRUE,
+  print_both = TRUE,
+  parsed = FALSE,
+  ...
+)
 
-annotate_x_axis(label, x, side = waiver(), print_label = TRUE,
-  print_value = TRUE, print_both = TRUE, parsed = FALSE, ...)
+annotate_x_axis(
+  label,
+  x,
+  side = waiver(),
+  print_label = TRUE,
+  print_value = TRUE,
+  print_both = TRUE,
+  parsed = FALSE,
+  ...
+)
 }
 \arguments{
 \item{label}{Text to print}
@@ -20,20 +36,20 @@ annotate_x_axis(label, x, side = waiver(), print_label = TRUE,
 
 \item{print_label, print_value, print_both}{Logical; what to show on annotation. Label and/or value.
 \code{print_both} is shortcut for setting both \code{print_label} and
-\code{print_value}. When both is TRUE, uses argument \code{sep} to 
+\code{print_value}. When both is TRUE, uses argument \code{sep} to
 separate the label and value.}
 
-\item{parsed}{Logical (default \code{FALSE}), 
-when \code{TRUE}, uses mathplot for outputting expressions. 
+\item{parsed}{Logical (default \code{FALSE}),
+when \code{TRUE}, uses mathplot for outputting expressions.
 See section "Showing values".}
 
-\item{...}{Style settings for label and tick: 
-colour, hjust, vjust, size, fontface, family, rot. 
+\item{...}{Style settings for label and tick:
+colour, hjust, vjust, size, fontface, family, rot.
 When \code{waiver()} (default),
 the relevant theme element is used.}
 }
 \description{
-Annotations in the axis
+Annotations on the axis
 }
 \section{}{
  Showing values:
@@ -71,6 +87,6 @@ p <- p + theme_light() + theme(panel.border=element_blank(),
                                axis.line = element_line(), 
                                axis.ticks = element_line(colour='black')) 
 p + coord_capped_cart(bottom='right') + 
-  annotate_y_axis('More than I\\ncan afford', y=125, 
+  annotate_y_axis('More than I\ncan afford', y=125, 
                   print_value=FALSE, tick=TRUE)
 }

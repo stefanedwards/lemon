@@ -171,7 +171,7 @@ The legend repositioned onto the top left corner of the panel.
 Scavenging the Internet, we have found some functions that help work with 
 legends.
 
-Frequently appearing on [Stack Overflow](http://stackoverflow.com), we bring 
+Frequently appearing on [Stack Overflow](https://stackoverflow.com), we bring 
 you `g_legend`:
 ```{r g_legend,fig.height=3,fig.width=2}
 library(grid)

@@ -100,7 +100,7 @@ gtable_show_grill <- function(x, plot=TRUE) {
   invisible(x)
 }
 
-#' @inheritParams gtable_show_grill
+#  @inheritParams gtable_show_grill
 #' @param rect.gp Graphical parameters (\code{\link[grid]{gpar}}) for background drop.
 #' @rdname gtable_show
 #' @import ggplot2 gtable grid

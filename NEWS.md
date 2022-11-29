@@ -6,6 +6,12 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+# lemon 0.4.3
+
+* Bugfix on tests...
+
+# lemon 0.4.2
+
 * Added `element_render` and `render_gpar` that helps render grobs with the
   ggplot2 themes applied. `render_gpar` simply returns a gpar object.
 

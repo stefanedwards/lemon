@@ -69,19 +69,19 @@ g_legend<-function(a.gplot){
 }
 
 #' Guidebox as a column
-#' 
+#'
 #' Takes a plot or legend and returns a single guide-box in a single column,
 #' for embedding in e.g. tables.
-#' 
+#'
 #' @param legend A ggplot2 plot or the legend extracted with \code{\link{g_legend}}.
 #'   \emph{Do not} provide a \code{\link[ggplot2]{ggplotGrob}} as it is indistinguisble
 #'   from a legend.
 #' @param which.legend Integer, a legend can contain multiple guide-boxes (or vice versa?).
 #'   Use this argument to select which to use.
 #' @param add.title Does nothing yet.
-#' @return A \code{\link[gtable]{gtable}} with keys and labels reordered into 
+#' @return A \code{\link[gtable]{gtable}} with keys and labels reordered into
 #'   a single column and each pair of keys and labels in the same cell.
-#' @export 
+#' @export
 #' @seealso \code{\link{g_legend}}
 #' @import ggplot2
 #' @import gtable
@@ -89,7 +89,7 @@ g_legend<-function(a.gplot){
 #' @examples
 #' library(ggplot2)
 #' library(dplyr)
-#' 
+#'
 #' p <- ggplot(diamonds, aes(x=x, y=y, colour=cut)) + geom_point()
 #' guidebox_as_column(p)
 #' p <- p + guides(colour=guide_legend(ncol=2, byrow=TRUE))
@@ -101,34 +101,34 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
   if (gtable::is.gtable(legend) & legend$name == 'guide-box') {
     legend <- legend$grobs[[which.legend]]
   }
-  
+
   # deduct number of keys from legend
   # assumes background, labels, and keys, are all in same order (albeit intermixed)
   bgs <- which(grepl('-bg', legend$layout$name))
   keys <- which(grepl('key-[0-9]+-[0-9]+-[0-9]+', legend$layout$name))
   labels <- which(grepl('label-[0-9]+-[0-9]+', legend$layout$name))
-  
+
   all.keys <- list()
   label.width <- max(legend$widths[legend$layout$l[labels]])
   for (i in 1:length(bgs)) {
     t = legend$layout$t[bgs[i]]
     lr = range(legend$layout[c(bgs[i], keys[i], labels[i]), c('l','r')])
     b = legend$layout$b[bgs[i]]
-    
-    n <- gtable::gtable(heights = legend$heights[t:b], 
+
+    n <- gtable::gtable(heights = legend$heights[t:b],
                         widths = unit.c(legend$widths[lr[1]:(lr[2]-1)], label.width),
                         name = paste0(legend$layout$name[keys[i]], '-all')
     )
     n <- gtable::gtable_add_grob(n, legend$grobs[bgs[i]], t=1, l=1, name=legend$layout$name[bgs[i]])
     n <- gtable::gtable_add_grob(n, legend$grobs[keys[i]], t=1, l=1, name=legend$layout$name[keys[i]])
     n <- gtable::gtable_add_grob(n, legend$grobs[labels[i]], t=1, l=3, name=legend$layout$name[labels[i]])
-    
+
     all.keys[[i]] <- n
   }
   #all.keys$size <- 'first'
   all.keys$ncol <- 1
   do.call(gridExtra::arrangeGrob, all.keys)
-  
+
   # if (add.title) { ## argument
   #   i <- which(legend$layout$name == 'title')
   #   if (length(i) > 0) {
@@ -142,16 +142,16 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
 
 #' Share a legend between multiple plots
 #'
-#' Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} / 
+#' Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} /
 #' \code{grid.arrange},
 #' and places legend in a margin.
 #'
-#' 
 #'
-#' @param ... Objects to plot. First argument should be a ggplot2 object, 
+#'
+#' @param ... Objects to plot. First argument should be a ggplot2 object,
 #'            as the legend is extracted from this.
-#'            Other arguments are passed on to 
-#'            \code{\link[gridExtra]{arrangeGrob}}, 
+#'            Other arguments are passed on to
+#'            \code{\link[gridExtra]{arrangeGrob}},
 #'            including named arguments that are not defined for \code{grid_arrange_shared_legend}.
 #'            ggplot2 objects have their legends hidden.
 #' @param ncol Integer, number of columns to arrange plots in.
@@ -159,15 +159,15 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
 #' @param position 'bottom' or 'right' for positioning legend.
 #' @param plot Logical, when \code{TRUE} (default), draws combined plot on a
 #'             new page.
-#' @return gtable of combined plot, invisibly. 
+#' @return gtable of combined plot, invisibly.
 #'   Draw  gtable object using \code{\link[grid]{grid.draw}}.
 #' @author
 #'   Originally brought to you by
-#'   \href{http://baptiste.github.io/}{Baptiste Auguié} 
+#'   \href{http://baptiste.github.io/}{Baptiste Auguié}
 #'   (\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs})
-#'   and 
+#'   and
 #'   \href{http://rpubs.com/sjackman}{Shaun Jackman}
-#'   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}).   
+#'   (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}).
 #'   Stefan McKinnon Edwards added left and top margins.
 #' @import ggplot2 gridExtra grid
 #' @export
@@ -181,15 +181,15 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
 #' p4 <- qplot(depth, price, data = dsamp, colour = clarity)
 #' grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 4, nrow = 1)
 #' grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2)
-#' 
+#'
 #' # Passing on plots in a grob are not touched
 #' grid_arrange_shared_legend(p1, gridExtra::arrangeGrob(p2, p3, p4, ncol=3), ncol=1, nrow=2)
-#' 
+#'
 #' # We can also pass on named arguments to arrangeGrob:
 #' title <- grid::textGrob('This is grob', gp=grid::gpar(fontsize=14, fontface='bold'))
 #' nt <- theme(legend.position='none')
-#' grid_arrange_shared_legend(p1, 
-#'    gridExtra::arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2, 
+#' grid_arrange_shared_legend(p1,
+#'    gridExtra::arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2,
 #'    top=title)
 grid_arrange_shared_legend <- function(...,
                                        ncol = length(list(...)),
@@ -202,7 +202,7 @@ grid_arrange_shared_legend <- function(...,
   position <- match.arg(position)
   #g <- ggplotGrob(plots[[1]] + theme(legend.position = position))$grobs
   #legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
-  legend <- g_legend(plots[[1]] + theme(legend.position = position)) 
+  legend <- g_legend(plots[[1]] + theme(legend.position = position))
   lheight <- sum(legend$height)
   lwidth <- sum(legend$width)
   gl <- lapply(plots, function(x) {
@@ -251,29 +251,29 @@ arrangeGrob <- gridExtra::arrangeGrob
 #'
 #' To modify the look of the legend, use themes and the natural ggplot functions
 #' found in \code{\link[ggplot2]{guide_legend}}.
-#' 
+#'
 #' \emph{Positioning} is done by argument \code{position} which places the panel
 #' relative in \code{panel} (see below).
 #' \code{position} resolves to three variables, \code{x}, \code{y}, and \code{just}.
 #' \code{x} and \code{y} is the coordinate in \code{panel}, where the anchorpoint of
 #' the legend (set via \code{just}) is placed.
-#' In other words, \code{just='bottom right'} places the bottom right corner of 
+#' In other words, \code{just='bottom right'} places the bottom right corner of
 #' the legend at coordinates \code{(x,y)}.
-#' 
-#' The positioning can be set by argument \code{position} alone, which can be 
-#' further nudged by setting \code{position}, \code{x}, and \code{y}. 
+#'
+#' The positioning can be set by argument \code{position} alone, which can be
+#' further nudged by setting \code{position}, \code{x}, and \code{y}.
 #' Alternatively, manually positioning can be obtained by setting arguments.
 #' \code{x}, \code{y}, and \code{just}.
 #'
-#' \emph{Panel} name is by default \code{panel}, but when using facets it typically 
+#' \emph{Panel} name is by default \code{panel}, but when using facets it typically
 #' takes the form \code{panel-{col}-{row}}, but not for wrapped facets.
 #' Either print result from \code{\link[ggplot2]{ggplotGrob}} or use
-#' \code{\link{gtable_show_names}} to display all the names of the gtable 
+#' \code{\link{gtable_show_names}} to display all the names of the gtable
 #' object.
 #'
 #' \code{panel} takes multiple names, and will then use these components'
 #' extremes for placing the legend.
-#' 
+#'
 #' If \code{panel} is an integer vector of length 2 or 4, these elements are
 #' used directly for top-left and bottom-right coordinates.
 #'
@@ -291,7 +291,7 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' @param offset Numeric vector, sets distance from edge of panel.
 #'               First element for horisontal distance, second for vertical.
 #'               Not used by arguments \code{x} and \code{y}.
-#' @param name,clip,z Parameters forwarded to 
+#' @param name,clip,z Parameters forwarded to
 #'             \code{\link[gtable]{gtable_add_grob}}.
 #' @param plot Logical, when \code{TRUE} (default), draws plot with legend
 #'             repositioned on a new page.
@@ -301,6 +301,7 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' @import ggplot2 grid gridExtra gtable
 #' @author Stefan McKinnon Edwards <sme@@iysik.com>
 #' @seealso \code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}
+#'   and \code{\link{gtable_show_names}} for displaying names of facet's panels.
 #' @export
 #' @examples
 #' library(ggplot2)
@@ -317,7 +318,7 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.5))
 #'
 #' # For using with facets:
-#' reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-3-1')
+#' reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-1-5')
 reposition_legend <- function(aplot,
                              position=NULL,
                              legend=NULL,
@@ -352,7 +353,7 @@ reposition_legend <- function(aplot,
       'right' = c(x=1, y=0.5),
       'center' = c(x=0.5, y=0.5)
     )
-    if (is.null(x)) x = unit(just[1], 'npc') + offset[1] * 
+    if (is.null(x)) x = unit(just[1], 'npc') + offset[1] *
       ifelse(grepl('right', position), -1, ifelse(grepl('left', position), 1, 0))
     if (is.null(y)) y = unit(just[2], 'npc') + offset[2] *
       ifelse(grepl('top', position), -1, ifelse(grepl('bottom', position), 1, 0))
@@ -389,10 +390,10 @@ reposition_legend <- function(aplot,
     }
     name <- paste(name, add, sep='-')
   }
-  
+
   legend$vp <- viewport(x=x, y=y, just=just,  width=sum(legend$widths), height=sum(legend$heights))
   legend$name <- name
-  
+
   # Place legend *under* the lowest axis-line, if z is Inf
   if (is.infinite(z)) {
     axes <- grepl('axis', aplot$layout$name)
@@ -401,17 +402,17 @@ reposition_legend <- function(aplot,
     .z <- z
   }
   .clip <- clip
-  
+
   if (is.character(panel)) {
     pn <- which(aplot$layout$name %in% panel)
     if (length(pn) == 0) stop('Could not find panel named `',panel,'`.')
-  
-    aplot <- with(aplot$layout[pn,], 
-                  gtable_add_grob(aplot, 
-                                  legend, 
-                                  t = min(t), 
-                                  l = min(l), 
-                                  r = max(r), 
+
+    aplot <- with(aplot$layout[pn,],
+                  gtable_add_grob(aplot,
+                                  legend,
+                                  t = min(t),
+                                  l = min(l),
+                                  r = max(r),
                                   b = max(b),
                                   z = .z,
                                   clip = .clip,
@@ -419,18 +420,18 @@ reposition_legend <- function(aplot,
                                   ))
   } else if ((is.numeric(panel) | is.integer(panel)) & length(panel) %in% c(2,4)) {
     panel <- rep(as.integer(panel), length.out=4)
-    aplot <- gtable_add_grob(aplot, 
-                             legend, 
-                             t = panel[1], 
-                             l = panel[2], 
-                             b = panel[3], 
-                             r = panel[4], 
+    aplot <- gtable_add_grob(aplot,
+                             legend,
+                             t = panel[1],
+                             l = panel[2],
+                             b = panel[3],
+                             r = panel[4],
                              z = .z,
                              clip = .clip,
                              name = legend$name
                              )
   }
-  
+
   if (plot) {
     grid.newpage()
     grid.draw(aplot)

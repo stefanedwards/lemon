@@ -73,7 +73,7 @@ coord_capped_cart <- function(xlim = NULL,
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
 
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexCartesian,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -87,7 +87,7 @@ coord_capped_cart <- function(xlim = NULL,
 
 #' @rdname coord_capped
 #' @export
-#' @inheritParams coord_flex_cart
+#  @inheritParams coord_flex_cart
 coord_capped_flip <- function(xlim = NULL,
                               ylim = NULL,
                               expand = TRUE,
@@ -100,9 +100,9 @@ coord_capped_flip <- function(xlim = NULL,
   if (is.character(bottom)) bottom <- capped_horizontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
-  
+
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexFlipped,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -117,7 +117,7 @@ coord_capped_flip <- function(xlim = NULL,
 
 #' @param capped Which end to cap the line. Can be one of (where relevant):
 #'   \code{both}, \code{none}, \code{left}, \code{right}, \code{top}, \code{bottom}.
-#' @inheritParams coord_capped_cart
+#  @inheritParams coord_capped_cart
 #' @rdname coord_capped
 #' @export
 #' @import grid
@@ -155,7 +155,7 @@ capped_horizontal <- function(capped = c('both','left','right','none'),
 #' @export
 capped_horisontal <- capped_horizontal
 
-#' @inheritParams capped_horizontal
+#  @inheritParams capped_horizontal
 #' @rdname coord_capped
 #' @export
 #' @import grid

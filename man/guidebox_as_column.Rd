@@ -17,7 +17,7 @@ Use this argument to select which to use.}
 \item{add.title}{Does nothing yet.}
 }
 \value{
-A \code{\link[gtable]{gtable}} with keys and labels reordered into 
+A \code{\link[gtable]{gtable}} with keys and labels reordered into
   a single column and each pair of keys and labels in the same cell.
 }
 \description{

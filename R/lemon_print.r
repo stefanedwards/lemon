@@ -4,12 +4,12 @@
 #' Convenience function for working with R Notebooks that ensures data frames
 #' (and dplyr tables) are printed with \code{\link[knitr]{kable}} while
 #' allowing RStudio to render the data frame dynamically for inline display.
-#' 
-#' 
-#' These functions divert data frame and summary output to 
+#'
+#'
+#' These functions divert data frame and summary output to
 #' \code{\link[knitr]{kable}} for nicely printing the output.
-#' 
-#' For \emph{options to \code{kable}}, they can be given directly as 
+#'
+#' For \emph{options to \code{kable}}, they can be given directly as
 #' chunk-options (see arguments to \code{\link[knitr]{kable}}), or though
 #' as a list to a special chunk-option \code{kable.opts}.
 #'
@@ -23,25 +23,25 @@
 #' data.frame
 #' ```
 #' }
-#' 
-#' \strong{Note:} We are \emph{not} calling the function, 
+#'
+#' \strong{Note:} We are \emph{not} calling the function,
 #' but instead refering to it.
-#' 
+#'
 #' An alternate route for specifying \code{\link[knitr]{kable}} arguments is as:
-#' 
+#'
 #' \preformatted{
 #' ```{r render=lemon_print,kable.opts=list(align='l')}
 #' data.frame
 #' ```
 #' }
-#' 
+#'
 #' The option \code{kable.opts} takes precendence over arguments given directly
 #' as chunk-options.
-#' 
-#'  
+#'
+#'
 #'
 #' To enable as default printing method for \emph{all chunks}, include
-#' 
+#'
 #' \preformatted{
 #'   knit_print.data.frame <- lemon_print
 #'   knit_print.table <- lemon_print
@@ -50,7 +50,7 @@
 #'   knit_print.tbl <- lemon_print
 #' }
 #'
-#' \strong{Note:} We are \emph{not} calling the function, 
+#' \strong{Note:} We are \emph{not} calling the function,
 #' but instead assigning the \code{\link[knitr]{knit_print}} functions
 #' for some classes.
 #'
@@ -73,7 +73,7 @@ lemon_print <- function(x, options, ...) {
   UseMethod('lemon_print', x)
 }
 
-#' @inheritParams lemon_print
+#  @inheritParams lemon_print
 #' @export
 #' @rdname lemon_print
 lemon_print.data.frame = function(x, options, ...) {
@@ -87,22 +87,22 @@ lemon_print.data.frame = function(x, options, ...) {
   asis_output(res)
 }
 
-#' @inheritParams lemon_print
+#  @inheritParams lemon_print
 #' @export
 #' @rdname lemon_print
 lemon_print.table <- function(x, options, ...) {
   # Do nothing for cross-tabulation tables.
   if (is.null(dimnames(x))) return(knitr::knit_print(unclass(x), options, ...))
-  if (!is.null(names(dimnames(x))) & all(names(dimnames(x)) == '')) 
+  if (!is.null(names(dimnames(x))) & all(names(dimnames(x)) == ''))
     return(knitr::knit_print(unclass(x), options,  ...))
-  
+
   # detect if we have a summary
   if (length(dim(x)) == 2 & all(dimnames(x)[[1]] == '') & all(dimnames(x)[[2]] != '')) {
     l <- grepl("NA's[ ]+:[[:digit:]]+", x)
     x[l] <- gsub("NA's", "`NA`s", x[l], fixed=TRUE)
     x[is.na(x)] <- ' '
-    options$`kable.opts` <- merge.list(options$`kable.opts`, 
-                                              list(row.names=FALSE, 
+    options$`kable.opts` <- merge.list(options$`kable.opts`,
+                                              list(row.names=FALSE,
                                                    align='l'))
     lemon_print.data.frame(x, options, ...)
   } else {
@@ -113,13 +113,13 @@ lemon_print.table <- function(x, options, ...) {
 
 # RCurl::merge.list
 merge.list <- function (x, y, ...) {
-  if (length(x) == 0) 
+  if (length(x) == 0)
     return(y)
-  if (length(y) == 0) 
+  if (length(y) == 0)
     return(x)
   i = match(names(y), names(x))
   i = is.na(i)
-  if (any(i)) 
+  if (any(i))
     x[names(y)[which(i)]] = y[which(i)]
   x
 }

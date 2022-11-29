@@ -1,10 +1,10 @@
 #' Create paths that are safe from changing working directory.
 #'
-#' The \code{.dot} functions creates functions that allows relative-like 
+#' The \code{.dot} functions creates functions that allows relative-like
 #' specification of paths, but are safe from changing working directory.
 #'
 #' @param x File path that is appended to \code{BASEDIR}.
-#' @param root Root of your working directory, 
+#' @param root Root of your working directory,
 #'             from which \code{x} is relative too.
 #' @param mustExist Logical value; if \code{TRUE} and the resulting path does
 #'                  not exist, it raises an error.
@@ -12,19 +12,19 @@
 #'                 For the returned function, when \code{TRUE}, the function
 #'                 returns a path relative to \code{root}.
 #' @param create Logical values, creates the target directory when \code{TRUE} (default).
-#' @return A function that returns file paths constructed from 
+#' @return A function that returns file paths constructed from
 #'         \code{root}, \code{x}, and \code{...}.
-#'         
+#'
 #'         \emph{Side effect:} It creates the directory.
 #' @export
 #' @rdname dot
 #' @examples
-#' 
-#' .data <- .dot('data')
+#'
+#' .data <- .dot('data', create=FALSE)
 #' .data('input.txt')
 #' .data(c('a.txt','b.txt'))
-#' 
-#' .dot2(c('rawdata','results'))
+#'
+#' .dot2(c('rawdata','results'), create=FALSE)
 #' .rawdata('rawfile.csv')
 #' .results('myresults.txt')
 .dot <- function(x, root=getwd(), mustExist=FALSE, relative=FALSE, create=TRUE) {
@@ -43,7 +43,7 @@
   return(f)
 }
 
-#' \code{.dot2} allows specification of multiple .dot functions while 
+#' \code{.dot2} allows specification of multiple .dot functions while
 #' broadcasting the functions' names and target.
 #' This function also pushes the function into the calling environment,
 #' potentially overwriting previous funtions with same name.

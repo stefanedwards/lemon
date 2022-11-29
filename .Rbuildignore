@@ -16,6 +16,7 @@
 ^devel$
 ^cache/$
 ^cache\$
+^vignettes/.*cache/
 ^cran-comments.md$
 ^.*.lnk$
 ^LICENSE$

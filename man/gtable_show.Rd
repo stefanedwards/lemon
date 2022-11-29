@@ -7,8 +7,11 @@
 \usage{
 gtable_show_grill(x, plot = TRUE)
 
-gtable_show_names(x, plot = TRUE, rect.gp = grid::gpar(col = "black",
-  fill = "white", alpha = 1/4))
+gtable_show_names(
+  x,
+  plot = TRUE,
+  rect.gp = grid::gpar(col = "black", fill = "white", alpha = 1/4)
+)
 }
 \arguments{
 \item{x}{A gtable object. If given a ggplot object, it is converted to a
