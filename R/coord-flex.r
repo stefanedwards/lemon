@@ -82,9 +82,9 @@ coord_flex_cart <- function(xlim = NULL,
                             left = waiver(),
                             bottom = waiver(),
                             right = waiver()) {
-  
+
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexCartesian,
     limits = list(x = xlim, y = ylim),
     expand = expand,
@@ -97,7 +97,7 @@ coord_flex_cart <- function(xlim = NULL,
 
 #' @rdname coord_flex
 #' @export
-#' @inheritParams  coord_flex_cart
+#  @inheritParams  coord_flex_cart
 #'
 coord_flex_flip <- function(xlim = NULL,
                             ylim = NULL,
@@ -106,9 +106,9 @@ coord_flex_flip <- function(xlim = NULL,
                             left = waiver(),
                             bottom = waiver(),
                             right = waiver()) {
-  
+
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexFlipped,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -120,7 +120,7 @@ coord_flex_flip <- function(xlim = NULL,
 }
 
 #' @rdname coord_flex
-#' @inheritParams  coord_flex_cart
+#  @inheritParams  coord_flex_cart
 #' @export
 #' @param ratio aspect ratio, expressed as \code{y / x}.
 coord_flex_fixed <- function(ratio = 1,
@@ -131,9 +131,9 @@ coord_flex_fixed <- function(ratio = 1,
                              left = waiver(),
                              bottom = waiver(),
                              right = waiver()) {
-  
+
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexFixed,
           limits = list(x = xlim, y = ylim),
           ratio = ratio,
@@ -154,46 +154,44 @@ coord_flex_fixed <- function(ratio = 1,
 # ancestral class "Coord" in coord-.r
 # For each top/bottom or left/right axis, they basically just call what ever
 # function the coord_flex classes were given.
-flex_render_axis_h <- function(self, scale_details, theme) {
-  arrange <- scale_details$x.arrange %||% c("primary", "secondary")
-  top <- self$top %|W|% render_axis
-  bottom <- self$bottom %|W|% render_axis
+flex_render_axis_h <- function(self, panel_params, theme) {
+  top <- self$top %|W|% panel_guides_grob
+  bottom <- self$bottom %|W|% panel_guides_grob
   list(
-    top = top(scale_details, arrange[1], "x", "top", theme),
-    bottom = bottom(scale_details, arrange[2], "x", "bottom", theme)
+    top = top(panel_params$guides, position = "top", theme = theme),
+    bottom = bottom(panel_params$guides, position = "bottom", theme = theme)
   )
 }
-flex_render_axis_v <- function(self, scale_details, theme) {
-  arrange <- scale_details$y.arrange %||% c("primary","secondary")
-  left <- self$left %|W|% render_axis
-  right <- self$right %|W|% render_axis
+flex_render_axis_v <- function(self, panel_params, theme) {
+  left <- self$left %|W|% panel_guides_grob
+  right <- self$right %|W|% panel_guides_grob
   list(
-    left = left(scale_details, arrange[1], 'y', 'left', theme),
-    right = right(scale_details, arrange[2], 'y', 'right', theme)
+    left = left(panel_params$guides, position = "left", theme = theme),
+    right = right(panel_params$guides, position = "right", theme = theme)
   )
 }
 
 # Checks that the provided axis function corresponds to the orientation of the
 # axis it is used upon.
 test_orientation <- function(top, right, bottom, left) {
-  if (!is.waive(top) && 
+  if (!is.waive(top) &&
       !is.null(attr(top, 'orientation', exact=TRUE)) &&
-      attr(top, 'orientation', exact=TRUE) == 'vertical') 
+      attr(top, 'orientation', exact=TRUE) == 'vertical')
     stop('`top` has been supplied a vertical axis function; this will not work.')
-  if (!is.waive(bottom) && 
+  if (!is.waive(bottom) &&
       !is.null(attr(bottom, 'orientation', exact=TRUE)) &&
-      attr(bottom, 'orientation', exact=TRUE) == 'vertical') 
+      attr(bottom, 'orientation', exact=TRUE) == 'vertical')
     stop('`bottom` has been supplied a vertical axis function; this will not work.')
-  if (!is.waive(left) && 
+  if (!is.waive(left) &&
       !is.null(attr(left, 'orientation', exact=TRUE)) &&
-      attr(left, 'orientation', exact=TRUE) == 'horizontal') 
+      attr(left, 'orientation', exact=TRUE) == 'horizontal')
     stop('`left` has been supplied a horizontal axis function; this will not work.')
-  if (!is.waive(right) && 
+  if (!is.waive(right) &&
       !is.null(attr(right, 'orientation', exact=TRUE)) &&
-      attr(right, 'orientation', exact=TRUE) == 'horizontal') 
+      attr(right, 'orientation', exact=TRUE) == 'horizontal')
     stop('`right` has been supplied a horizontal axis function; this will not work.')
 }
-  
+
 
 # ggproto objects -------------------------------------------------------------
 
@@ -204,9 +202,9 @@ test_orientation <- function(top, right, bottom, left) {
 #' @export
 #' @import ggplot2
 CoordFlexCartesian <- ggplot2::ggproto('CoordFlexCartesian',
-                                       `_inherit` = ggplot2::CoordCartesian,
-                              render_axis_h = flex_render_axis_h,
-                              render_axis_v = flex_render_axis_v
+    `_inherit` = ggplot2::CoordCartesian,
+    render_axis_h = flex_render_axis_h,
+    render_axis_v = flex_render_axis_v
 )
 
 #' @rdname lemon-ggproto

@@ -15,7 +15,7 @@ vignette: >
 library(knitr)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
-                      cache=TRUE, autodep = TRUE, cache.path = 'show_lemonade/')
+                      cache=TRUE, autodep = TRUE, cache.path = 'gtable_show_lemonade/')
 ```
 
 ```{r}
@@ -40,17 +40,16 @@ my.theme <- theme_light()
 
 ```{r}
 g <- ggplotGrob(p)
+nul <- unit(1, 'null')
 
 for (i in 1:nrow(g$layout)) {
   if (g$layout$name[i] == 'lemon') next
   h <- g$heights[[g$layout$t[i]]]
   rot <- 0
-  if (class(h)[1] == 'unit') {
-    rot <- ifelse(as.numeric(h) == 1 & attr(h, 'unit') == 'null', 90, 0)
-  }
+  rot <- ifelse(as.character(h) == '1null', 90, 0)
   w <- g$widths[[g$layout$l[i]]]
-  if (rot == 90 & class(w)[1] == 'unit') {
-    rot <- ifelse(as.numeric(w) == 1 & attr(w, 'unit') == 'null', 0, rot)
+  if (rot == 90) {
+    rot <- ifelse(as.character(w) == '1null', 0, rot)
   }
   r <- rectGrob(gp=gpar(col='black', fill='white', alpha=1/4))
   t <- textGrob(g$layout$name[i], rot = rot)

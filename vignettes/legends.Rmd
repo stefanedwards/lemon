@@ -169,14 +169,14 @@ If using facetting, the panels are typically named `panel-{column}-{row}`.
 We use `gtable_show_names` to display the names of the facetted panels.
 
 ```{r fig.cap="Facetted panels' names."}
-d2 <- d + facet_grid(.~cut)
+d2 <- d + facet_grid(.~cut, )
 gtable_show_names(d2)
 ```
 
 So to place the legend in a specific panel, give its name:
 
 ```{r reposition_legend_facet1,fig.cap='Placing the legend in a facet panel.'}
-reposition_legend(d2, 'top left', panel = 'panel-3-1')
+reposition_legend(d2, 'top left', panel = 'panel-1-5')
 ```
 
 Likewise for `facet_wrap`. Incidentally, empty panels are also named here:
@@ -338,7 +338,7 @@ g <- reposition_legend(p, 'top left', plot=TRUE)
 (http://baptiste.github.io/) on 
 [ggplot2's wiki](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs/047381b48b0f0ef51a174286a595817f01a0dfad). 
 It has since propogated throughout 
-[Stack Overflow](http://www.stackoverflow.com) answers.
+[Stack Overflow](https://stackoverflow.com) answers.
 
 Originally brought to you by
   (Baptiste Auguié)[http://baptiste.github.io/]

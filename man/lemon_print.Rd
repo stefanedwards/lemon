@@ -25,10 +25,10 @@ Convenience function for working with R Notebooks that ensures data frames
 allowing RStudio to render the data frame dynamically for inline display.
 }
 \details{
-These functions divert data frame and summary output to 
+These functions divert data frame and summary output to
 \code{\link[knitr]{kable}} for nicely printing the output.
 
-For \emph{options to \code{kable}}, they can be given directly as 
+For \emph{options to \code{kable}}, they can be given directly as
 chunk-options (see arguments to \code{\link[knitr]{kable}}), or though
 as a list to a special chunk-option \code{kable.opts}.
 
@@ -44,7 +44,7 @@ data.frame
 ```
 }
 
-\strong{Note:} We are \emph{not} calling the function, 
+\strong{Note:} We are \emph{not} calling the function,
 but instead refering to it.
 
 An alternate route for specifying \code{\link[knitr]{kable}} arguments is as:
@@ -58,7 +58,7 @@ data.frame
 The option \code{kable.opts} takes precendence over arguments given directly
 as chunk-options.
 
- 
+
 
 To enable as default printing method for \emph{all chunks}, include
 
@@ -70,7 +70,7 @@ To enable as default printing method for \emph{all chunks}, include
   knit_print.tbl <- lemon_print
 }
 
-\strong{Note:} We are \emph{not} calling the function, 
+\strong{Note:} We are \emph{not} calling the function,
 but instead assigning the \code{\link[knitr]{knit_print}} functions
 for some classes.
 

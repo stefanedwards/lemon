@@ -73,7 +73,7 @@ coord_capped_cart <- function(xlim = NULL,
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
 
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexCartesian,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -87,7 +87,7 @@ coord_capped_cart <- function(xlim = NULL,
 
 #' @rdname coord_capped
 #' @export
-#' @inheritParams coord_flex_cart
+#  @inheritParams coord_flex_cart
 coord_capped_flip <- function(xlim = NULL,
                               ylim = NULL,
                               expand = TRUE,
@@ -100,9 +100,9 @@ coord_capped_flip <- function(xlim = NULL,
   if (is.character(bottom)) bottom <- capped_horizontal(bottom, gap=gap)
   if (is.character(left)) left <- capped_vertical(left, gap=gap)
   if (is.character(right)) right <- capped_vertical(right, gap=gap)
-  
+
   test_orientation(top, right, bottom, left)
-  
+
   ggproto(NULL, CoordFlexFlipped,
           limits = list(x = xlim, y = ylim),
           expand = expand,
@@ -117,7 +117,7 @@ coord_capped_flip <- function(xlim = NULL,
 
 #' @param capped Which end to cap the line. Can be one of (where relevant):
 #'   \code{both}, \code{none}, \code{left}, \code{right}, \code{top}, \code{bottom}.
-#' @inheritParams coord_capped_cart
+#  @inheritParams coord_capped_cart
 #' @rdname coord_capped
 #' @export
 #' @import grid
@@ -125,18 +125,14 @@ capped_horizontal <- function(capped = c('both','left','right','none'),
                               gap = 0.01) {
   capped <- match.arg(capped)
   # scale_details: aka. panel_params
-  # axis: primary or secondary
-  # scale: "x" or "y"
   # position: top or bottom / left or right
   # theme:
-  fn <- function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "x", position, theme)
+  fn <- function(guides, position, theme) {
+    guide <- guide_for_position(guides, position)
+    agrob <- guide_gengrob(guide, theme)
     if (agrob$name == 'NULL') return(agrob)
 
-    r <- range(as.numeric( switch(axis,
-                                  primary=scale_details$x.major,
-                                  secondary=scale_details$x.sec.major, scale_details$x.major
-    )))
+    r <- range(guide$key$x)
     i <- which(grepl('line', names(agrob$children)))
     agrob$children[[i]]$x <- switch(capped,
                                     none =  unit(c(min(0 + gap, r[1]), max(1 - gap, r[2])), 'native'),
@@ -155,7 +151,7 @@ capped_horizontal <- function(capped = c('both','left','right','none'),
 #' @export
 capped_horisontal <- capped_horizontal
 
-#' @inheritParams capped_horizontal
+#  @inheritParams capped_horizontal
 #' @rdname coord_capped
 #' @export
 #' @import grid
@@ -163,18 +159,14 @@ capped_vertical <- function(capped = c('top','bottom','both','none'),
                             gap = 0.01) {
   capped <- match.arg(capped)
   # scale_details: aka. panel_params
-  # axis: primary or secondary
-  # scale: "x" or "y"
   # position: top or bottom / left or right
   # theme:
-  fn <- function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "y", position, theme)
+  fn <- function(guides, position, theme) {
+    guide <- guide_for_position(guides, position) #guides[[which(sapply(guides, `[[`, 'position') == position)]]
+    agrob <- guide_gengrob(guide, theme)
     if (agrob$name == 'NULL') return(agrob)
 
-    r <- range(as.numeric( switch(axis,
-      primary=scale_details$y.major,
-      secondary=scale_details$y.sec.major, scale_details$y.major
-    )))
+    r <- range(guide$key$y)
     i <- which(grepl('line', names(agrob$children)))
     agrob$children[[i]]$y <- switch(capped,
       none =    unit(c(min(0 + gap,r[1]), max(1 - gap, r[2])), 'native'),

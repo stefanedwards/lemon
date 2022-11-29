@@ -4,10 +4,22 @@
 \alias{geom_siderange}
 \title{Display range of data in side of plot}
 \usage{
-geom_siderange(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", ..., distance = 3, arrow = NULL,
-  lineend = "butt", sides = "bl", start = NA, end = NA,
-  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
+geom_siderange(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  ...,
+  distance = 3,
+  arrow = NULL,
+  lineend = "butt",
+  sides = "bl",
+  start = NA,
+  end = NA,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
@@ -15,18 +27,18 @@ or \code{\link[ggplot2]{aes_}}.}
 
 \item{data}{The data to be displayed in this layer.}
 
-\item{stat}{The statistical transformation to use on the data for this layer, 
+\item{stat}{The statistical transformation to use on the data for this layer,
 as a string.}
 
-\item{position}{Position adjustment, either as a string, or the result of a 
+\item{position}{Position adjustment, either as a string, or the result of a
 call to a position adjustment function
 (e.g. \code{\link[ggplot2]{position_jitter}}).
-Both lines and points gets the same adjustment 
+Both lines and points gets the same adjustment
 (\emph{this} is where the function excels over \code{geom_point() + geom_line()}).}
 
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}.}
 
-\item{distance}{Distance between edge of panel and lines, and distance 
+\item{distance}{Distance between edge of panel and lines, and distance
 between lines, in multiples of line widths, see description.}
 
 \item{arrow}{Arrow specification, as created by \code{\link[grid]{arrow}}.}
@@ -36,7 +48,7 @@ between lines, in multiples of line widths, see description.}
 \item{sides}{Character including \strong{t}op, \strong{r}ight, \strong{b}ottom, and/or \strong{l}eft,
 indicating which side to project data onto.}
 
-\item{start, end}{Adds a symbol to either end of the siderange. 
+\item{start, end}{Adds a symbol to either end of the siderange.
 \code{start} corresponds to minimal value, \code{end} to maximal value.}
 
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a warning.
@@ -48,7 +60,7 @@ If \code{TRUE}, missing values are silently removed.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetic, rather
 than combining with them. This is most useful for helper functions that
-define both data and aesthetics and shouldn't inherit behaviour from the 
+define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification.}
 }
 \description{
@@ -63,13 +75,13 @@ of the line, and lines are offset from the edge and each other.
 To display a symbol, specify an integer for either \code{start} or \code{end}.
 See the list for \code{pch} in \code{\link[graphics]{points}} for values to use.
 The argumetns \code{start} and \code{end} also accepts a list object with
-named entries \code{pch}, \code{alpha}, \code{stroke}, and \code{fill}, which 
-correspond to the usual aesthetics, as well as a special named entry, 
+named entries \code{pch}, \code{alpha}, \code{stroke}, and \code{fill}, which
+correspond to the usual aesthetics, as well as a special named entry,
 \code{sizer} (note the extra 'r').
-This last entry is a multiplier for enlarging the symbol relative to the 
+This last entry is a multiplier for enlarging the symbol relative to the
 linewidth, as the aesthetic \code{size} affects both linewidth and symbol size.
 
-The distance between the panel's edge and sideranges are specified by 
+The distance between the panel's edge and sideranges are specified by
 the argument \code{distance}. If a symbol is specified, the linewidth is
 further expanded to cover the width of the symbol (including \code{sizer}).
 }

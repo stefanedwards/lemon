@@ -6,6 +6,23 @@
 
 * **TODO:** Extend `lemon_print` to work on cross-tabulation tables.
 
+* **TODO:** Add curly brackets to the axis-brackets.
+  See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
+
+# lemon 0.4.6
+
+* `element_render` is not exported, but available from ggplot2.
+
+* Fixed facet's, capped axes and brackets cf. ggplot2 v. 3.4.0.
+
+* Added `vdiffr` to test suite.
+
+# lemon 0.4.3
+
+* Bugfix on tests.
+
+# lemon 0.4.2
+
 * Added `element_render` and `render_gpar` that helps render grobs with the
   ggplot2 themes applied. `render_gpar` simply returns a gpar object.
 

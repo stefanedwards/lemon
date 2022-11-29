@@ -14,5 +14,10 @@ lib/
 cache/
 README/cache/
 vignettes/*-cache/
+vignettes/facet-rep-label*
+vignettes/geoms*
+vignettes/gtable_show_lemonade*
+vignettes/lemon_print*
+
 
 Rgui.lnk

@@ -4,14 +4,19 @@
 \alias{grid_arrange_shared_legend}
 \title{Share a legend between multiple plots}
 \usage{
-grid_arrange_shared_legend(..., ncol = length(list(...)), nrow = 1,
-  position = c("bottom", "right", "top", "left"), plot = TRUE)
+grid_arrange_shared_legend(
+  ...,
+  ncol = length(list(...)),
+  nrow = 1,
+  position = c("bottom", "right", "top", "left"),
+  plot = TRUE
+)
 }
 \arguments{
-\item{...}{Objects to plot. First argument should be a ggplot2 object, 
+\item{...}{Objects to plot. First argument should be a ggplot2 object,
 as the legend is extracted from this.
-Other arguments are passed on to 
-\code{\link[gridExtra]{arrangeGrob}}, 
+Other arguments are passed on to
+\code{\link[gridExtra]{arrangeGrob}},
 including named arguments that are not defined for \code{grid_arrange_shared_legend}.
 ggplot2 objects have their legends hidden.}
 
@@ -25,11 +30,11 @@ ggplot2 objects have their legends hidden.}
 new page.}
 }
 \value{
-gtable of combined plot, invisibly. 
+gtable of combined plot, invisibly.
   Draw  gtable object using \code{\link[grid]{grid.draw}}.
 }
 \description{
-Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} / 
+Extract legend, combines plots using \code{\link[gridExtra]{arrangeGrob}} /
 \code{grid.arrange},
 and places legend in a margin.
 }
@@ -49,8 +54,8 @@ grid_arrange_shared_legend(p1, gridExtra::arrangeGrob(p2, p3, p4, ncol=3), ncol=
 # We can also pass on named arguments to arrangeGrob:
 title <- grid::textGrob('This is grob', gp=grid::gpar(fontsize=14, fontface='bold'))
 nt <- theme(legend.position='none')
-grid_arrange_shared_legend(p1, 
-   gridExtra::arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2, 
+grid_arrange_shared_legend(p1,
+   gridExtra::arrangeGrob(p2+nt, p3+nt, p4+nt, ncol=3), ncol=1, nrow=2,
    top=title)
 }
 \seealso{
@@ -58,10 +63,10 @@ grid_arrange_shared_legend(p1,
 }
 \author{
 Originally brought to you by
-  \href{http://baptiste.github.io/}{Baptiste Auguié} 
+  \href{http://baptiste.github.io/}{Baptiste Auguié}
   (\url{https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs})
-  and 
+  and
   \href{http://rpubs.com/sjackman}{Shaun Jackman}
-  (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}).   
+  (\href{http://rpubs.com/sjackman/grid_arrange_shared_legend}{original}).
   Stefan McKinnon Edwards added left and top margins.
 }

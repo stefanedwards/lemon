@@ -16,20 +16,20 @@ scale_y_symmetric(mid = 0, ...)
 }
 \description{
 \code{scale_x_symmetric} and \code{scale_y_symmetric} are like the default
-scales for continuous x and y, but ensures that the resulting scale is 
+scales for continuous x and y, but ensures that the resulting scale is
 centered around \code{mid}. Does not work when setting limits on the scale.
 }
 \examples{
 library(ggplot2)
 df <- expand.grid(a=c(-1,0,1), b=c(-1,0,1))
 rnorm2 <- function(x,y,n,sdx,sdy) {
-  if (missing(sdy)) 
+  if (missing(sdy))
     sdy <- sdx
   data.frame(a=x,b=y,x=rnorm(n,x,sdx), y=rnorm(n,y,sdy))
 }
 df <- mapply(rnorm2,df$a, df$b, MoreArgs=list(n=30,sdx=1),SIMPLIFY=FALSE)
 df <- do.call(rbind, df)
-(p <- ggplot(df, aes(x=x,y=y)) + geom_point() + 
+(p <- ggplot(df, aes(x=x,y=y)) + geom_point() +
   facet_grid(a~b, scales='free_x')
 )
 p + scale_x_symmetric(mid=0)

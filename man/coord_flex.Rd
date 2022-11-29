@@ -6,17 +6,36 @@
 \alias{coord_flex_fixed}
 \title{Cartesian coordinates with flexible options for drawing axes}
 \usage{
-coord_flex_cart(xlim = NULL, ylim = NULL, expand = TRUE,
-  top = waiver(), left = waiver(), bottom = waiver(),
-  right = waiver())
+coord_flex_cart(
+  xlim = NULL,
+  ylim = NULL,
+  expand = TRUE,
+  top = waiver(),
+  left = waiver(),
+  bottom = waiver(),
+  right = waiver()
+)
 
-coord_flex_flip(xlim = NULL, ylim = NULL, expand = TRUE,
-  top = waiver(), left = waiver(), bottom = waiver(),
-  right = waiver())
+coord_flex_flip(
+  xlim = NULL,
+  ylim = NULL,
+  expand = TRUE,
+  top = waiver(),
+  left = waiver(),
+  bottom = waiver(),
+  right = waiver()
+)
 
-coord_flex_fixed(ratio = 1, xlim = NULL, ylim = NULL,
-  expand = TRUE, top = waiver(), left = waiver(),
-  bottom = waiver(), right = waiver())
+coord_flex_fixed(
+  ratio = 1,
+  xlim = NULL,
+  ylim = NULL,
+  expand = TRUE,
+  top = waiver(),
+  left = waiver(),
+  bottom = waiver(),
+  right = waiver()
+)
 }
 \arguments{
 \item{xlim, ylim}{Limits for the x and y axes.}

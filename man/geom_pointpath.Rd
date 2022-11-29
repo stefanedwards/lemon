@@ -6,25 +6,66 @@
 \alias{geom_pointrangeline}
 \title{Connected points}
 \usage{
-geom_pointpath(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, distance = unit(3, "pt"), shorten = 0.5,
-  threshold = 0.1, lineend = "butt", linejoin = "round",
-  linemitre = 1, linesize = 0.5, linecolour = waiver(),
-  linecolor = waiver(), arrow = NULL, ...)
+geom_pointpath(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  distance = unit(3, "pt"),
+  shorten = 0.5,
+  threshold = 0.1,
+  lineend = "butt",
+  linejoin = "round",
+  linemitre = 1,
+  linesize = 0.5,
+  linecolour = waiver(),
+  linecolor = waiver(),
+  arrow = NULL,
+  ...
+)
 
-geom_pointline(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, distance = unit(3, "pt"), shorten = 0.5,
-  threshold = 0.1, lineend = "butt", linejoin = "round",
-  linemitre = 1, linesize = 0.5, linecolour = waiver(),
-  linecolor = waiver(), arrow = NULL, ...)
+geom_pointline(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  distance = unit(3, "pt"),
+  shorten = 0.5,
+  threshold = 0.1,
+  lineend = "butt",
+  linejoin = "round",
+  linemitre = 1,
+  linesize = 0.5,
+  linecolour = waiver(),
+  linecolor = waiver(),
+  arrow = NULL,
+  ...
+)
 
-geom_pointrangeline(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, distance = unit(3, "pt"), lineend = "butt",
-  linejoin = "round", linemitre = 1, linesize = 0.5,
-  linecolour = waiver(), linecolor = waiver(), arrow = NULL, ...)
+geom_pointrangeline(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  distance = unit(3, "pt"),
+  lineend = "butt",
+  linejoin = "round",
+  linemitre = 1,
+  linesize = 0.5,
+  linecolour = waiver(),
+  linecolor = waiver(),
+  arrow = NULL,
+  ...
+)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
@@ -32,13 +73,13 @@ or \code{\link[ggplot2]{aes_}}.}
 
 \item{data}{The data to be displayed in this layer.}
 
-\item{stat}{The statistical transformation to use on the data for this layer, 
+\item{stat}{The statistical transformation to use on the data for this layer,
 as a string.}
 
-\item{position}{Position adjustment, either as a string, or the result of a 
+\item{position}{Position adjustment, either as a string, or the result of a
 call to a position adjustment function
 (e.g. \code{\link[ggplot2]{position_jitter}}).
-Both lines and points gets the same adjustment 
+Both lines and points gets the same adjustment
 (\emph{this} is where the function excels over \code{geom_point() + geom_line()}).}
 
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a warning.
@@ -50,7 +91,7 @@ If \code{TRUE}, missing values are silently removed.}
 
 \item{inherit.aes}{If \code{FALSE}, overrides the default aesthetic, rather
 than combining with them. This is most useful for helper functions that
-define both data and aesthetics and shouldn't inherit behaviour from the 
+define both data and aesthetics and shouldn't inherit behaviour from the
 default plot specification.}
 
 \item{distance}{Gap size between point and end of lines;
@@ -70,7 +111,7 @@ a gap by \code{distance}.}
 
 \item{linesize}{Width of of line.}
 
-\item{linecolour, linecolor}{When not \code{waiver()}, the line is drawn with 
+\item{linecolour, linecolor}{When not \code{waiver()}, the line is drawn with
 this colour instead of that set by aesthetic \code{colour}.}
 
 \item{arrow}{Arrow specification, as created by \code{\link[grid]{arrow}}.}
@@ -78,7 +119,7 @@ this colour instead of that set by aesthetic \code{colour}.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}.}
 }
 \description{
-\code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and 
+\code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and
 \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
 both lines and points stay connected, and b) provides a visual effect
 by adding a small gap between the point and the end of line.
@@ -90,26 +131,26 @@ by adding a small gap between the point and the end of line.
 they appear in the data.
 \code{geom_pointline} connects them in order of the variable on the x-axis.
 
-Both \code{geom_pointpath} and \code{geom_pointline} will only 
+Both \code{geom_pointpath} and \code{geom_pointline} will only
 connect observations within the same group! However,
 if \code{linecolour} is \emph{not} \code{waiver()}, connections
 will be made between groups, but possible in an incorrect order.
 }
 \section{Aesthetics}{
 
-\code{geom_pointline} and \code{geom_pointpath} understands the following 
+\code{geom_pointline} and \code{geom_pointpath} understands the following
 aesthetics (required aesthetics are in bold):
 \itemize{
   \item \strong{x}
   \item \strong{y}
   \item alpha
-  \item colour -- sets colour of point. Only affects line if \code{linecolour=waiver()}. 
+  \item colour -- sets colour of point. Only affects line if \code{linecolour=waiver()}.
   \item stroke
   \item shape
   \item stroke
   \item group
   \item linetype
-  \item size -- only affects point size. Width of line is set with 
+  \item size -- only affects point size. Width of line is set with
         \code{linesize} and cannot be linked to an aesthetic.
 }
 }

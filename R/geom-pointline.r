@@ -2,52 +2,52 @@
 NULL
 
 #' Connected points
-#' 
-#' \code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and 
+#'
+#' \code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and
 #' \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
 #' both lines and points stay connected, and b) provides a visual effect
 #' by adding a small gap between the point and the end of line.
 #' \code{geom_pointline} combines \code{\link[ggplot2]{geom_point}} and
 #' \code{\link[ggplot2]{geom_path}}.
-#' 
+#'
 #' \code{geom_pointpath} connects the observations in the same order in which
 #' they appear in the data.
 #' \code{geom_pointline} connects them in order of the variable on the x-axis.
-#' 
-#' Both \code{geom_pointpath} and \code{geom_pointline} will only 
+#'
+#' Both \code{geom_pointpath} and \code{geom_pointline} will only
 #' connect observations within the same group! However,
 #' if \code{linecolour} is \emph{not} \code{waiver()}, connections
 #' will be made between groups, but possible in an incorrect order.
-#' 
-#' 
-#' 
-#' 
-#' 
+#'
+#'
+#'
+#'
+#'
 #' @section Aesthetics:
-#' \code{geom_pointline} and \code{geom_pointpath} understands the following 
+#' \code{geom_pointline} and \code{geom_pointpath} understands the following
 #' aesthetics (required aesthetics are in bold):
 #' \itemize{
 #'   \item \strong{x}
 #'   \item \strong{y}
 #'   \item alpha
-#'   \item colour -- sets colour of point. Only affects line if \code{linecolour=waiver()}. 
+#'   \item colour -- sets colour of point. Only affects line if \code{linecolour=waiver()}.
 #'   \item stroke
 #'   \item shape
 #'   \item stroke
 #'   \item group
 #'   \item linetype
-#'   \item size -- only affects point size. Width of line is set with 
+#'   \item size -- only affects point size. Width of line is set with
 #'         \code{linesize} and cannot be linked to an aesthetic.
 #' }
 #' @param mapping Set of aesthetic mappings created by \code{\link[ggplot2]{aes}}
 #'   or \code{\link[ggplot2]{aes_}}.
 #' @param data The data to be displayed in this layer.
-#' @param stat The statistical transformation to use on the data for this layer, 
+#' @param stat The statistical transformation to use on the data for this layer,
 #'   as a string.
-#' @param position Position adjustment, either as a string, or the result of a 
+#' @param position Position adjustment, either as a string, or the result of a
 #'   call to a position adjustment function
 #'   (e.g. \code{\link[ggplot2]{position_jitter}}).
-#'   Both lines and points gets the same adjustment 
+#'   Both lines and points gets the same adjustment
 #'   (\emph{this} is where the function excels over \code{geom_point() + geom_line()}).
 #' @param ... other arguments passed on to \code{\link[ggplot2]{layer}}.
 #' @param lineend Line end style (round, butt, square).
@@ -61,7 +61,7 @@ NULL
 #'   \code{FALSE} never includes, and \code{TRUE} always includes.
 #' @param inherit.aes If \code{FALSE}, overrides the default aesthetic, rather
 #'   than combining with them. This is most useful for helper functions that
-#'   define both data and aesthetics and shouldn't inherit behaviour from the 
+#'   define both data and aesthetics and shouldn't inherit behaviour from the
 #'   default plot specification.
 #' @param linesize Width of of line.
 #' @param distance Gap size between point and end of lines;
@@ -71,15 +71,15 @@ NULL
 #' @param shorten,threshold When points are closer than \code{threshold},
 #'   shorten the line by the proportion in \code{shorten} instead of adding
 #'   a gap by \code{distance}.
-#' @param linecolour,linecolor When not \code{waiver()}, the line is drawn with 
+#' @param linecolour,linecolor When not \code{waiver()}, the line is drawn with
 #'   this colour instead of that set by aesthetic \code{colour}.
-#' 
+#'
 #' @example inst/examples/geom-pointline-ex.r
 #' @export
 geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       position = "identity", na.rm = FALSE,
-                      show.legend = NA, inherit.aes = TRUE, 
-                      distance = unit(3, 'pt'), 
+                      show.legend = NA, inherit.aes = TRUE,
+                      distance = unit(3, 'pt'),
                       shorten = 0.5,
                       threshold = 0.1,
                       lineend = "butt",
@@ -91,7 +91,7 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       arrow = NULL,
                       ...) {
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
-  
+
   layer(
     data = data,
     mapping = mapping,
@@ -133,9 +133,9 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     alpha = NA, stroke = 0.5,
     linetype = 1
   ),
-  
+
   draw_panel = function(data, panel_params, coord, na.rm = FALSE,
-                        distance = grid::unit(3, 'pt'), 
+                        distance = grid::unit(3, 'pt'),
                         shorten = 0.5,
                         threshold = 0.1,
                         linesize = 0.5,
@@ -143,15 +143,14 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
                         arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1
                         ) {
-
     # Test input parameters
     if (is.null(distance) || is.na(distance)) {
       distance=grid::unit(0, 'pt')
       threshold = 0
     }
-    if (!grid::is.unit(distance) && is.numeric(distance)) 
+    if (!grid::is.unit(distance) && is.numeric(distance))
       distance <- grid::unit(distance, 'pt')
-    
+
     # Contents of GeomPoint$draw_panel in geom-point.r
     coords <- coord$transform(data, panel_params)
     coords_p <- coords
@@ -169,7 +168,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
            )
     )
     # gr_points <- GeomPoint$draw_panel(data, panel_params, coord, na.rm)
-    
+
     # Contents of GeomPath$draw_panel in geom-path
     if (!anyDuplicated(data$group)) {
       message_wrap("geom_path: Each group consists of only one observation. ",
@@ -213,7 +212,8 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
       deltay = y1 - y;
       length <- sqrt(deltax**2 + deltay**2);
     })
-    
+    munched <- munched[-nrow(munched), ]
+
     if (any(munched$length > threshold, na.rm=TRUE)) {
       # Calculate angle between each pair of points and move endpoints:
       if (as.numeric(distance) != 0) {
@@ -233,21 +233,21 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
           y1 = grid::unit(y1, 'native');
         })
       }
-      
-      gr_distant <- with(df, grid::segmentsGrob(
-        x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
+
+      gr_distant <- with(df[!df$end,], grid::segmentsGrob(
+        x0=x, y0=y, x1=x1, y1=y1,
         arrow = arrow,
         gp = grid::gpar(
-          col = ggplot2::alpha(colour, alpha)[!end],
-          fill = ggplot2::alpha(colour, alpha)[!end],
+          col = ggplot2::alpha(colour, alpha),
+          fill = ggplot2::alpha(colour, alpha),
           lwd = linesize * .pt,
-          lty = linetype[!end],
+          lty = linetype,
           lineend = lineend,
           linejoin = linejoin,
           linemitre = linemitre
         )
       ))
-      if (!is.waive(linecolour)) 
+      if (!is.waive(linecolour))
         gr_distant$gp$col <- linecolour
     } else {
       gr_distant <- zeroGrob()
@@ -260,48 +260,42 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         x1 = x1 - shorten/2 * deltax; x1 = grid::unit(x1, 'native');
         y1 = y1 - shorten/2 * deltay; y1 = grid::unit(y1, 'native');
       })
-      
-      gr_short <- with(df, grid::segmentsGrob(
-        x0=x[!end], y0=y[!end], x1=x1[!end], y1=y1[!end],
+
+      gr_short <- with(df[!df$end, ], grid::segmentsGrob(
+        x0=x, y0=y, x1=x1, y1=y1,
         arrow = arrow,
         gp = grid::gpar(
-          col = ggplot2::alpha(colour, alpha)[!end],
-          fill = ggplot2::alpha(colour, alpha)[!end],
+          col = ggplot2::alpha(colour, alpha),
+          fill = ggplot2::alpha(colour, alpha),
           lwd = linesize * .pt,
-          lty = linetype[!end],
+          lty = linetype,
           lineend = lineend,
           linejoin = linejoin,
           linemitre = linemitre
         )
       ))
-      if (!is.waive(linecolour)) 
+      if (!is.waive(linecolour))
         gr_short$gp$col <- linecolour
     } else {
       gr_short <- zeroGrob()
     }
 
-    
-    
-    #saveRDS(munched, 'munced.rds')
-    
-    
-    
     grid::gList(gr_points, gr_distant, gr_short)
   },
-  
+
   draw_key = ggplot2::draw_key_point
 )
 
 
 #' @export
-#' @inheritParams geom_pointpath
+#  @inheritParams geom_pointpath
 #' @rdname geom_pointpath
 geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            position = "identity", na.rm = FALSE,
-                           show.legend = NA, inherit.aes = TRUE, 
-                           distance = unit(3, 'pt'), 
+                           show.legend = NA, inherit.aes = TRUE,
+                           distance = unit(3, 'pt'),
                            shorten = 0.5,
-                           threshold = 0.1,                           
+                           threshold = 0.1,
                            lineend = "butt",
                            linejoin = "round",
                            linemitre = 1,
@@ -310,9 +304,9 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linecolor = waiver(),
                            arrow = NULL,
                            ...) {
-  
+
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
-  
+
   layer(
     data = data,
     mapping = mapping,
@@ -325,13 +319,13 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
       na.rm = na.rm,
       distance = distance,
       shorten = shorten,
-      threshold = threshold,      
+      threshold = threshold,
       lineend = lineend,
       linejoin = linejoin,
       linemitre = linemitre,
       linesize = 0.5,
       linecolour = linecolour,
-      arrow = arrow,    
+      arrow = arrow,
       ...
     )
   )
@@ -353,12 +347,12 @@ GeomPointLine <- ggproto("GeomPointLine", GeomPointPath,
 
 
 
-#' @inheritParams geom_pointpath
+#  @inheritParams geom_pointpath
 #' @rdname geom_pointpath
 geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
                                 position = "identity", na.rm = FALSE,
-                                show.legend = NA, inherit.aes = TRUE, 
-                                distance = unit(3, 'pt'), 
+                                show.legend = NA, inherit.aes = TRUE,
+                                distance = unit(3, 'pt'),
                                 lineend = "butt",
                                 linejoin = "round",
                                 linemitre = 1,
@@ -369,7 +363,7 @@ geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
                                 ...) {
   stop('geom_pointrangeline has not been implemented. Sorry')
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
-  
+
   layer(
     data = data,
     mapping = mapping,
@@ -386,7 +380,7 @@ geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
       linemitre = linemitre,
       linesize = 0.5,
       linecolour = linecolour,
-      arrow = arrow,      
+      arrow = arrow,
       ...
     )
   )
@@ -401,7 +395,7 @@ geom_pointrangeline <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @import gtable
 GeomPointRangeLine <- ggproto("GeomPointRangeLine", GeomPointLine,
   required_aes = c("x", "y", "ymin", "ymax"),
-  
+
   setup_data = function(data, params) {
     data[order(data$PANEL, data$group, data$x), ]
   },
