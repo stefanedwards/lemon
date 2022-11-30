@@ -58,5 +58,7 @@ Suggests:
     rmarkdown,
     stringr,
     dplyr,
-    testthat
+    testthat,
+    vdiffr,
+    diffviewer
 VignetteBuilder: knitr
