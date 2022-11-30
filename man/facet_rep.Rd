@@ -27,7 +27,7 @@ with axis lines and labels preserved on all panels.
 }
 \details{
 These two functions are extensions to \code{\link[ggplot2]{facet_grid}}
-and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and 
+and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and
 optionally tick labels across all panels.
 
 Examples are given in the vignette \href{../doc/facet-rep-labels.html}{"Repeat axis lines on facet panels" vignette}.

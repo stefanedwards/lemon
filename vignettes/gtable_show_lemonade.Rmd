@@ -15,7 +15,7 @@ vignette: >
 library(knitr)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
-                      cache=TRUE, autodep = TRUE, cache.path = 'show_lemonade/')
+                      cache=TRUE, autodep = TRUE, cache.path = 'gtable_show_lemonade/')
 ```
 
 ```{r}

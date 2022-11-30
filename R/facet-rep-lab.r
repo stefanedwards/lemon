@@ -7,9 +7,9 @@ NULL
 #' with axis lines and labels preserved on all panels.
 #'
 #' These two functions are extensions to \code{\link[ggplot2]{facet_grid}}
-#' and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and 
+#' and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and
 #' optionally tick labels across all panels.
-#' 
+#'
 #' Examples are given in the vignette \href{../doc/facet-rep-labels.html}{"Repeat axis lines on facet panels" vignette}.
 #'
 #' @param ... Arguments used for \code{\link[ggplot2]{facet_grid}} or
@@ -23,23 +23,23 @@ NULL
 #' @export
 facet_rep_grid <- function(..., repeat.tick.labels=FALSE) {
   f <- ggplot2::facet_grid(...)
-  
+
   rtl <- reduce.ticks.labels.settings(repeat.tick.labels)
   # if (scales %in% c('free','free_y') && !any(c('left','right') %in% rtl))
   #   rtl <- c(rtl, 'left')
   # if (scales %in% c('free','free_x') && !any(c('top','bottom') %in% rtl))
   #   rtl <- c(rtl, 'bottom')
-  
+
   params <- append(f$params, list(repeat.tick.labels=rtl))
   ggplot2::ggproto(NULL, FacetGridRepeatLabels,
           shrink=f$shrink,
           params=params)
 }
 
-#' Reduces the multitude of repeat.tick.labels-settings to 
+#' Reduces the multitude of repeat.tick.labels-settings to
 #' a a combination of four sides.
 #' Empty vector corresponds to 'none'
-#' 
+#'
 #' @noRd
 reduce.ticks.labels.settings <- function(ticks) {
   if (length(ticks) == 0) return(character(0))
@@ -66,8 +66,10 @@ remove_labels_from_axis <- function(axisgrob) {
   d <- grepl('titleGrob', sapply(axisgrob$children[[a]]$grobs, `[[`, i='name'))
   if (sum(d) > 0) {
     axisgrob$children[[a]] <- do.call(gList, axisgrob$children[[a]]$grobs[!d])
-    if (length(axisgrob$width$arg1) == 2) axisgrob$width$arg1 <- axisgrob$width$arg1[attr(axisgrob$width$arg1, 'unit') != 'grobwidth']
-    if (length(axisgrob$height$arg1) == 2) axisgrob$height$arg1 <- axisgrob$height$arg1[attr(axisgrob$height$arg1, 'unit') != 'grobheight']
+    if (!inherits(axisgrob$width, 'simpleUnit') && length(axisgrob$width$arg1) == 2)
+      axisgrob$width$arg1 <- axisgrob$width$arg1[attr(axisgrob$width$arg1, 'unit') != 'grobwidth']
+    if (!inherits(axisgrob$height, 'simpleUnit') && length(axisgrob$height$arg1) == 2)
+      axisgrob$height$arg1 <- axisgrob$height$arg1[attr(axisgrob$height$arg1, 'unit') != 'grobheight']
     #if (length(axisgrob$children[[a]]$heights) == 2) axisgrob$children[[a]]$heights <- axisgrob$children[[a]]$heights[!d]
   }
   axisgrob
@@ -102,7 +104,8 @@ FacetGridRepeatLabels <- ggplot2::ggproto('FacetGridRepeatLabels',
 
 
     panel_range <- find_panel(table)
-    panel_range[,c('col','row')] <- c(max(panels$col), max(panels$row))
+    panel_range$col <- max(panels$col)
+    panel_range$row <- max(panels$row)
 
     l_axis_column_added <- logical(panel_range$col)
     r_axis_column_added <- logical(panel_range$col)

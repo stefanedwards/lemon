@@ -51,7 +51,6 @@ ggplot_build.lemon_plot <- function(plot) {
 ggplot_gtable.built_lemon <- function(data) {
   gtable <- NextMethod()
 
-  browser
   if ('axis_annotation' %in% names(data$plot) &&
     data$plot$axis_annotation$n('y') > 0) {
     #right

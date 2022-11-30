@@ -6,12 +6,9 @@ NULL
 
 # I should probably
 #' @include ggplot2.r
+NULL
 
-#' Given a theme object and element name, return a grob for the element
-#'
-#' @rdname element_render
-#' @author \code{element_render} is from ggplot2 source.
-#' @export
+# Given a theme object and element name, return a grob for the element
 # From ggplot2/R/theme-elements.r
 element_render <- function(theme, element, ..., name = NULL) {
 
@@ -38,7 +35,7 @@ element_render <- function(theme, element, ..., name = NULL) {
 #' @param name Returned grob's name..
 #' @return A \code{\link[grid]{grid.grob}} or \code{\link[grid]{gpar}} object.
 #' @seealso \code{\link[ggplot2]{theme}}
-#' @rdname element_render
+#' @keywords internal
 #' @export
 render_gpar <- function(theme, element, ...) {
   gp <- element_render(theme, element)

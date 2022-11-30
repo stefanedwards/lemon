@@ -154,22 +154,20 @@ coord_flex_fixed <- function(ratio = 1,
 # ancestral class "Coord" in coord-.r
 # For each top/bottom or left/right axis, they basically just call what ever
 # function the coord_flex classes were given.
-flex_render_axis_h <- function(self, scale_details, theme) {
-  arrange <- scale_details$x.arrange %||% c("primary", "secondary")
-  top <- self$top %|W|% render_axis
-  bottom <- self$bottom %|W|% render_axis
+flex_render_axis_h <- function(self, panel_params, theme) {
+  top <- self$top %|W|% panel_guides_grob
+  bottom <- self$bottom %|W|% panel_guides_grob
   list(
-    top = top(scale_details, arrange[1], "x", "top", theme),
-    bottom = bottom(scale_details, arrange[2], "x", "bottom", theme)
+    top = top(panel_params$guides, position = "top", theme = theme),
+    bottom = bottom(panel_params$guides, position = "bottom", theme = theme)
   )
 }
-flex_render_axis_v <- function(self, scale_details, theme) {
-  arrange <- scale_details$y.arrange %||% c("primary","secondary")
-  left <- self$left %|W|% render_axis
-  right <- self$right %|W|% render_axis
+flex_render_axis_v <- function(self, panel_params, theme) {
+  left <- self$left %|W|% panel_guides_grob
+  right <- self$right %|W|% panel_guides_grob
   list(
-    left = left(scale_details, arrange[1], 'y', 'left', theme),
-    right = right(scale_details, arrange[2], 'y', 'right', theme)
+    left = left(panel_params$guides, position = "left", theme = theme),
+    right = right(panel_params$guides, position = "right", theme = theme)
   )
 }
 
@@ -204,9 +202,9 @@ test_orientation <- function(top, right, bottom, left) {
 #' @export
 #' @import ggplot2
 CoordFlexCartesian <- ggplot2::ggproto('CoordFlexCartesian',
-                                       `_inherit` = ggplot2::CoordCartesian,
-                              render_axis_h = flex_render_axis_h,
-                              render_axis_v = flex_render_axis_v
+    `_inherit` = ggplot2::CoordCartesian,
+    render_axis_h = flex_render_axis_h,
+    render_axis_v = flex_render_axis_v
 )
 
 #' @rdname lemon-ggproto

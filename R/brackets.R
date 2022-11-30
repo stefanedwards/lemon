@@ -59,14 +59,15 @@ brackets_horizontal <- function(direction = c('up','down'),
   direction=match.arg(direction)
 
   # Returns a function
-  fn <- function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "x", position, theme)
+  fn <- function(guides, position, theme) {
+    guide <- guide_for_position(guides, position)
+    agrob <- guide_gengrob(guide, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'
     ind.notline <-  which(ind)
-    ind.ticks <- which(grepl('ticks', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
-    ind.text <- which(grepl('text', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
+    ind.ticks <- which(grepl('polyline', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
+    ind.text <- which(grepl('title', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
     ticksgrob <- agrob$children[[ind.notline]]$grobs[[ind.ticks]]
 
     # If theme(axis.ticks[.x/.y] = element_blank()), then ticksgrob is a
@@ -140,14 +141,15 @@ brackets_vertical <- function(direction = c('left','right'),
     tick.length <- unit(as.numeric(tick.length), 'npc')
 
   direction=match.arg(direction)
-  fn <- function(scale_details, axis, scale, position, theme) {
-    agrob <- render_axis(scale_details, axis, "y", position, theme)
+  fn <- function(guides, position, theme) {
+    guide <- guide_for_position(guides, position)
+    agrob <- guide_gengrob(guide, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'
     ind.notline <-  which(ind)
-    ind.ticks <- which(grepl('ticks', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
-    ind.text <- which(grepl('text', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
+    ind.ticks <- which(grepl('polyline', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
+    ind.text <- which(grepl('title', sapply(agrob$children[[ind.notline]]$grobs, `[[`, i = 'name')))
     ticksgrob <- agrob$children[[ind.notline]]$grobs[[ind.ticks]]
 
 
