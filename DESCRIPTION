@@ -53,6 +53,7 @@ Collate:
     'guides-axis.r'
     'legends.r'
     'lemon.r'
+    'panel_border.R'
     'scale-symmetric.r'
 Suggests:
     rmarkdown,
