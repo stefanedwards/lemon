@@ -3,8 +3,8 @@ Type: Package
 Title: Freshing Up your 'ggplot2' Plots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
-Version: 0.4.6
-Date: 2022-11-29
+Version: 0.5.0
+Date: 2022-12-05
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
     comment=c(ORCID='0000-0002-4628-8148'),
@@ -30,7 +30,9 @@ Imports:
     gtable,
     knitr (>= 1.12),
     lattice,
-    scales
+    scales,
+    rlang,
+    assertthat
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -53,6 +55,7 @@ Collate:
     'guides-axis.r'
     'legends.r'
     'lemon.r'
+    'panel_border.R'
     'scale-symmetric.r'
 Suggests:
     rmarkdown,

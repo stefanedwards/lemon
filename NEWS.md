@@ -1,4 +1,4 @@
-# lemon 0.4.9000
+# lemon 0.xxx
 
 * **TODO:** Create `grobHeight` on gtables.
 
@@ -8,6 +8,14 @@
 
 * **TODO:** Add curly brackets to the axis-brackets.
   See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
+  (see e.g. https://github.com/stefanedwards/lemon/tree/bracket)
+
+# lemon 0.5.0
+
+* Fixed spacing issues with `facet_rep_grid` (#24).
+
+* Added `element_box` which allows indiviudally specifying sides of e.g. 
+  the panels.
 
 # lemon 0.4.6
 

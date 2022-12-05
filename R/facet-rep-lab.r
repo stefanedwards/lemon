@@ -59,18 +59,28 @@ reduce.ticks.labels.settings <- function(ticks) {
 #' Called from FacetGridRepeatLabels.
 #'
 #' @param axisgrob Grob with an axis.
+#' @param direction Whether the axis is horizontal or vertical.
 #' @keywords interal
-remove_labels_from_axis <- function(axisgrob) {
+remove_labels_from_axis <- function(axisgrob, direction = c('horizontal','vertical')) {
+  direction <- match.arg(direction)
   if (inherits(axisgrob, 'zeroGrob')) return(axisgrob)
+
   a <- which(sapply(axisgrob$children, `[[`, i='name') == 'axis')
-  d <- grepl('titleGrob', sapply(axisgrob$children[[a]]$grobs, `[[`, i='name'))
-  if (sum(d) > 0) {
-    axisgrob$children[[a]] <- do.call(gList, axisgrob$children[[a]]$grobs[!d])
-    if (!inherits(axisgrob$width, 'simpleUnit') && length(axisgrob$width$arg1) == 2)
-      axisgrob$width$arg1 <- axisgrob$width$arg1[attr(axisgrob$width$arg1, 'unit') != 'grobwidth']
-    if (!inherits(axisgrob$height, 'simpleUnit') && length(axisgrob$height$arg1) == 2)
-      axisgrob$height$arg1 <- axisgrob$height$arg1[attr(axisgrob$height$arg1, 'unit') != 'grobheight']
-    #if (length(axisgrob$children[[a]]$heights) == 2) axisgrob$children[[a]]$heights <- axisgrob$children[[a]]$heights[!d]
+  d <- which(grepl('titleGrob', sapply(axisgrob$children[[a]]$grobs, `[[`, i='name')))
+
+  if (length(d) == 1) {
+    old_axisgrob <- axisgrob
+    axis <- axisgrob$children[[a]]
+    axis$grobs[[d]] <- zeroGrob()
+    if (direction == 'horizontal') {
+      axis$heights[[d]] <- unit(0,'npc')
+      axisgrob$height <- sum(axis$heights)
+    } else if (direction == 'vertical') {
+      axis$widths[[d]] <- unit(0,'npc')
+      axisgrob$width <- sum(axis$widths)
+    }
+    axisgrob$children[[a]] <- axis
+    axisgrob$vp <- NULL ## ugly hack, I don't like it.
   }
   axisgrob
 }
@@ -92,20 +102,26 @@ FacetGridRepeatLabels <- ggplot2::ggproto('FacetGridRepeatLabels',
     panels$col <- as.integer(as.factor(panels$l))
     panels$row <- as.integer(as.factor(panels$t))
 
+    panel_range <- find_panel(table)
+    panel_range$col <- max(panels$col)
+    panel_range$row <- max(panels$row)
+
     axis_b <- table$grobs[grepl('axis-b-[[:digit:]]+', table$layout$name)]
     axis_l <- table$grobs[grepl('axis-l-[[:digit:]]+', table$layout$name)]
     axis_t <- table$grobs[grepl('axis-t-[[:digit:]]+', table$layout$name)]
     axis_r <- table$grobs[grepl('axis-r-[[:digit:]]+', table$layout$name)]
 
-    if (!'bottom' %in% params$repeat.tick.labels) axis_b <- lapply(axis_b, remove_labels_from_axis)
-    if (!'left' %in% params$repeat.tick.labels) axis_l <- lapply(axis_l, remove_labels_from_axis)
-    if (!'top' %in% params$repeat.tick.labels) axis_t <- lapply(axis_t, remove_labels_from_axis)
-    if (!'right' %in% params$repeat.tick.labels) axis_r <- lapply(axis_r, remove_labels_from_axis)
+    if (!'bottom' %in% params$repeat.tick.labels && panel_range$row > 1)
+      axis_b <- lapply(axis_b, remove_labels_from_axis, direction='horizontal')
+    if (!'left' %in% params$repeat.tick.labels && panel_range$col > 1)
+      axis_l <- lapply(axis_l, remove_labels_from_axis, direction='vertical')
+    if (!'top' %in% params$repeat.tick.labels && panel_range$col > 1)
+      axis_t <- lapply(axis_t, remove_labels_from_axis, direction='horizontal')
+    if (!'right' %in% params$repeat.tick.labels && panel_range$row > 1)
+      axis_r <- lapply(axis_r, remove_labels_from_axis, direction='vertical')
 
 
-    panel_range <- find_panel(table)
-    panel_range$col <- max(panels$col)
-    panel_range$row <- max(panels$row)
+
 
     l_axis_column_added <- logical(panel_range$col)
     r_axis_column_added <- logical(panel_range$col)
