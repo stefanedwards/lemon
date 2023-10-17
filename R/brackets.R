@@ -60,8 +60,7 @@ brackets_horizontal <- function(direction = c('up','down'),
 
   # Returns a function
   fn <- function(guides, position, theme) {
-    guide <- guide_for_position(guides, position)
-    agrob <- guide_gengrob(guide, theme)
+    agrob <- panel_guides_grob(guides, position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'
@@ -142,8 +141,7 @@ brackets_vertical <- function(direction = c('left','right'),
 
   direction=match.arg(direction)
   fn <- function(guides, position, theme) {
-    guide <- guide_for_position(guides, position)
-    agrob <- guide_gengrob(guide, theme)
+    agrob <- panel_guides_grob(guides, position, theme)
     if (agrob$name == 'NULL') return(agrob)
 
     ind <- names(agrob$children) == 'axis'

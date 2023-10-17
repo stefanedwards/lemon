@@ -129,7 +129,8 @@ capped_horizontal <- function(capped = c('both','left','right','none'),
   # theme:
   fn <- function(guides, position, theme) {
     guide <- guide_for_position(guides, position)
-    agrob <- guide_gengrob(guide, theme)
+    agrob <- panel_guides_grob(guides, position, theme)
+
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(guide$key$x)
@@ -162,8 +163,9 @@ capped_vertical <- function(capped = c('top','bottom','both','none'),
   # position: top or bottom / left or right
   # theme:
   fn <- function(guides, position, theme) {
-    guide <- guide_for_position(guides, position) #guides[[which(sapply(guides, `[[`, 'position') == position)]]
-    agrob <- guide_gengrob(guide, theme)
+    guide <- guide_for_position(guides, position)
+    agrob <- panel_guides_grob(guides, position, theme)
+
     if (agrob$name == 'NULL') return(agrob)
 
     r <- range(guide$key$y)
