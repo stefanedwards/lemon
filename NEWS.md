@@ -9,6 +9,10 @@
 * **TODO:** Add curly brackets to the axis-brackets.
   See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
 
+# lemon 0.4.8
+
+* Minor bug fix in geom_pointline.
+
 # lemon 0.4.7
 
 * Fixed compability with ggplot2 > 3.4.2 (see https://github.com/stefanedwards/lemon/pull/30)

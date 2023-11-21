@@ -3,7 +3,7 @@ Type: Package
 Title: Freshing Up your 'ggplot2' Plots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
-Version: 0.4.7
+Version: 0.4.8
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
     comment=c(ORCID='0000-0002-4628-8148'),

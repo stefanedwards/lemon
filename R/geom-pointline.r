@@ -223,6 +223,7 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
     })
     munched <- munched[-nrow(munched), ]
 
+    gr_distant <- zeroGrob()
     if (any(munched$length > threshold, na.rm=TRUE)) {
       # Calculate angle between each pair of points and move endpoints:
       if (as.numeric(distance) != 0) {
@@ -243,23 +244,23 @@ GeomPointPath <- ggplot2::ggproto('GeomPointPath',
         })
       }
 
-      gr_distant <- with(df[!df$end,], grid::segmentsGrob(
-        x0=x, y0=y, x1=x1, y1=y1,
-        arrow = arrow,
-        gp = grid::gpar(
-          col = ggplot2::alpha(colour, alpha),
-          fill = ggplot2::alpha(colour, alpha),
-          lwd = linesize * .pt,
-          lty = linetype,
-          lineend = lineend,
-          linejoin = linejoin,
-          linemitre = linemitre
-        )
-      ))
+      if (any(!df$end)) {
+        gr_distant <- with(df[!df$end,], grid::segmentsGrob(
+          x0=x, y0=y, x1=x1, y1=y1,
+          arrow = arrow,
+          gp = grid::gpar(
+            col = ggplot2::alpha(colour, alpha),
+            fill = ggplot2::alpha(colour, alpha),
+            lwd = linesize * .pt,
+            lty = linetype,
+            lineend = lineend,
+            linejoin = linejoin,
+            linemitre = linemitre
+          )
+        ))
       if (!is.waive(linecolour))
         gr_distant$gp$col <- linecolour
-    } else {
-      gr_distant <- zeroGrob()
+      }
     }
 
     if (threshold > 0 && any(munched$length <= threshold, na.rm=TRUE)) {
