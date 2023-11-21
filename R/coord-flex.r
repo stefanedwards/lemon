@@ -195,6 +195,13 @@ test_orientation <- function(top, right, bottom, left) {
 
 # ggproto objects -------------------------------------------------------------
 
+#' @section Coordinate systems:
+#' The `CoordFlexCartisan` and `CoordFlexFlipped` allows us to inject other
+#' `render_axis_h` and `render_axis_v` methods for drawing other axes.
+#'
+#' See `coord-flex.r`.
+#'
+#' @md
 #' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
@@ -213,9 +220,10 @@ CoordFlexCartesian <- ggplot2::ggproto('CoordFlexCartesian',
 #' @usage NULL
 #' @export
 #' @import ggplot2
-CoordFlexFlipped <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::CoordFlip,
-                            render_axis_h = flex_render_axis_h,
-                            render_axis_v = flex_render_axis_v
+CoordFlexFlipped <- ggplot2::ggproto('CoordFlexFlipped',
+  `_inherit` = ggplot2::CoordFlip,
+  render_axis_h = flex_render_axis_h,
+  render_axis_v = flex_render_axis_v
 )
 
 #' @rdname lemon-ggproto
@@ -224,7 +232,8 @@ CoordFlexFlipped <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::
 #' @usage NULL
 #' @export
 #' @import ggplot2
-CoordFlexFixed <- ggplot2::ggproto('CoordFlexFlipped',  `_inherit` = ggplot2::CoordFixed,
-                          render_axis_h = flex_render_axis_h,
-                          render_axis_v = flex_render_axis_v
+CoordFlexFixed <- ggplot2::ggproto('CoordFlexFlipped',
+  `_inherit` = ggplot2::CoordFixed,
+  render_axis_h = flex_render_axis_h,
+  render_axis_v = flex_render_axis_v
 )

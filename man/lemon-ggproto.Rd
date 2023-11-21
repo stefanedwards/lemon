@@ -4,6 +4,7 @@
 \docType{data}
 \name{lemon-ggproto}
 \alias{lemon-ggproto}
+\alias{AxisAnnotation}
 \alias{AAList}
 \alias{CoordFlexCartesian}
 \alias{CoordFlexFlipped}
@@ -15,23 +16,46 @@
 \alias{GeomPointRangeLine}
 \alias{GeomSideRange}
 \title{ggproto classes used in lemon!}
-\format{
-An object of class \code{AAList} (inherits from \code{ggproto}, \code{gg}) of length 6.
-}
-\usage{
-AAList
-}
-\arguments{
-\item{side}{top, left, right, bottom, etc.}
-
-\item{is.primary}{When TRUE, only get annotations whose side are set to that
-side. When FALSE (default), also get those that are waiver.}
-}
 \description{
 If you are creating a new geom, stat, position, or scale in another package,
 you'll need to extend from \code{ggplot2::Geom}, \code{ggplot2::Stat},
 \code{ggplot2::Position}, or \code{ggplot2::Scale}.
 }
+\section{Axis annotations}{
+
+Drawing axis annotations requires overloading the normal
+\code{ggplot_build} and \code{ggplot_gtable} to add extra columns and rows for these
+annotations (see gtable_show_grill).
+
+See file \code{axis-annotation.r}.
+}
+
+\section{Coordinate systems}{
+
+The \code{CoordFlexCartisan} and \code{CoordFlexFlipped} allows us to inject other
+\code{render_axis_h} and \code{render_axis_v} methods for drawing other axes.
+
+See \code{coord-flex.r}.
+}
+
+\section{Facets}{
+
+The class \code{FacetGridRepeatLabels} is an extension of \link[ggplot2:ggplot2-ggproto]{ggplot2::FacetGrid}
+while \code{FacetWrapRepeatLabels} is an extension of \link[ggplot2:ggplot2-ggproto]{ggplot2::FacetWrap},
+both draws the axes on each panel.
+See \link{facet_rep_grid}, \link{facet_rep_wrap}, \code{facet-rap-lab.r} and \code{facet_wrap.r}.
+}
+
+\section{Geoms}{
+
+The geom-objects here extends \code{ggplot2::Geom}
+allowing us to produce the geoms for
+\link{geom_pointline},
+\link{geom_pointpath}, \link{geom_pointrangeline}, and \link{geom_siderange}.
+
+See \code{geom-pointline.r} and \code{geom-siderange.r}.
+}
+
 \seealso{
 \code{\link[ggplot2]{ggproto}}, \code{\link[ggplot2]{ggplot2-ggproto}}
 }

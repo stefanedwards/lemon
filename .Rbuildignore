@@ -22,3 +22,4 @@
 ^LICENSE$
 ^vignettes/lemon/.*$
 ^.*\.Rdata$
+^\.github$

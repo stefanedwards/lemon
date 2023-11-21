@@ -116,6 +116,15 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
   )
 }
 
+#' @section Geoms:
+#' The geom-objects here extends `ggplot2::Geom`
+#' allowing us to produce the geoms for
+#' [geom_pointline],
+#' [geom_pointpath], [geom_pointrangeline], and [geom_siderange].
+#'
+#' See `geom-pointline.r` and `geom-siderange.r`.
+#'
+#' @md
 #' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL
@@ -125,7 +134,7 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @import gtable
 #' @import grid
 GeomPointPath <- ggplot2::ggproto('GeomPointPath',
-                                  `_inherit`=ggplot2::GeomPoint,
+  `_inherit`=ggplot2::GeomPoint,
   required_aes = c("x", "y"),
   non_missing_aes = c("size", "shape", "colour"),
   default_aes = aes(

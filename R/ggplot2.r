@@ -1,7 +1,6 @@
 # Files given here are from ggplot2 base.
 #' @import ggplot2
 #' @import grid
-#  @import gridExtra
 #' @import gtable
 NULL
 
@@ -38,7 +37,7 @@ is.waive <- function(x) inherits(x, "waiver")
 #' @keywords internal
 #' @rdname ggplot2-non-exports
 #' @name if-not-null
-#' @export
+#' @rawNamespace if(getRversion() < "4.4")  export("%||%")
 "%||%" <- function(a, b) {
   if (!is.null(a)) a else b
 }

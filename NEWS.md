@@ -9,6 +9,16 @@
 * **TODO:** Add curly brackets to the axis-brackets.
   See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
 
+# lemon 0.4.7
+
+* Fixed compability with ggplot2 > 3.4.2 (see https://github.com/stefanedwards/lemon/pull/30)
+  @teunbrand
+
+* `%||%` is no longer an exported function for R > 4.4, as it should be included
+  into R's base from v. 4.5.
+
+* Minor bugfix when no labels used.
+
 # lemon 0.4.6
 
 * `element_render` is not exported, but available from ggplot2.

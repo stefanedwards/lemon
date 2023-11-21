@@ -19,6 +19,9 @@ knitr::opts_chunk$set(
 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/lemon)](https://cran.r-project.org/package=lemon)
 ![downloads](http://cranlogs.r-pkg.org/badges/grand-total/lemon)
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/stefanedwards/lemon/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/stefanedwards/lemon/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
 
 Just another [ggplot2](http://ggplot2.tidyverse.org) and 
 [knitr](https://yihui.name/knitr/) extension package.
@@ -71,7 +74,7 @@ As well as some functions in knitr.
 # install.packages("devtools")
 
 # Install release from GitHub:
-devtools::install_github("stefanedwards/lemon", ref='v0.3.1')
+devtools::install_github("stefanedwards/lemon", ref='v0.4.7')
 
 # Or get the lastest development version from GitHub:
 devtools::install_github("stefanedwards/lemon")

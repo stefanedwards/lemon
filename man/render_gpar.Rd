@@ -12,8 +12,6 @@ render_gpar(theme, element, ...)
 \item{element}{The name of an element in the theme, e.g. "axis.text".}
 
 \item{...}{Additional arguments sent to grobs (e.g. \code{x} or \code{y}).}
-
-\item{name}{Returned grob's name..}
 }
 \value{
 A \code{\link[grid]{grid.grob}} or \code{\link[grid]{gpar}} object.

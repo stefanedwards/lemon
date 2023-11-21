@@ -136,10 +136,10 @@ capped_horizontal <- function(capped = c('both','left','right','none'),
     r <- range(guide$key$x)
     i <- which(grepl('line', names(agrob$children)))
     agrob$children[[i]]$x <- switch(capped,
-                                    none =  unit(c(min(0 + gap, r[1]), max(1 - gap, r[2])), 'native'),
-                                    left =  unit(c(r[1], max(1 - gap, r[2])), 'native'),
-                                    right = unit(c(min(0 + gap, r[1]), r[2]), 'native'),
-                                    both =  unit(r, 'native')
+      none =  unit(c(min(0 + gap, r[1]), max(1 - gap, r[2])), 'native'),
+      left =  unit(c(r[1], max(1 - gap, r[2])), 'native'),
+      right = unit(c(min(0 + gap, r[1]), r[2]), 'native'),
+      both =  unit(r, 'native')
     )
     agrob
   }

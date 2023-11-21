@@ -83,12 +83,15 @@ brackets_horizontal <- function(direction = c('up','down'),
       y <- rep(y0[d], times = nticks)
       id.lengths <- rep(4, times = nticks)
       brackets <- polylineGrob(x = x, y = y, id.lengths = id.lengths, gp = gp)
-      labels <- agrob$children[[ind.notline]]$grobs[[ind.text]]
-
     } else {
-      labels <- agrob$children[[ind.notline]]$grobs[[ind.text]]
       tick.length <- unit(0, 'npc')
       brackets <- zeroGrob()
+    }
+
+    if (length(ind.text)) {
+      labels <- agrob$children[[ind.notline]]$grobs[[ind.text]]
+    } else {
+      labels <- zeroGrob()
     }
 
 

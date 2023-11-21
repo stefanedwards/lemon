@@ -75,6 +75,13 @@ remove_labels_from_axis <- function(axisgrob) {
   axisgrob
 }
 
+#' @section Facets:
+#' The class `FacetGridRepeatLabels` is an extension of [ggplot2::FacetGrid]
+#'  while `FacetWrapRepeatLabels` is an extension of [ggplot2::FacetWrap],
+#' both draws the axes on each panel.
+#' See [facet_rep_grid], [facet_rep_wrap], `facet-rap-lab.r` and `facet_wrap.r`.
+#'
+#' @md
 #' @rdname lemon-ggproto
 #' @keywords internal
 #' @format NULL

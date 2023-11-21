@@ -105,8 +105,19 @@ annotate_x_axis <- function(label, x,
 # Axis_annotation base class ------
 # Modelled after Scales in ggplot2/R/scale
 
+#' @section Axis annotations:
+#' Drawing axis annotations requires overloading the normal
+#' `ggplot_build` and `ggplot_gtable` to add extra columns and rows for these
+#' annotations (see gtable_show_grill).
+#'
+#' See file `axis-annotation.r`.
+#'
+#' @md
 #' @import grid
 #' @import ggplot2
+#' @rdname lemon-ggproto
+#' @format NULL
+#' @usage NULL
 # Property 'reducible' is set to TRUE for inherited classes for which their
 # labels can easily be reduced to vectors. Bquote objects, not so much?
 AxisAnnotation <- ggplot2::ggproto('AxisAnnotation', NULL,
@@ -201,7 +212,10 @@ ggplot_add.axis_annotation <- function(object, plot, object_name) {
   plot
 }
 
+
 #' @rdname lemon-ggproto
+#' @format NULL
+#' @usage NULL
 #' @import ggplot2
 #' @import grid
 #' @import scales
@@ -331,21 +345,14 @@ AAList <- ggplot2::ggproto("AAList", NULL,
       }
     }
     axisgrob
-    #if (sum(!are_simple) > 0) {
-    #  rest <- do.call(grid::gList,
-    #    lapply(annotations[!are_simple], function(a) a$draw(side, range, theme)))
-    #} else {
-    #  rest <- ggplot2::zeroGrob()
-    #}
-    #grid::grobTree(textgrob, lg, rest, vp=temp$vp, gp=temp$gp)
   },
 
   # axis annotations can be shown on top, left, right, or bottom.
   # defaults to where the secondary axis is (i.e. not the primary)
   # the annotation itself does not need to know which side it has to be on.
-  #' @param side top, left, right, bottom, etc.
-  #' @param is.primary When TRUE, only get annotations whose side are set to that
-  #'   side. When FALSE (default), also get those that are waiver.
+  #  @param side top, left, right, bottom, etc.
+  #  @param is.primary When TRUE, only get annotations whose side are set to that
+  #    side. When FALSE (default), also get those that are waiver.
   get_annotations = function(self, side, is.primary=FALSE) {
     aes <- switch(side, top='x', bottom='x', left='y', right='y', NA)
 

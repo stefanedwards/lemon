@@ -32,13 +32,12 @@ element_render <- function(theme, element, ..., name = NULL) {
 #' @param theme A ggplot2 \link[ggplot2]{theme}
 #' @param element The name of an element in the theme, e.g. "axis.text".
 #' @param ... Additional arguments sent to grobs (e.g. \code{x} or \code{y}).
-#' @param name Returned grob's name..
 #' @return A \code{\link[grid]{grid.grob}} or \code{\link[grid]{gpar}} object.
 #' @seealso \code{\link[ggplot2]{theme}}
 #' @keywords internal
 #' @export
 render_gpar <- function(theme, element, ...) {
-  gp <- element_render(theme, element)
+  gp <- element_render(theme, element, ...)
   gp$gp %||% gp$children[[1]]$gp
 }
 

@@ -56,27 +56,3 @@ scale_x_symmetric <- function(mid=0, ...) {
 scale_y_symmetric <- function(mid=0, ...) {
   set_symmetric_scale(ggplot2::scale_y_continuous(...), mid=mid)
 }
-
-#' #' @rdname lemon-ggproto
-#' #' @keywords internal
-#' #' @format NULL
-#' #' @usage NULL
-#' #' @export
-#' #' @import ggplot2
-#' #' @import scales
-#' ScaleContinuousPositionSymmetric <- ggproto("ScaleContinuousPositionSymmetric",
-#'                                             `_inherit`=ggplot2::ScaleContinuousPosition,
-#'
-#'   range = ggplot2:::continuous_range(),
-#'   na.value = NA_real_,
-#'   rescaler = scales::rescale, # Used by diverging and n colour gradients x
-#'   oob = scales::censor,
-#'   minor_breaks = waiver(),
-#'
-#'   is_discrete = function() FALSE,
-#'
-#'   train = function(self, x) {
-#'     if (length(x) == 0) return()
-#'     self$range$train(x)
-#'   }
-#' )
