@@ -4,10 +4,12 @@
 \alias{remove_labels_from_axis}
 \title{Removes labels from axis grobs.}
 \usage{
-remove_labels_from_axis(axisgrob)
+remove_labels_from_axis(axisgrob, direction = c("horizontal", "vertical"))
 }
 \arguments{
 \item{axisgrob}{Grob with an axis.}
+
+\item{direction}{Whether the axis is horizontal or vertical.}
 }
 \description{
 Called from FacetGridRepeatLabels.

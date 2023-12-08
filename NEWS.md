@@ -9,6 +9,10 @@
 * **TODO:** Add curly brackets to the axis-brackets.
   See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
 
+# lemon 0.4.9
+
+* Finally merged bugfix for issue #24, spacing issues with facet_rep.
+
 # lemon 0.4.8
 
 * Minor bug fix in geom_pointline.
