@@ -79,10 +79,11 @@ panel_guide_label <- function(guides, position, default_label) {
   }
 }
 
-panel_guides_grob <- function(guides, position, theme) {
+panel_guides_grob <- function(guides, position, theme, labels = NULL) {
   if (inherits(guides, "Guides")) {
     pair <- guides$get_position(position)
-    pair$guide$draw(theme, pair$params)
+    pair$params$draw_label <- labels
+    pair$guide$draw(theme, params = pair$params)
   } else {
     guide <- guide_for_position(guides, position) %||% guide_none()
     guide_gengrob(guide, theme)
