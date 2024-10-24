@@ -68,7 +68,7 @@ turns calls \code{guide_axis} (see \file{ggplot2/R/guides-axis.r}).
 
 The provided function is with the arguments
 \code{scale_details}, \code{axis}, \code{scale}, \code{position}, and \code{theme},
-and the function should return an \code{\link{absoluteGrob}} object.
+and the function should return an \code{\link[ggplot2]{absoluteGrob}} object.
 
 For examples of modifying the drawn object, see e.g.
 \code{\link{capped_horizontal}} or \code{\link{brackets_horizontal}}.

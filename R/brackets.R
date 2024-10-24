@@ -25,7 +25,7 @@ NULL
 #'   up, down, left, or right?
 #' @param length Length of the unit, parallel with axis line.
 #' @param tick.length Height (width) of x-axis (y-axis) bracket.
-#'   If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link{theme}}.
+#'   If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link[ggplot2]{theme}}.
 #' @seealso \code{\link[grid]{unit}}
 #' @aliases brackets_horisontal
 #' @examples

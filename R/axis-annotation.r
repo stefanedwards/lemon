@@ -13,7 +13,7 @@ NULL
 
 #' Annotations on the axis
 #'
-#' @section: Showing values:
+#' @section Showing values:
 #' See \link[grDevices]{plotmath} for using mathematical expressions.
 #' The function uses a simple replacement strategy where the literal strings
 #' \code{.(y)} and \code{.(val)} are replaced by the value after round of to

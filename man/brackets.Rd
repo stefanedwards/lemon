@@ -25,7 +25,7 @@ up, down, left, or right?}
 \item{length}{Length of the unit, parallel with axis line.}
 
 \item{tick.length}{Height (width) of x-axis (y-axis) bracket.
-If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link{theme}}.}
+If \code{waiver()} (default), use \code{axis.ticks.length} from \code{\link[ggplot2]{theme}}.}
 }
 \description{
 To be used with \code{\link{coord_flex_cart}},

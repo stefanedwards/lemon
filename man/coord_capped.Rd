@@ -54,7 +54,7 @@ Usually a value between 0 and 1.}
 }
 \description{
 Caps the axis lines to the outer ticks to e.g. indicate range of values.
-Methods correspond to \code{\link{coord_cartesian}} and \code{\link{coord_flip}}
+Methods correspond to \code{\link[ggplot2]{coord_cartesian}} and \code{\link[ggplot2]{coord_flip}}
 }
 \details{
 This function is a simple override of \code{\link{coord_flex_cart}}
