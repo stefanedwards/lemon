@@ -1,4 +1,4 @@
-# lemon 0.4.9000
+# lemon 0.5.9000
 
 * **TODO:** Create `grobHeight` on gtables.
 
@@ -8,6 +8,12 @@
 
 * **TODO:** Add curly brackets to the axis-brackets.
   See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
+
+# lemon 0.5.0
+
+* Bugfix with missing package links in documentations.
+* `geom_pointpath` is deprecated. Users are referred to Teun van den Brand `ggh4x`
+  (https://cloud.r-project.org/web/packages/ggh4x/index.html)
 
 # lemon 0.4.9
 

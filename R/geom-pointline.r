@@ -3,6 +3,10 @@ NULL
 
 #' Connected points
 #'
+#' \emph{Geoms are soft-deprecated, and will not be supported in the future.
+#'   Please use the
+#'   \href{https://cran.r-project.org/package=ggh4x}{\code{ggh4x}-package}.
+#' }
 #' \code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and
 #' \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
 #' both lines and points stay connected, and b) provides a visual effect
@@ -90,6 +94,14 @@ geom_pointpath <- function(mapping = NULL, data = NULL, stat = "identity",
                       linecolor = waiver(),
                       arrow = NULL,
                       ...) {
+
+  .Deprecated(
+    package = "lemon",
+    msg = paste0("`geom_pointpath` and `geom_pointline` have been soft-deprecated. ",
+      "A replacement can be found in ggh4x::geom_pointpath.")
+  )
+
+
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
 
   layer(
@@ -314,6 +326,11 @@ geom_pointline <- function(mapping = NULL, data = NULL, stat = "identity",
                            linecolor = waiver(),
                            arrow = NULL,
                            ...) {
+  .Deprecated(
+    package = "lemon",
+    msg = paste0("`geom_pointpath` and `geom_pointline` have been soft-deprecated. ",
+      "A replacement can be found in ggh4x::geom_pointpath.")
+  )
 
   if (is.waive(linecolour) && !is.waive(linecolor)) linecolour <- linecolor
 

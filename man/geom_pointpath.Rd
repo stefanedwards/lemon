@@ -119,6 +119,10 @@ this colour instead of that set by aesthetic \code{colour}.}
 \item{...}{other arguments passed on to \code{\link[ggplot2]{layer}}.}
 }
 \description{
+\emph{Geoms are soft-deprecated, and will not be supported in the future.
+  Please use the
+  \href{https://cran.r-project.org/package=ggh4x}{\code{ggh4x}-package}.
+}
 \code{geom_pointpath} combines \code{\link[ggplot2]{geom_point}} and
 \code{\link[ggplot2]{geom_path}}, such that a) when jittering is used,
 both lines and points stay connected, and b) provides a visual effect
