@@ -111,7 +111,8 @@ lemon_print.table <- function(x, options, ...) {
 }
 
 
-# RCurl::merge.list
+# RCurl::merge.listi
+#' @exportS3Method NULL
 merge.list <- function (x, y, ...) {
   if (length(x) == 0)
     return(y)
