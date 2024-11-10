@@ -42,20 +42,6 @@ is.waive <- function(x) inherits(x, "waiver")
   if (!is.null(a)) a else b
 }
 
-# From ggplot2/R/coord-.r
-# Renders an axis with the correct orientation or zeroGrob if no axis should be
-# generated
-# render_axis <- function(panel_params, axis, scale, position, theme) {
-#   browser()
-#   if (axis == "primary") {
-#     guide_axis(panel_params[[paste0(scale, ".major")]], panel_params[[paste0(scale, ".labels")]], position, theme)
-#   } else if (axis == "secondary" && !is.null(panel_params[[paste0(scale, ".sec.major")]])) {
-#     guide_axis(panel_params[[paste0(scale, ".sec.major")]], panel_params[[paste0(scale, ".sec.labels")]], position, theme)
-#   } else {
-#     zeroGrob()
-#   }
-# }
-
 
 #  From ggplot2/R/utilities-grid.r
 #' @import grid
@@ -79,10 +65,11 @@ panel_guide_label <- function(guides, position, default_label) {
   }
 }
 
-panel_guides_grob <- function(guides, position, theme) {
+panel_guides_grob <- function(guides, position, theme, labels = NULL) {
   if (inherits(guides, "Guides")) {
     pair <- guides$get_position(position)
-    pair$guide$draw(theme, pair$params)
+    pair$params$draw_label <- labels %||% NULL
+    pair$guide$draw(theme, params = pair$params)
   } else {
     guide <- guide_for_position(guides, position) %||% guide_none()
     guide_gengrob(guide, theme)
