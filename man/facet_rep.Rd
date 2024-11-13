@@ -24,6 +24,8 @@ keep only those specified. Also acceps 'x' and 'y'.}
 \description{
 \code{\link[ggplot2]{facet_grid}} and \code{\link[ggplot2]{facet_wrap}}, but
 with axis lines and labels preserved on all panels.
+These extensions have been deprecated in lemon v. 0.5.1 and replacements
+can be found in [ggh4x](https://teunbrand.github.io/ggh4x/articles/Facets.html).
 }
 \details{
 These two functions are extensions to \code{\link[ggplot2]{facet_grid}}

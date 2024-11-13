@@ -5,6 +5,8 @@ NULL
 #'
 #' \code{\link[ggplot2]{facet_grid}} and \code{\link[ggplot2]{facet_wrap}}, but
 #' with axis lines and labels preserved on all panels.
+#' These extensions have been deprecated in lemon v. 0.5.1 and replacements
+#' can be found in [ggh4x](https://teunbrand.github.io/ggh4x/articles/Facets.html).
 #'
 #' These two functions are extensions to \code{\link[ggplot2]{facet_grid}}
 #' and \code{\link[ggplot2]{facet_wrap}} that keeps axis lines, ticks, and
@@ -22,13 +24,15 @@ NULL
 #' @rdname facet_rep
 #' @export
 facet_rep_grid <- function(..., repeat.tick.labels=FALSE) {
+  .Deprecated(
+    package = "lemon",
+    msg = paste0("`facet_rep_wrap` and `facet_rep_lab` have been soft-deprecated. ",
+      "A replacement can be found in ggh4x::facet_wrap2.")
+  )
+
   f <- ggplot2::facet_grid(...)
 
   rtl <- reduce.ticks.labels.settings(repeat.tick.labels)
-  # if (scales %in% c('free','free_y') && !any(c('left','right') %in% rtl))
-  #   rtl <- c(rtl, 'left')
-  # if (scales %in% c('free','free_x') && !any(c('top','bottom') %in% rtl))
-  #   rtl <- c(rtl, 'bottom')
 
   params <- append(f$params, list(repeat.tick.labels=rtl))
   ggplot2::ggproto(NULL, FacetGridRepeatLabels,

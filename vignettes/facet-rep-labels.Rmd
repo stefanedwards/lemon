@@ -7,8 +7,11 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Repeat axis lines on facet panels}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup,include=FALSE}
@@ -19,20 +22,24 @@ knitr::opts_chunk$set(fig.height=4, fig.width=6,
                       cache=TRUE, autodep = TRUE, cache.path = 'facet-rep-labels/')
 ```
 
+**Deprecation notice:** The `facet_rep_wrap` and `facet_rep_lab` have
+been deprecated in lemon v. 0.5.1. Instead, we refer to the similar
+solutions in [ggh4x' `facet_wrap2` and
+`facet_grid2`](https://teunbrand.github.io/ggh4x/articles/Facets.html).
 
-ggplot2 offers the fantastic option for displaying complex data in forms of
-'many multiple', i.e. the facets. From the example of `facet_grid`:
+ggplot2 offers the fantastic option for displaying complex data in forms
+of 'many multiple', i.e. the facets. From the example of `facet_grid`:
 
 ```{r facet_grid_example,fig.cap='Faceting works quite well in its default form. When the panel\'s borders are drawn, nothing lacks.'}
 p <- ggplot(mpg, aes(displ, cty)) + geom_point()
 p + facet_grid(drv ~ cyl) + theme_bw()
 ```
 
-In the above example, the panel's borders are drawn with the default settings
-of `theme_bw()`.
+In the above example, the panel's borders are drawn with the default
+settings of `theme_bw()`.
 
-If we desire the the axis lines, such as those given in this package,
-the distinction of the panels disappears.
+If we desire the axis lines, such as those given in this package, the
+distinction of the panels disappears.
 
 ```{r facet_grid_lemon,fig.cap='The optimised axis lines are gone from inner panels.'}
 library(lemon)
@@ -41,61 +48,62 @@ p <- p + coord_capped_cart(bottom='both', left='both') +
 p + facet_grid(drv ~ cyl)
 ```
 
-The above example is re-created below with both left- and bottom-axis lines repeated.
+The above example is re-created below with both left- and bottom-axis
+lines repeated.
 
 ```{r facet_rep_grid,fig.cap='Axis lines are repeated across all panels by using `facet_rep_grid` of the `lemon` package.'}
-library(lemon)
-p + facet_rep_grid(drv ~ cyl) + coord_capped_cart(bottom='both', left='both') +
+library(ggh4x)
+p + facet_grid2(drv ~ cyl, axes = TRUE, remove_labels = TRUE) + 
+  coord_capped_cart(bottom='both', left='both') +
   theme_bw() + theme(panel.border=element_blank(), axis.line=element_line())
 ```
 
 ## Keeping (some) labels
 
-In the following example, we change the facet from a grid to being wrapped on
-the interaction of `drv` and `cyl`, *and add free scaling on y-axis*.
-`facet_wrap` would normally print the y-axis tick labels for each panel,
-but still ignores the x-axis.
+In the following example, we change the facet from a grid to being
+wrapped on the interaction of `drv` and `cyl`, *and add free scaling on
+y-axis*. `facet_wrap` would normally print the y-axis tick labels for
+each panel, but still ignores the x-axis.
 
 ```{r facet_wrap,fig.cap="`facet_wrap` keeps y-axis label ticks with `scales='free_y'`."}
 p + facet_wrap(~ interaction(cyl, drv), scales='free_y') 
 ```
 
-A work around by keeping both axes free scale, and fixing the x-axis with either 
-`scale_x_continuous` or limits in `cord_*`, but the same x-axis tick labels are
-repeated. And this is a bit tedious.
+A work around by keeping both axes free scale, and fixing the x-axis
+with either `scale_x_continuous` or limits in `cord_*`, but the same
+x-axis tick labels are repeated. And this is a bit tedious.
 
 ```{r facet_wrap_free,fig.cap='X-axis is entirely fixed, and the plot is littered with x-axis tick labels.'}
 p + facet_wrap(~ interaction(cyl, drv), scales='free') + 
   coord_capped_cart(bottom='both', left='both', xlim=c(2,7))
 ```
 
-We can specify which labels to keep with `facet_rep_wrap`. 
-Default is `repeat.tick.labels=FALSE` when `scales='fixed'`
-which removes tick labels on all axes (shown in earlier figure).
-When using free scales on `facet_rep_wrap`, the appropiate 
-labels are drawn.
+We can specify which *inner* labels to keep with
+`facet_rap2(..., remove_labels)` . The default is to *keep* all labels,
+but we can specify to remove all "x" or all "y".
 
 ```{r facet_rep_wrap_left,fig.cap='With `repeat.tick.labels` we are free to specify which sides to keep.'}
-p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'left')
+p + facet_wrap2(~ interaction(cyl, drv), scales = 'free_y', axes = TRUE, remove_labels = "x")
 ```
-
-The argument `repeat.tick.labels` accepts a range of arguments: 
-`top`,`right`,`bottom`, and `left`, any combination of these are accepted,
-as well as
-`TRUE` and `FALSE` which are interpreted as all or none,
-and `all` and `none`.
 
 ## Examples
 
-There are many posibilities. Examples given below (but not executed), and they
-might not be pretty.
+There are many possibilities. Examples given below (but not executed),
+and they might not be pretty.
 
 ```{r eval=FALSE}
-p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'all')
-p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'bottom')
-p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'left')
+p + facet_wrap2(~ interaction(cyl, drv), scales = 'free_y', axes = TRUE, remove_labels = FALSE)
+p + facet_wrap2(~ interaction(cyl, drv), scales = 'free_y', axes = TRUE, remove_labels = "y")
+p + facet_wrap2(~ interaction(cyl, drv), scales = 'free_y', axes = TRUE, remove_labels = "x")
 p + scale_x_continuous(sec.axis = dup_axis()) +
-  facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'all')
-p + scale_x_continuous(sec.axis = dup_axis()) +
-  facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = c('top','left'))
+  facet_wrap2(~ interaction(cyl, drv), scales = 'free_y', axes = TRUE, remove_labels = FALSE)
 ```
+
+## Translating between lemon's and ggh4x' facets
+
+| lemon | ggh4x |
+|-----------------------|-------------------------------------------------|
+| `facet_rep_wrap(...)` | `facet_wrap2(...)` |
+| `facet_rep_grid(...)` | `facet_grid2(...)` |
+| `repeat.tick.labels` | `remove_labels,` only "none", `FALSE`, "x", "y", "all" or `TRUE` |
+| (None) | `axes`, only "margin", `FALSE`, "x", "y", "all" or `TRUE` |

@@ -7,6 +7,12 @@ NULL
 #' @import ggplot2
 #' @export
 facet_rep_wrap <- function(..., scales = 'fixed', repeat.tick.labels=FALSE) {
+  .Deprecated(
+    package = "lemon",
+    msg = paste0("`facet_rep_wrap` and `facet_rep_lab` have been soft-deprecated. ",
+      "A replacement can be found in ggh4x::facet_wrap2.")
+  )
+
   f <- facet_wrap(scales=scales, ...)
 
   rtl <- reduce.ticks.labels.settings(repeat.tick.labels)
@@ -103,14 +109,7 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
     axis_mat_y_left[panel_pos] <- axes$y$left[layout$SCALE_Y]
     axis_mat_y_right <- empty_table
     axis_mat_y_right[panel_pos] <- axes$y$right[layout$SCALE_Y]
-    #if (!params$free$x) {
-    #  axis_mat_x_top[-1,]<- list(zeroGrob())
-    #  axis_mat_x_bottom[-nrow,]<- list(zeroGrob())
-    #}
-    #if (!params$free$y) {
-    #  axis_mat_y_left[, -1] <- list(zeroGrob())
-    #  axis_mat_y_right[, -ncol] <- list(zeroGrob())
-    #}
+
     if (!'top' %in% params$repeat.tick.labels)  axis_mat_x_top[-1,] <- lapply(axis_mat_x_top[-1,], remove_labels_from_axis)
     if (!'bottom' %in% params$repeat.tick.labels)  axis_mat_x_bottom[-nrow,] <- lapply(axis_mat_x_bottom[-nrow,], remove_labels_from_axis)
     if (!'left' %in% params$repeat.tick.labels)  axis_mat_y_left[,-1] <- lapply(axis_mat_y_left[,-1], remove_labels_from_axis)
