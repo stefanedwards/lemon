@@ -3,7 +3,7 @@ Type: Package
 Title: Freshing Up your 'ggplot2' Plots
 URL: https://github.com/stefanedwards/lemon
 BugReports: https://github.com/stefanedwards/lemon/issues
-Version: 0.4.9
+Version: 0.5.0
 Authors@R: c(
     person('Stefan McKinnon', 'Edwards', email='sme@iysik.com',
     comment=c(ORCID='0000-0002-4628-8148'),
@@ -33,7 +33,7 @@ Imports:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Collate: 
     'ggplot2.r'
     'lemon-plot.r'

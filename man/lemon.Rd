@@ -2,8 +2,8 @@
 % Please edit documentation in R/lemon.r
 \docType{package}
 \name{lemon}
-\alias{lemon}
 \alias{lemon-package}
+\alias{lemon}
 \title{Freshing up your ggplots}
 \source{
 \url{https://github.com/stefanedwards/lemon}

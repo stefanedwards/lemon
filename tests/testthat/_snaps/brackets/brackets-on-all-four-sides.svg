@@ -308,7 +308,7 @@
 <text x='313.93' y='32.64' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='13.45px' lengthAdjust='spacingAndGlyphs'>cyl</text>
 <text x='313.93' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='13.45px' lengthAdjust='spacingAndGlyphs'>cyl</text>
 <text transform='translate(13.05,296.65) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='19.57px' lengthAdjust='spacingAndGlyphs'>hwy</text>
-<text transform='translate(612.53,296.65) rotate(90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='19.57px' lengthAdjust='spacingAndGlyphs'>hwy</text>
+<text transform='translate(614.81,296.65) rotate(90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='19.57px' lengthAdjust='spacingAndGlyphs'>hwy</text>
 <rect x='633.34' y='223.03' width='81.18' height='147.25' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='638.82' y='237.22' style='font-size: 11.00px; font-family: sans;' textLength='25.07px' lengthAdjust='spacingAndGlyphs'>class</text>
 <rect x='638.82' y='243.84' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
