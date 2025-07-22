@@ -9,6 +9,10 @@
 * **TODO:** Add curly brackets to the axis-brackets.
   See package https://cran.r-project.org/web/packages/pBrackets/index.html for drawing braces.
 
+# lemon 0.5.1
+
+* Fixed compability issue with ggplot2 4.0.0.
+
 # lemon 0.5.0
 
 * Bugfix with missing package links in documentations.
