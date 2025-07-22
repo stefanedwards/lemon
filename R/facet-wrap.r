@@ -90,9 +90,9 @@ FacetWrapRepeatLabels <- ggplot2::ggproto('FacetWrapRepeatLabels',
     panel_table$layout$name <- paste0('panel-', rep(seq_len(ncol), nrow), '-', rep(seq_len(nrow), each = ncol))
 
     panel_table <- gtable::gtable_add_col_space(panel_table,
-      theme$panel.spacing.x %||% theme$panel.spacing)
+      calc_element("panel.spacing.x", theme))
     panel_table <- gtable::gtable_add_row_space(panel_table,
-      theme$panel.spacing.y %||% theme$panel.spacing)
+      calc_element("panel.spacing.y", theme))
 
     # Add axes
     axis_mat_x_top <- empty_table

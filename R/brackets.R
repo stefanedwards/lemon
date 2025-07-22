@@ -77,7 +77,7 @@ brackets_horizontal <- function(direction = c('up','down'),
 
       x <- rep(ticksgrob$x, each = 2) +
         rep(unit.c(length * -1, length * -1, length, length ), times = nticks)
-      tick.length <- tick.length %|W|% theme$axis.ticks.length
+      tick.length <- tick.length %|W|% calc_element("axis.ticks.length", theme)
       y0 <-  unit.c(unit(1, 'npc'), unit(1, 'npc') - tick.length)
       d <- switch(direction, down = c(2, 1, 1, 2), up=c(1, 2, 2, 1))
       y <- rep(y0[d], times = nticks)
@@ -162,7 +162,7 @@ brackets_vertical <- function(direction = c('left','right'),
 
       y <- rep(ticksgrob$y, each = 2) +
         rep(unit.c(length * -1, length * -1, length, length ), times = nticks)
-      tick.length <- tick.length %|W|% theme$axis.ticks.length
+      tick.length <- tick.length %|W|% calc_element("axis.ticks.length", theme)
       x0 <-  unit.c(unit(1, 'npc'), unit(1, 'npc') - tick.length)
       d <- switch(direction, left = c(2, 1, 1, 2), right=c(1, 2, 2, 1))
       x <- rep(x0[d], times = nticks)

@@ -73,10 +73,12 @@ remove_labels_from_axis <- function(axisgrob, direction = c('horizontal','vertic
     axis <- axisgrob$children[[a]]
     axis$grobs[[d]] <- zeroGrob()
     if (direction == 'horizontal') {
-      axis$heights[[d]] <- unit(0,'npc')
+      i <- unique(axis$layout$t[d])
+      axis$heights[i] <- unit(0,'cm')
       axisgrob$height <- sum(axis$heights)
     } else if (direction == 'vertical') {
-      axis$widths[[d]] <- unit(0,'npc')
+      i <- unique(axis$layout$l[d])
+      axis$widths[i] <- unit(0,'cm')
       axisgrob$width <- sum(axis$widths)
     }
     axisgrob$children[[a]] <- axis
