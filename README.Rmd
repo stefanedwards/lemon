@@ -186,10 +186,10 @@ The legend grob, by itself.
 
 
 Originally brought to you by
-  (Baptiste Auguié)[http://baptiste.github.io/]
+  [Baptiste Auguié](http://baptiste.github.io/)
   (<https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs>)
   and 
-  (Shaun Jackman)[http://rpubs.com/sjackman]
+  [Shaun Jackman](http://rpubs.com/sjackman)
   (<http://rpubs.com/sjackman/grid_arrange_shared_legend>).
 We put it in a package.
 

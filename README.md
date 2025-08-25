@@ -114,7 +114,7 @@ grid.draw(legend)
 
 ![](README/g_legend-1.png) The legend grob, by itself.
 
-Originally brought to you by (Baptiste Auguié)\[<http://baptiste.github.io/>\] (<https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs>) and (Shaun Jackman)\[<http://rpubs.com/sjackman>\] (<http://rpubs.com/sjackman/grid_arrange_shared_legend>). We put it in a package.
+Originally brought to you by [Baptiste Auguié](http://baptiste.github.io/) (<https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs>) and [Shaun Jackman](http://rpubs.com/sjackman) (<http://rpubs.com/sjackman/grid_arrange_shared_legend>). We put it in a package.
 
 ``` r
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
