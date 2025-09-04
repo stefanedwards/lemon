@@ -33,7 +33,7 @@ hook_source_def = knit_hooks$get('source')
 knit_hooks$set(source = function(x, options){
   if (!is.null(options$verbatim) && options$verbatim){
     opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*", "", options$params.src)
-    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    bef = sprintf('\n\n    ```{r %s}\n', opts)
     stringr::str_c(bef, paste(knitr:::indent_block(x, "    "), collapse = '\n'), "\n    ```\n\n")
   } else {
      hook_source_def(x, options)

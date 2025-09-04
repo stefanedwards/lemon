@@ -3,6 +3,7 @@ require(ggplot2)
 require(lemon)
 
 expect_lemon_plot <- function(object) expect_s3_class(object, 'lemon_plot')
+ggplot_version <- package_version(packageVersion("ggplot2"))
 
 test_that('ggplot2 does not break lemon_plot by altering class', {
   p <- ggplot(data.frame(a=1:2, b=runif(2), c=letters[1:2]), aes(a, b, colour=c)) + geom_blank()
@@ -11,7 +12,11 @@ test_that('ggplot2 does not break lemon_plot by altering class', {
   expect_lemon_plot(l)
   expect_error(l + 1, regexp = "Can't add `1`")
   expect_lemon_plot(l + NULL)
-  expect_lemon_plot(l %+% data.frame(a=3, b=0, c='a'))
+  if (ggplot_version > package_version("3.5.2.9000")) {
+    expect_lemon_plot(l + data.frame(a=3, b=0, c='a'))
+  } else {
+    expect_lemon_plot(l %+% data.frame(a=3, b=0, c='a'))
+  }
   expect_lemon_plot(l + theme_bw())
   expect_lemon_plot(l + scale_y_continuous())
   expect_lemon_plot(l + labs(title='Lemons!'))

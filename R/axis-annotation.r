@@ -185,7 +185,7 @@ AxisAnnotationBquote <- ggplot2::ggproto('AxisAnnotationBquote', AxisAnnotation,
 
 #' @export
 #' @keywords internal
-ggplot_add.axis_annotation <- function(object, plot, object_name) {
+ggplot_add.axis_annotation <- function(object, plot, object_name, ...) {
   plot <- as.lemon_plot(plot)
   plot$axis_annotation <- plot$axis_annotation$clone()
   plot$axis_annotation$add(object)
@@ -205,7 +205,7 @@ as.is <- function(x) {x}
 
 #' @export
 #' @keywords internal
-ggplot_add.axis_annotation <- function(object, plot, object_name) {
+ggplot_add.axis_annotation <- function(object, plot, object_name, ...) {
   plot <- as.lemon_plot(plot)
   plot$axis_annotation <- plot$axis_annotation$clone()
   plot$axis_annotation$add(object)

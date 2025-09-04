@@ -40,8 +40,8 @@ See \code{coord-flex.r}.
 
 \section{Facets}{
 
-The class \code{FacetGridRepeatLabels} is an extension of \link[ggplot2:ggplot2-ggproto]{ggplot2::FacetGrid}
-while \code{FacetWrapRepeatLabels} is an extension of \link[ggplot2:ggplot2-ggproto]{ggplot2::FacetWrap},
+The class \code{FacetGridRepeatLabels} is an extension of \link[ggplot2:Facet]{ggplot2::FacetGrid}
+while \code{FacetWrapRepeatLabels} is an extension of \link[ggplot2:Facet]{ggplot2::FacetWrap},
 both draws the axes on each panel.
 See \link{facet_rep_grid}, \link{facet_rep_wrap}, \code{facet-rap-lab.r} and \code{facet_wrap.r}.
 }

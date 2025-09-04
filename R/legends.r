@@ -94,7 +94,7 @@ g_legend<-function(a.gplot){
 #' p <- p + guides(colour=guide_legend(ncol=2, byrow=TRUE))
 #' guidebox_as_column(p)
 guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
-  if (ggplot2::is.ggplot(legend)) {
+  if (ggplot2::is_ggplot(legend)) {
     legend <- g_legend(legend)
   }
   if (gtable::is.gtable(legend) & legend$name == 'guide-box') {
@@ -104,7 +104,7 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
   # deduct number of keys from legend
   # assumes background, labels, and keys, are all in same order (albeit intermixed)
   bgs <- which(grepl('-bg', legend$layout$name))
-  keys <- which(grepl('key-[0-9]+-[0-9]+-[0-9]+', legend$layout$name))
+  keys <- which(grepl('key-[0-9]+-[0-9]+', legend$layout$name))
   labels <- which(grepl('label-[0-9]+-[0-9]+', legend$layout$name))
 
   all.keys <- list()
@@ -119,8 +119,10 @@ guidebox_as_column <- function(legend, which.legend=1, add.title=FALSE) {
                         name = paste0(legend$layout$name[keys[i]], '-all')
     )
     n <- gtable::gtable_add_grob(n, legend$grobs[bgs[i]], t=1, l=1, name=legend$layout$name[bgs[i]])
-    n <- gtable::gtable_add_grob(n, legend$grobs[keys[i]], t=1, l=1, name=legend$layout$name[keys[i]])
-    n <- gtable::gtable_add_grob(n, legend$grobs[labels[i]], t=1, l=3, name=legend$layout$name[labels[i]])
+	if (bgs[i] != keys[i]) {
+		n <- gtable::gtable_add_grob(n, legend$grobs[keys[i]], t=1, l=1, name=legend$layout$name[keys[i]])
+	}
+    n <- gtable::gtable_add_grob(n, legend$grobs[labels[i]], t=1, l=2, name=legend$layout$name[labels[i]])
 
     all.keys[[i]] <- n
   }
@@ -316,8 +318,9 @@ arrangeGrob <- gridExtra::arrangeGrob
 #' # Use odd specifications, here offset the legend with half its height from the bottom.
 #' reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.5))
 #'
-#' # For using with facets:
-#' reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-1-5')
+#' # For using with facets (panel name may vary depending on ggplot2 version):
+#' try(reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-5-1'))
+#' try(reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-1-5'))
 reposition_legend <- function(aplot,
                              position=NULL,
                              legend=NULL,

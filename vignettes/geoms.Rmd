@@ -57,6 +57,7 @@ The geom `geom_pointpath` in ggh4x can be used as replacement for both lemon's `
 The `geom_siderange` projects data onto the horizontal or vertical edge of the panels.
 
 ```{r fig.height=4,fig.cap=''}
+library(lemon)
 x <- rnorm(25)
 df <- data.frame(x = x, y = x + rnorm(25, sd = 0.2), 
                  a = sample(c("horse", "goat"), 25, replace = TRUE), 

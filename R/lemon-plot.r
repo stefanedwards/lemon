@@ -39,7 +39,7 @@ as.lemon_plot <- function(plot) {
 #' @keywords internal
 #' @rdname lemon_plot
 #' @export
-ggplot_build.lemon_plot <- function(plot) {
+ggplot_build.lemon_plot <- function(plot, ...) {
   g_built <- NextMethod()
   prependClass(g_built, 'built_lemon')
 }

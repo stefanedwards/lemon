@@ -100,8 +100,9 @@ reposition_legend(d + theme(legend.position='bottom'), 'top left')
 # Use odd specifications, here offset the legend with half its height from the bottom.
 reposition_legend(d + theme(legend.position='bottom'), x=0.3, y=0, just=c(0, -0.5))
 
-# For using with facets:
-reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-1-5')
+# For using with facets (panel name may vary depending on ggplot2 version):
+try(reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-5-1'))
+try(reposition_legend(d + facet_grid(.~cut), 'top left', panel = 'panel-1-5'))
 }
 \seealso{
 \code{\link{g_legend}}, \code{\link{grid_arrange_shared_legend}}

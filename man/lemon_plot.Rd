@@ -8,7 +8,7 @@
 \usage{
 as.lemon_plot(plot)
 
-\method{ggplot_build}{lemon_plot}(plot)
+\method{ggplot_build}{lemon_plot}(plot, ...)
 
 \method{ggplot_gtable}{built_lemon}(data)
 }

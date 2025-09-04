@@ -57,6 +57,12 @@ test_that('Still works with vdiffr', {
   p <- ggplot(mpg, aes(displ, cty)) + geom_point() +
     coord_capped_cart(bottom='both', left='both') +
     theme_bw() + theme(panel.border=element_blank(), axis.line=element_line())
-  expect_doppelganger("facet_rep_grid", p + facet_rep_grid(drv ~ cyl, repeat.tick.labels = TRUE))
-  expect_doppelganger("facet_rep_wrap", p + facet_rep_wrap(~ cyl, repeat.tick.labels = TRUE, ncol=3))
+  expect_doppelganger("facet_rep_grid", 
+    expect_warning(
+      p + facet_rep_grid(drv ~ cyl, repeat.tick.labels = TRUE),
+    "soft-deprecated", fixed=TRUE))
+  expect_doppelganger("facet_rep_wrap", 
+    expect_warning(
+      p + facet_rep_wrap(~ cyl, repeat.tick.labels = TRUE, ncol=3),
+    "soft-deprecated", fixed=TRUE))
 })
